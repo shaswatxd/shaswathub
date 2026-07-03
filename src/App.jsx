@@ -211,10 +211,10 @@ export default function App() {
             <Card key={idx} project={project} />
           ))}
           <div className="card placeholder">
-            <div className="plus">+</div>
+            <div className="plus">⚡</div>
             <div>
-              Add your next project<br />
-              in the PROJECTS array
+              More Projects<br />
+              Coming Soon
             </div>
           </div>
         </div>
