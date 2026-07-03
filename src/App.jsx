@@ -279,26 +279,39 @@ export default function App() {
       if (prefersReduced) {
         // Draw static version and stop loop
         ctx.clearRect(0, 0, 32, 32);
-        ctx.fillStyle = '#060810';
+        
+        const bgGrad = ctx.createRadialGradient(16, 16, 2, 16, 16, 16);
+        bgGrad.addColorStop(0, '#0f1326');
+        bgGrad.addColorStop(1, '#05070f');
+        ctx.fillStyle = bgGrad;
         ctx.beginPath();
         ctx.arc(16, 16, 15, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = '#00cdac';
+        ctx.strokeStyle = '#00f0ff';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2.5;
+        const grad = ctx.createLinearGradient(10, 10, 22, 22);
+        grad.addColorStop(0, '#00f0ff');
+        grad.addColorStop(0.5, '#8b6bff');
+        grad.addColorStop(1, '#ff3d9a');
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
-        ctx.moveTo(21, 10);
-        ctx.bezierCurveTo(14, 6, 10, 11, 10, 14);
-        ctx.bezierCurveTo(10, 18, 22, 14, 22, 18);
-        ctx.bezierCurveTo(22, 21, 18, 26, 11, 22);
+        ctx.moveTo(22, 10);
+        ctx.lineTo(14, 10);
+        ctx.arcTo(10, 10, 10, 16, 4);
+        ctx.arcTo(10, 16, 22, 16, 4);
+        ctx.lineTo(18, 16);
+        ctx.arcTo(22, 16, 22, 22, 4);
+        ctx.arcTo(22, 22, 10, 22, 4);
+        ctx.lineTo(10, 22);
         ctx.stroke();
 
         link.href = canvas.toDataURL('image/png');
@@ -312,43 +325,71 @@ export default function App() {
 
       ctx.clearRect(0, 0, 32, 32);
 
-      // Background disc for contrast
-      ctx.fillStyle = '#060810';
+      // Radial gradient background disc for rich depth
+      const bgGrad = ctx.createRadialGradient(16, 16, 2, 16, 16, 16);
+      bgGrad.addColorStop(0, '#0f1326');
+      bgGrad.addColorStop(1, '#05070f');
+      ctx.fillStyle = bgGrad;
       ctx.beginPath();
       ctx.arc(16, 16, 15, 0, Math.PI * 2);
       ctx.fill();
 
-      // Rotating dashed neon border
-      ctx.strokeStyle = `hsl(${(timestamp / 15) % 360}, 100%, 65%)`;
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 4]);
-      ctx.lineDashOffset = -timestamp / 30;
+      // Outer neon dashed track
+      ctx.strokeStyle = 'rgba(139, 107, 255, 0.2)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.setLineDash([]); // reset for S
 
-      // Stylized glowing S path
-      // Glow layer
-      ctx.strokeStyle = `hsla(${(timestamp / 15) % 360}, 100%, 60%, 0.45)`;
-      ctx.lineWidth = 6;
+      // Orbiting neon dot
+      const angle = (timestamp / 450) % (Math.PI * 2);
+      const px = 16 + Math.cos(angle) * 13.5;
+      const py = 16 + Math.sin(angle) * 13.5;
+      
+      // Outer halo for dot
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.4)';
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, Math.PI * 2);
+      ctx.fill();
+      // Core of dot
+      ctx.fillStyle = '#00f0ff';
+      ctx.beginPath();
+      ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Create glowing linear gradient for the S
+      const grad = ctx.createLinearGradient(10, 10, 22, 22);
+      grad.addColorStop(0, `hsl(${(timestamp / 12) % 360}, 100%, 65%)`);
+      grad.addColorStop(0.5, `hsl(${(timestamp / 12 + 60) % 360}, 100%, 60%)`);
+      grad.addColorStop(1, `hsl(${(timestamp / 12 + 120) % 360}, 100%, 55%)`);
+
+      // Breathing glow effect
+      const glowIntensity = Math.sin(timestamp / 150) * 1.5 + 4.5;
+
+      // S Glow layer
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 5.5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
+      ctx.shadowColor = `hsl(${(timestamp / 12 + 30) % 360}, 100%, 60%)`;
+      ctx.shadowBlur = glowIntensity;
+      
       ctx.beginPath();
-      ctx.moveTo(21, 10);
-      ctx.bezierCurveTo(14, 6, 10, 11, 10, 14);
-      ctx.bezierCurveTo(10, 18, 22, 14, 22, 18);
-      ctx.bezierCurveTo(22, 21, 18, 26, 11, 22);
+      ctx.moveTo(22, 10);
+      ctx.lineTo(14, 10);
+      ctx.arcTo(10, 10, 10, 16, 4);
+      ctx.arcTo(10, 16, 22, 16, 4);
+      ctx.lineTo(18, 16);
+      ctx.arcTo(22, 16, 22, 22, 4);
+      ctx.arcTo(22, 22, 10, 22, 4);
+      ctx.lineTo(10, 22);
       ctx.stroke();
 
-      // Core layer
+      // S Core layer
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(21, 10);
-      ctx.bezierCurveTo(14, 6, 10, 11, 10, 14);
-      ctx.bezierCurveTo(10, 18, 22, 14, 22, 18);
-      ctx.bezierCurveTo(22, 21, 18, 26, 11, 22);
+      ctx.lineWidth = 2.2;
       ctx.stroke();
 
       link.href = canvas.toDataURL('image/png');
