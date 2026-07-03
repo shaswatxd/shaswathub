@@ -377,9 +377,9 @@ h1 .line2 {
 .section-head {
   position: relative;
   z-index: 10;
-  max-width: 1200px;
+  max-width: 1480px;
   margin: 12vh auto 3vh;
-  padding: 0 5vw 18px;
+  padding: 0 4vw 18px;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -407,12 +407,12 @@ h1 .line2 {
 .grid {
   position: relative;
   z-index: 10;
-  max-width: 1200px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 0 5vw 8vh;
+  padding: 0 4vw 8vh;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
 }
 
 /* Card */
