@@ -325,9 +325,12 @@ h1 .line2 {
 .card {
   --mx: 50%;
   --my: 50%;
+  --glow-color: rgba(0, 240, 255, 0.12);
   position: relative;
-  background: linear-gradient(160deg, var(--panel), rgba(10, 14, 24, 0.9));
-  border: 1px solid var(--border);
+  background: rgba(15, 21, 36, 0.45);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   padding: 26px;
   transform-style: preserve-3d;
@@ -342,7 +345,7 @@ h1 .line2 {
   position: absolute;
   inset: 0;
   border-radius: 18px;
-  background: radial-gradient(240px circle at var(--mx) var(--my), rgba(0, 240, 255, 0.12), transparent 60%);
+  background: radial-gradient(300px circle at var(--mx) var(--my), var(--glow-color), transparent 60%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;

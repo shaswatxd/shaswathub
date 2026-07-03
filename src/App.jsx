@@ -86,6 +86,7 @@ function Card({ project }) {
   const cardStyle = {
     '--mx': tilt.mx,
     '--my': tilt.my,
+    '--glow-color': `${col}1c`,
     transform: tilt.active
       ? `perspective(600px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-6px)`
       : 'perspective(600px) rotateX(0deg) rotateY(0deg) translateY(0px)',

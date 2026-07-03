@@ -50,11 +50,11 @@ function Car({ initialZ, lane, color, speed, prefersReduced }) {
 function Cars({ prefersReduced }) {
   const carData = useMemo(() => {
     const data = [];
-    const CAR_COUNT = 6;
+    const CAR_COUNT = 12;
     for (let i = 0; i < CAR_COUNT; i++) {
       data.push({
         id: i,
-        initialZ: -25 - i * 26,
+        initialZ: -25 - i * 28,
         lane: LANES[i % 2],
         color: PALETTE[i % PALETTE.length],
         speed: 0.22 + Math.random() * 0.14
