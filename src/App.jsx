@@ -611,7 +611,7 @@ export default function App() {
               Email
             </a>
           </div>
-          <div className="footer-copy">© 2025 shaswatxd · developed with ❤️ &amp; caffeine</div>
+          <div className="footer-copy">© {new Date().getFullYear()} shaswatxd · developed with ❤️ &amp; chai</div>
         </footer>
       </div>
     </>
