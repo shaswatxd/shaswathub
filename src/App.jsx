@@ -18,7 +18,7 @@ const PROJECTS = [
     glow: "violet",
     badge: "LIVE APP",
     githubUrl: "https://github.com/shaswatxd/justpdfcraft",
-    liveUrl: "https://justpdfcraft-production.up.railway.app/"
+    liveUrl: "https://justpdfcraft.xyz/"
   },
   {
     name: "StreamVault",
