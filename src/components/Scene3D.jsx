@@ -7,31 +7,24 @@ const PALETTE = ['#ff2233', '#00f0ff', '#8b6bff', '#ff3d9a'];
 const LANES = [-3.4, 3.4];
 
 /* ─── Floating Particle System ─── */
-function Particles({ count = 120 }) {
+function Particles({ count = 100 }) {
   const mesh = useRef();
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       arr[i * 3]     = (Math.random() - 0.5) * 60;
-      arr[i * 3 + 1] = Math.random() * 30 - 5;
+      arr[i * 3 + 1] = Math.random() * 25 - 5;
       arr[i * 3 + 2] = (Math.random() - 0.5) * 200 - 80;
     }
     return arr;
   }, [count]);
 
-  const speeds = useMemo(() => new Float32Array(count).map(() => 0.005 + Math.random() * 0.01), [count]);
-
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (!mesh.current) return;
-    const pos = mesh.current.geometry.attributes.position;
-    for (let i = 0; i < count; i++) {
-      pos.array[i * 3 + 1] += speeds[i];
-      if (pos.array[i * 3 + 1] > 25) {
-        pos.array[i * 3 + 1] = -5;
-      }
-    }
-    pos.needsUpdate = true;
-    mesh.current.rotation.y += 0.0003;
+    // Fast GPU-based animation: drift the whole group instead of looping vertices on CPU
+    const t = clock.getElapsedTime();
+    mesh.current.rotation.y = t * 0.015;
+    mesh.current.position.y = Math.sin(t * 0.2) * 1.5;
   });
 
   return (
@@ -153,36 +146,32 @@ function Car({ initialZ, lane, color, speed, prefersReduced }) {
   });
 
   return (
-    <>
-      {/* Headlight glow beneath car */}
-      <pointLight
-        color={color}
-        intensity={1.2}
-        distance={6}
-        position={[lane, 0.5, groupRef.current?.position.z ?? initialZ]}
-      />
+    <group ref={groupRef} position={[lane, 0.02, initialZ]}>
+      {/* Super cheap neon underglow plane (basic material, no lighting penalty) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+        <planeGeometry args={[1.8, 3.8]} />
+        <meshBasicMaterial color={color} transparent opacity={0.35} />
+      </mesh>
       <primitive
-        ref={groupRef}
         object={clonedScene}
-        position={[lane, 0.02, initialZ]}
         rotation={[0, Math.PI, 0]}
         scale={1.2}
       />
-    </>
+    </group>
   );
 }
 
 function Cars({ prefersReduced, isMobile }) {
   const carData = useMemo(() => {
     const data = [];
-    const CAR_COUNT = isMobile ? 6 : 14;
+    const CAR_COUNT = isMobile ? 5 : 8; // Reduced count to keep PC performance ultra-high
     for (let i = 0; i < CAR_COUNT; i++) {
       data.push({
         id: i,
-        initialZ: -25 - i * 24,
+        initialZ: -25 - i * 28,
         lane: LANES[i % 2],
         color: PALETTE[i % PALETTE.length],
-        speed: 0.22 + Math.random() * 0.16,
+        speed: 0.20 + Math.random() * 0.12,
       });
     }
     return data;
@@ -203,6 +192,7 @@ function Cars({ prefersReduced, isMobile }) {
     </>
   );
 }
+
 
 /* ─── Main Scene ─── */
 export default function Scene3D({ prefersReduced }) {
