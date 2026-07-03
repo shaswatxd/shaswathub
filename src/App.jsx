@@ -198,12 +198,9 @@ export default function App() {
             href="https://github.com/shaswatxd"
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-user-container"
+            className="nav-avatar-link"
           >
-            <span className="nav-github-name">shaswatxd</span>
-            <div className="nav-avatar-wrapper">
-              <img src="/avatar.jpg" alt="GitHub Profile" className="nav-avatar" />
-            </div>
+            <img src="/avatar.jpg" alt="GitHub Profile" className="nav-avatar" />
           </a>
         </nav>
 
@@ -243,7 +240,7 @@ export default function App() {
             <a href="#">LinkedIn</a>
             <a href="mailto:support@shaswathub.xyz">Email</a>
           </div>
-          <div>ShaswatHub — built &amp; maintained by Srijan</div>
+          <div>developed by shaswatxd</div>
         </footer>
       </div>
     </>
