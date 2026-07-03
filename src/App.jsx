@@ -31,6 +31,21 @@ const PROJECTS = [
       "🛠️ Merge, Split & Compress Functionality",
       "🔍 Built-in OCR Text Extraction"
     ]
+  },
+  {
+    name: "SnapGrab",
+    desc: "Desktop media downloader shell utilizing yt-dlp & FFmpeg. Features concurrent playlist downloads, local file playback, and background engine auto-updates.",
+    icon: "⬇️",
+    glow: "magenta",
+    badge: "LIVE APP",
+    githubUrl: "https://github.com/shaswatxd/snapgrab-downloader",
+    liveUrl: "https://snapgrab-eight.vercel.app/",
+    features: [
+      "⬇️ Downloader for 1,000+ Platforms",
+      "🎬 Automated FFmpeg Muxing & Quality Merge",
+      "⚡ Background Component Auto-Updates",
+      "📻 Built-in Media Playback Shell"
+    ]
   }
 ];
 
