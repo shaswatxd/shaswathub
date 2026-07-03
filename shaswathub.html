@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShaswatHub — Dev Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080b12;
+    --bg-2:#0d1220;
+    --panel:#0f1524;
+    --border:rgba(140,160,220,0.14);
+    --cyan:#00f0ff;
+    --violet:#8b6bff;
+    --magenta:#ff3d9a;
+    --text:#e7ecf5;
+    --muted:#8b95ab;
+    --mono:'JetBrains Mono', monospace;
+    --disp:'Space Grotesk', sans-serif;
+    --body:'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* 3D background canvas */
+  #bg3d{
+    position:fixed;inset:0;z-index:0;
+    pointer-events:none;
+    display:block;
+  }
+  .bg-fade{
+    position:fixed;inset:0;z-index:0;
+    background:linear-gradient(180deg, rgba(8,11,18,0.15) 0%, rgba(8,11,18,0.55) 60%, rgba(8,11,18,0.92) 100%);
+    pointer-events:none;
+  }
+  .bg-glow{
+    position:fixed;top:-20%;left:50%;transform:translateX(-50%);
+    width:900px;height:600px;
+    background:radial-gradient(ellipse, rgba(0,240,255,0.12), rgba(139,107,255,0.06) 45%, transparent 70%);
+    filter:blur(40px);
+    pointer-events:none;z-index:0;
+    mix-blend-mode:screen;
+  }
+
+  /* nav */
+  nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 6vw;
+    background:rgba(8,11,18,0.7);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:1.15rem;letter-spacing:0.5px;}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .brand span.accent{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  nav .status{
+    font-family:var(--mono);font-size:0.72rem;color:var(--muted);
+    display:flex;align-items:center;gap:8px;
+    border:1px solid var(--border);padding:6px 14px;border-radius:999px;
+  }
+  nav .status::before{content:'';width:6px;height:6px;border-radius:50%;background:#3ef07c;box-shadow:0 0 8px #3ef07c;}
+
+  /* hero */
+  header{
+    position:relative;z-index:1;
+    padding:9vh 6vw 6vh;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:var(--mono);font-size:0.75rem;color:var(--cyan);
+    letter-spacing:3px;text-transform:uppercase;margin-bottom:22px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+  }
+  .eyebrow::before,.eyebrow::after{content:'';width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan));}
+  .eyebrow::after{background:linear-gradient(90deg,var(--cyan),transparent);}
+  h1{
+    font-family:var(--disp);font-weight:700;
+    font-size:clamp(2.4rem, 6.5vw, 4.6rem);
+    line-height:1.05;letter-spacing:-1.5px;
+    margin-bottom:20px;
+  }
+  h1 .line2{
+    background:linear-gradient(100deg,var(--cyan) 10%,var(--violet) 55%,var(--magenta) 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{
+    max-width:620px;margin:0 auto;color:var(--muted);
+    font-size:1.05rem;line-height:1.7;
+  }
+  .sub b{color:var(--text);font-weight:600;}
+
+  /* stats */
+  .stats{
+    position:relative;z-index:1;
+    max-width:960px;margin:6vh auto 0;
+    display:grid;grid-template-columns:repeat(4,1fr);
+    background:linear-gradient(180deg, var(--panel), rgba(15,21,36,0.4));
+    border:1px solid var(--border);border-radius:20px;
+    overflow:hidden;
+  }
+  .stat{padding:26px 10px;text-align:center;border-right:1px solid var(--border);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:var(--disp);font-weight:700;font-size:1.9rem;color:var(--text);}
+  .stat .num.g{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat .lbl{font-family:var(--mono);font-size:0.68rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:6px;}
+
+  /* section label */
+  .section-head{
+    position:relative;z-index:1;
+    max-width:1100px;margin:11vh auto 3vh;padding:0 6vw;
+    display:flex;align-items:baseline;justify-content:space-between;
+    border-bottom:1px solid var(--border);padding-bottom:16px;
+  }
+  .section-head h2{font-family:var(--disp);font-size:1.5rem;font-weight:600;}
+  .section-head .tag{font-family:var(--mono);font-size:0.72rem;color:var(--muted);}
+
+  /* grid of project cards */
+  .grid{
+    position:relative;z-index:1;
+    max-width:1100px;margin:0 auto;padding:0 6vw 8vh;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+  }
+  .card{
+    --mx:50%;--my:50%;
+    position:relative;
+    background:linear-gradient(160deg, var(--panel), rgba(10,14,24,0.9));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:26px;
+    cursor:pointer;
+    transform-style:preserve-3d;
+    transition:transform .12s ease, border-color .3s ease;
+    text-decoration:none;color:inherit;
+    display:block;
+    overflow:hidden;
+  }
+  .card::before{
+    content:'';position:absolute;inset:0;border-radius:18px;
+    background:radial-gradient(240px circle at var(--mx) var(--my), rgba(0,240,255,0.14), transparent 60%);
+    opacity:0;transition:opacity .3s ease;pointer-events:none;
+  }
+  .card:hover::before{opacity:1;}
+  .card:hover{border-color:rgba(0,240,255,0.35);}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .card-icon{
+    width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.3rem;
+  }
+  .card-arrow{color:var(--muted);font-size:1.1rem;transition:transform .25s ease, color .25s ease;}
+  .card:hover .card-arrow{transform:translate(4px,-4px);color:var(--cyan);}
+  .card h3{font-family:var(--disp);font-size:1.15rem;font-weight:600;margin-bottom:6px;}
+  .card p{color:var(--muted);font-size:0.88rem;line-height:1.5;margin-bottom:18px;min-height:2.6em;}
+  .card .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--mono);font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;
+    padding:5px 12px;border-radius:999px;border:1px solid var(--border);color:var(--muted);
+  }
+  .card .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+  /* placeholder / add-new card */
+  .card.placeholder{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-style:dashed;border-color:var(--border);color:var(--muted);
+    min-height:180px;text-align:center;
+  }
+  .card.placeholder .plus{
+    font-family:var(--disp);font-size:2rem;color:var(--muted);margin-bottom:10px;
+    border:1px solid var(--border);width:50px;height:50px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .card.placeholder:hover{border-color:var(--violet);color:var(--violet);}
+  .card.placeholder:hover .plus{border-color:var(--violet);color:var(--violet);}
+
+  footer{
+    position:relative;z-index:1;
+    text-align:center;padding:6vh 6vw 8vh;
+    border-top:1px solid var(--border);
+    margin-top:4vh;
+    color:var(--muted);font-family:var(--mono);font-size:0.78rem;
+  }
+  footer .links{display:flex;gap:22px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+  footer .links a{color:var(--text);text-decoration:none;font-size:0.85rem;transition:color .2s;}
+  footer .links a:hover{color:var(--cyan);}
+
+  @media (max-width:700px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<canvas id="bg3d"></canvas>
+<div class="bg-fade"></div>
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="brand"><span class="dot"></span>SHASWAT<span class="accent">HUB</span></div>
+  <div class="status">SYSTEM ONLINE</div>
+</nav>
+
+<header>
+  <div class="eyebrow">Dev Console · Personal Build Log</div>
+  <h1>Everything I'm<br><span class="line2">Building, Shipping, Breaking.</span></h1>
+  <p class="sub">A live index of projects, repos and experiments — from <b>desktop apps</b> to <b>web tools</b>. Updated as things ship, not as a resume.</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="num g" id="statProjects">0</div><div class="lbl">Projects</div></div>
+  <div class="stat"><div class="num">BCA</div><div class="lbl">5th Sem</div></div>
+  <div class="stat"><div class="num">2026</div><div class="lbl">Active Year</div></div>
+  <div class="stat"><div class="num g">24/7</div><div class="lbl">Shipping</div></div>
+</div>
+
+<div class="section-head">
+  <h2>Projects & Links</h2>
+  <div class="tag">// edit the PROJECTS array in script to add more</div>
+</div>
+
+<div class="grid" id="projectGrid"></div>
+
+<footer>
+  <div class="links">
+    <a href="#" id="ghLink">GitHub</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">Email</a>
+  </div>
+  <div>ShaswatHub — built &amp; maintained by Srijan</div>
+</footer>
+
+<script>
+  /* ================================================
+     EDIT THIS ARRAY TO ADD YOUR PROJECTS / LINKS.
+     icon: any emoji, glow: cyan | violet | magenta
+     ================================================ */
+  const PROJECTS = [
+    {
+      name: "VoiceWave",
+      desc: "Real-time voice chat app — Electron, Socket.IO, WebRTC.",
+      badge: "GITHUB",
+      icon: "🎙️",
+      glow: "cyan",
+      url: "https://github.com/shaswatxd/voicewave"
+    },
+    {
+      name: "JustPDFCraft",
+      desc: "PDF toolkit — merge, split, edit and craft documents.",
+      badge: "GITHUB",
+      icon: "📄",
+      glow: "violet",
+      url: "https://github.com/shaswatxd/justpdfcraft"
+    },
+    {
+      name: "StreamVault",
+      desc: "Cinematic dark-themed streaming UI with API integration.",
+      badge: "PROJECT",
+      icon: "🎬",
+      glow: "magenta",
+      url: "#"
+    }
+  ];
+
+  const glowColors = { cyan: "#00f0ff", violet: "#8b6bff", magenta: "#ff3d9a" };
+
+  function renderProjects(){
+    const grid = document.getElementById("projectGrid");
+    grid.innerHTML = "";
+
+    PROJECTS.forEach(p => {
+      const col = glowColors[p.glow] || glowColors.cyan;
+      const card = document.createElement("a");
+      card.href = p.url;
+      card.target = p.url && p.url !== "#" ? "_blank" : "_self";
+      card.rel = "noopener";
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-icon" style="background:${col}1a;border:1px solid ${col}44;">${p.icon}</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <span class="badge" style="color:${col};border-color:${col}44;">${p.badge}</span>
+      `;
+      card.addEventListener("mousemove", e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        card.style.setProperty("--my", (e.clientY - r.top) + "px");
+        const rx = ((e.clientY - r.top) / r.height - 0.5) * -8;
+        const ry = ((e.clientX - r.left) / r.width - 0.5) * 8;
+        card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "perspective(600px) rotateX(0) rotateY(0) translateY(0)";
+      });
+      grid.appendChild(card);
+    });
+
+    // add-new placeholder card at the end
+    const ph = document.createElement("div");
+    ph.className = "card placeholder";
+    ph.innerHTML = `<div class="plus">+</div><div>Add your next project<br>in the PROJECTS array</div>`;
+    grid.appendChild(ph);
+
+    document.getElementById("statProjects").textContent = PROJECTS.length + "+";
+  }
+
+  renderProjects();
+
+  // subtle hero glow parallax on mouse move
+  const glow = document.querySelector(".bg-glow");
+  document.addEventListener("mousemove", e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 30;
+    glow.style.transform = `translate(calc(-50% + ${x}px), 0)`;
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  if (typeof THREE === "undefined") return;
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const canvas = document.getElementById("bg3d");
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const fogColor = 0x080b12;
+  scene.fog = new THREE.FogExp2(fogColor, 0.032);
+
+  const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 300);
+  camera.position.set(0, 4.2, 15);
+  camera.lookAt(0, 1, -60);
+
+  scene.add(new THREE.HemisphereLight(0x99bbff, 0x110022, 0.7));
+  const dir = new THREE.DirectionalLight(0xffffff, 0.35);
+  dir.position.set(6, 12, 4);
+  scene.add(dir);
+
+  // road surface
+  const road = new THREE.Mesh(
+    new THREE.PlaneGeometry(16, 500),
+    new THREE.MeshStandardMaterial({ color: 0x060810, roughness: 0.95 })
+  );
+  road.rotation.x = -Math.PI / 2;
+  road.position.set(0, 0, -180);
+  scene.add(road);
+
+  // neon grid overlay on road
+  const grid = new THREE.GridHelper(500, 100, 0x00f0ff, 0x3a2c66);
+  grid.position.set(0, 0.02, -180);
+  grid.material.transparent = true;
+  grid.material.opacity = 0.35;
+  scene.add(grid);
+
+  // glowing edge strips
+  function edgeStrip(x, color) {
+    const strip = new THREE.Mesh(
+      new THREE.BoxGeometry(0.12, 0.12, 500),
+      new THREE.MeshBasicMaterial({ color })
+    );
+    strip.position.set(x, 0.08, -180);
+    scene.add(strip);
+  }
+  edgeStrip(-7.6, 0x00f0ff);
+  edgeStrip(7.6, 0x8b6bff);
+
+  // low-poly car factory
+  function buildCar(color) {
+    const car = new THREE.Group();
+    const paint = new THREE.MeshStandardMaterial({
+      color, emissive: color, emissiveIntensity: 0.45, roughness: 0.35, metalness: 0.6
+    });
+
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.45, 3.8), paint);
+    body.position.y = 0.5;
+    car.add(body);
+
+    const nose = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.35, 1.0), paint);
+    nose.position.set(0, 0.42, 2.1);
+    car.add(nose);
+
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.4, 1.7), paint);
+    cabin.position.set(0, 0.85, -0.3);
+    car.add(cabin);
+
+    const spoiler = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.3), paint);
+    spoiler.position.set(0, 0.85, -1.9);
+    car.add(spoiler);
+
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.9 });
+    const wheelGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.28, 14);
+    [[-0.85, 0.34, 1.25], [0.85, 0.34, 1.25], [-0.85, 0.34, -1.25], [0.85, 0.34, -1.25]].forEach(p => {
+      const w = new THREE.Mesh(wheelGeo, wheelMat);
+      w.rotation.z = Math.PI / 2;
+      w.position.set(p[0], p[1], p[2]);
+      car.add(w);
+    });
+
+    const headMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    [-0.55, 0.55].forEach(x => {
+      const hl = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), headMat);
+      hl.position.set(x, 0.5, 2.6);
+      car.add(hl);
+    });
+
+    const tailMat = new THREE.MeshBasicMaterial({ color: 0xff2244 });
+    [-0.55, 0.55].forEach(x => {
+      const tl = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), tailMat);
+      tl.position.set(x, 0.5, -2.0);
+      car.add(tl);
+    });
+
+    return car;
+  }
+
+  const palette = [0x00f0ff, 0x8b6bff, 0xff3d9a, 0xf5f7fb];
+  const lanes = [-3.4, 3.4];
+  const cars = [];
+  const CAR_COUNT = 6;
+  for (let i = 0; i < CAR_COUNT; i++) {
+    const car = buildCar(palette[i % palette.length]);
+    car.position.set(lanes[i % 2], 0, -25 - i * 26);
+    car.userData.speed = 0.22 + Math.random() * 0.14;
+    scene.add(car);
+    cars.push(car);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!prefersReduced) {
+      cars.forEach(car => {
+        car.position.z += car.userData.speed;
+        if (car.position.z > 18) car.position.z = -180 - Math.random() * 20;
+      });
+    }
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+</script>
+
+</body>
+</html>
