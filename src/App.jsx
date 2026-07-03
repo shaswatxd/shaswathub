@@ -182,9 +182,12 @@ export default function App() {
             href="https://github.com/shaswatxd"
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-avatar-link"
+            className="nav-user-container"
           >
-            <img src="/avatar.jpg" alt="GitHub Profile" className="nav-avatar" />
+            <span className="nav-github-name">shaswatxd</span>
+            <div className="nav-avatar-wrapper">
+              <img src="/avatar.jpg" alt="GitHub Profile" className="nav-avatar" />
+            </div>
           </a>
         </nav>
 

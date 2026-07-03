@@ -73,13 +73,33 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 4vw 14px 6vw;
+  padding: 14px 2vw 14px 6vw;
   background: rgba(8, 11, 18, 0.7);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
 }
 
-.nav-avatar-link {
+.nav-user-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-github-name {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-user-container:hover .nav-github-name {
+  color: var(--cyan);
+}
+
+.nav-avatar-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,11 +107,11 @@ nav {
   border: 2px solid var(--border);
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
 }
 
-.nav-avatar-link:hover {
+.nav-user-container:hover .nav-avatar-wrapper {
   transform: scale(1.08) rotate(5deg);
   border-color: var(--cyan);
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
