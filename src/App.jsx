@@ -257,6 +257,109 @@ export default function App() {
   const [prefersReduced, setPrefersReduced] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Animated Glowing 'S' Favicon Effect
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+
+    let animationFrameId;
+    let lastUpdate = 0;
+    const interval = 80; // throttled update (~12 fps) for performance
+
+    const draw = (timestamp) => {
+      if (prefersReduced) {
+        // Draw static version and stop loop
+        ctx.clearRect(0, 0, 32, 32);
+        ctx.fillStyle = '#060810';
+        ctx.beginPath();
+        ctx.arc(16, 16, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#00cdac';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(21, 10);
+        ctx.bezierCurveTo(14, 6, 10, 11, 10, 14);
+        ctx.bezierCurveTo(10, 18, 22, 14, 22, 18);
+        ctx.bezierCurveTo(22, 21, 18, 26, 11, 22);
+        ctx.stroke();
+
+        link.href = canvas.toDataURL('image/png');
+        return;
+      }
+
+      animationFrameId = requestAnimationFrame(draw);
+
+      if (timestamp - lastUpdate < interval) return;
+      lastUpdate = timestamp;
+
+      ctx.clearRect(0, 0, 32, 32);
+
+      // Background disc for contrast
+      ctx.fillStyle = '#060810';
+      ctx.beginPath();
+      ctx.arc(16, 16, 15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Rotating dashed neon border
+      ctx.strokeStyle = `hsl(${(timestamp / 15) % 360}, 100%, 65%)`;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.lineDashOffset = -timestamp / 30;
+      ctx.beginPath();
+      ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]); // reset for S
+
+      // Stylized glowing S path
+      // Glow layer
+      ctx.strokeStyle = `hsla(${(timestamp / 15) % 360}, 100%, 60%, 0.45)`;
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(21, 10);
+      ctx.bezierCurveTo(14, 6, 10, 11, 10, 14);
+      ctx.bezierCurveTo(10, 18, 22, 14, 22, 18);
+      ctx.bezierCurveTo(22, 21, 18, 26, 11, 22);
+      ctx.stroke();
+
+      // Core layer
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(21, 10);
+      ctx.bezierCurveTo(14, 6, 10, 11, 10, 14);
+      ctx.bezierCurveTo(10, 18, 22, 14, 22, 18);
+      ctx.bezierCurveTo(22, 21, 18, 26, 11, 22);
+      ctx.stroke();
+
+      link.href = canvas.toDataURL('image/png');
+    };
+
+    animationFrameId = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [prefersReduced]);
 
   // Lerp parallax — smooth, no jank
   const parallaxRef = useRef(0);
