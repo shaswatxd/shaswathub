@@ -63,21 +63,6 @@ const PROJECTS = [
       "⚡ Background Component Auto-Updates",
       "📻 Built-in Media Playback Shell"
     ]
-  },
-  {
-    name: "Offline Music Player",
-    desc: "Feature-rich Electron-based music player with yt-dlp integration, auto-download capabilities, and a sleek dark UI built for local playback.",
-    icon: "🎵",
-    glow: "cyan",
-    badge: "DESKTOP APP",
-    githubUrl: "https://github.com/shaswatxd/offline-music-player",
-    liveUrl: "#",
-    features: [
-      "🎵 Local & Online Music Playback",
-      "📥 Auto-Download via yt-dlp",
-      "🎨 Sleek Glassmorphism Dark UI",
-      "⚡ Background Engine Auto-Updates"
-    ]
   }
 ];
 
