@@ -173,24 +173,6 @@ export default function App() {
           </p>
         </header>
 
-        <div className="stats">
-          <div className="stat">
-            <div className="num g">{PROJECTS.length}+</div>
-            <div className="lbl">Projects</div>
-          </div>
-          <div className="stat">
-            <div className="num">BCA</div>
-            <div className="lbl">5th Sem</div>
-          </div>
-          <div className="stat">
-            <div className="num">2026</div>
-            <div className="lbl">Active Year</div>
-          </div>
-          <div className="stat">
-            <div className="num g">24/7</div>
-            <div className="lbl">Shipping</div>
-          </div>
-        </div>
 
         <div className="section-head">
           <h2>Projects & Links</h2>
