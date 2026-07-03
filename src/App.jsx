@@ -230,7 +230,7 @@ function Card({ project, idx }) {
 }
 
 /* ─── Tech Stack Badge ─── */
-function TechBadge({ tech, idx }) {
+const TechBadge = React.memo(function TechBadge({ tech, idx }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -249,7 +249,7 @@ function TechBadge({ tech, idx }) {
       <span className="tech-name">{tech.name}</span>
     </div>
   );
-}
+});
 
 /* ─── Main App ─── */
 export default function App() {
@@ -270,14 +270,11 @@ export default function App() {
     const handleMQ = (e) => setPrefersReduced(e.matches);
     mq.addEventListener("change", handleMQ);
 
-    const handleMouse = (e) => {
-      parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
-    };
-
     const handleScroll = () => setScrolled(window.scrollY > 20);
 
-    // RAF loop for smooth lerp
+    // RAF loop for smooth lerp — only runs when mouse moves, stops when idle
     const lerp = (a, b, t) => a + (b - a) * t;
+    let running = false;
     const tick = () => {
       parallaxRef.current = lerp(parallaxRef.current, parallaxTarget.current, 0.06);
       const px = parallaxRef.current;
@@ -287,9 +284,21 @@ export default function App() {
       if (glowSecRef.current) {
         glowSecRef.current.style.transform = `translate(calc(-50% + ${-px * 0.5}px), 0)`;
       }
-      rafRef.current = requestAnimationFrame(tick);
+      // Stop loop when close enough to target
+      if (Math.abs(parallaxRef.current - parallaxTarget.current) > 0.05) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        running = false;
+      }
     };
-    rafRef.current = requestAnimationFrame(tick);
+
+    const handleMouse = (e) => {
+      parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
+      if (!running) {
+        running = true;
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
 
     window.addEventListener("mousemove", handleMouse, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
