@@ -172,10 +172,10 @@ function Car({ initialZ, lane, color, speed, prefersReduced }) {
   );
 }
 
-function Cars({ prefersReduced }) {
+function Cars({ prefersReduced, isMobile }) {
   const carData = useMemo(() => {
     const data = [];
-    const CAR_COUNT = 14;
+    const CAR_COUNT = isMobile ? 6 : 14;
     for (let i = 0; i < CAR_COUNT; i++) {
       data.push({
         id: i,
@@ -186,7 +186,7 @@ function Cars({ prefersReduced }) {
       });
     }
     return data;
-  }, []);
+  }, [isMobile]);
 
   return (
     <>
@@ -206,16 +206,25 @@ function Cars({ prefersReduced }) {
 
 /* ─── Main Scene ─── */
 export default function Scene3D({ prefersReduced }) {
+  const isMobile = useMemo(() =>
+    typeof window !== 'undefined' &&
+    (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent))
+  , []);
+
+  const effectiveReduced = prefersReduced || isMobile;
+
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
       <Canvas
         camera={{ position: [0, 4.2, 15], fov: 52, near: 0.1, far: 400 }}
         style={{ display: 'block', width: '100vw', height: '100vh' }}
-        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
-        dpr={[1, 1.5]}
-        onCreated={({ scene, camera }) => {
+        gl={{ alpha: true, antialias: !isMobile, powerPreference: isMobile ? 'default' : 'high-performance' }}
+        dpr={isMobile ? 1 : [1, 1.5]}
+        frameloop={isMobile ? 'demand' : 'always'}
+        onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x080b12, 0.028);
           camera.lookAt(0, 1, -60);
+          if (isMobile) gl.setPixelRatio(1);
         }}
       >
         {/* Lighting */}
@@ -231,17 +240,19 @@ export default function Scene3D({ prefersReduced }) {
           <meshStandardMaterial color="#060810" roughness={0.9} metalness={0.1} />
         </mesh>
 
-        {/* Reflective road overlay */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -180]}>
-          <planeGeometry args={[16, 500]} />
-          <meshStandardMaterial
-            color="#0a0e1a"
-            roughness={0.1}
-            metalness={0.8}
-            transparent
-            opacity={0.4}
-          />
-        </mesh>
+        {/* Reflective road overlay — desktop only */}
+        {!isMobile && (
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -180]}>
+            <planeGeometry args={[16, 500]} />
+            <meshStandardMaterial
+              color="#0a0e1a"
+              roughness={0.1}
+              metalness={0.8}
+              transparent
+              opacity={0.4}
+            />
+          </mesh>
+        )}
 
         {/* Neon Grid */}
         <gridHelper
@@ -278,8 +289,8 @@ export default function Scene3D({ prefersReduced }) {
           </React.Fragment>
         ))}
 
-        {/* Floating Orbs */}
-        {!prefersReduced && (
+        {/* Floating Orbs — desktop only */}
+        {!effectiveReduced && (
           <>
             <FloatingOrb position={[-12, 6, -30]} color="#00f0ff" speed={0.5} size={1.2} />
             <FloatingOrb position={[14, 8, -50]} color="#8b6bff" speed={0.4} size={1.6} />
@@ -287,20 +298,20 @@ export default function Scene3D({ prefersReduced }) {
           </>
         )}
 
-        {/* Energy Rings */}
-        {!prefersReduced && (
+        {/* Energy Rings — desktop only */}
+        {!effectiveReduced && (
           <>
             <EnergyRing position={[0, 10, -60]} color="#00f0ff" radius={5} speed={0.4} />
             <EnergyRing position={[0, 8, -100]} color="#8b6bff" radius={7} speed={0.25} />
           </>
         )}
 
-        {/* Particle System */}
-        {!prefersReduced && <Particles count={100} />}
+        {/* Particle System — desktop only */}
+        {!effectiveReduced && <Particles count={100} />}
 
         {/* Cars */}
         <Suspense fallback={null}>
-          <Cars prefersReduced={prefersReduced} />
+          <Cars prefersReduced={prefersReduced} isMobile={isMobile} />
         </Suspense>
       </Canvas>
     </div>

@@ -893,30 +893,176 @@ footer {
 /* ═══════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   RESPONSIVE — TABLET 900px
+═══════════════════════════════════════════ */
 @media (max-width: 900px) {
   .nav-center { display: none; }
+
+  h1 { font-size: clamp(2rem, 8vw, 3.4rem); }
+
+  .grid {
+    padding: 0 4vw 6vh;
+    gap: 16px;
+  }
+
+  .stack-grid { padding: 0 4vw; gap: 12px; }
+
+  .section-head { padding: 0 4vw 14px; }
+
+  .terminal-block { margin: 0 4vw 10vh; }
 }
 
+/* ═══════════════════════════════════════════
+   RESPONSIVE — MOBILE 700px
+═══════════════════════════════════════════ */
 @media (max-width: 700px) {
-  h1 { letter-spacing: -1px; }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: none;
-    margin: 5vh 5vw 0;
+  /* Header */
+  header {
+    padding: 7vh 5vw 4vh;
   }
 
-  .stat:nth-child(2) { border-right: none; }
-  .stat:nth-child(3) { border-top: 1px solid var(--border); }
-  .stat:nth-child(4) {
-    border-top: 1px solid var(--border);
-    border-right: none;
+  h1 {
+    font-size: clamp(1.9rem, 9vw, 3rem);
+    letter-spacing: -1px;
+    line-height: 1.08;
   }
 
-  .hero-ctas { flex-direction: column; }
+  .sub {
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+  }
 
-  .terminal-block { margin: 0 5vw 10vh; padding: 0; }
+  .eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 2.5px;
+    margin-bottom: 18px;
+  }
+
+  /* CTA buttons — stacked, full width */
+  .hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .cta-btn {
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    min-height: 48px; /* touch target */
+  }
+
+  /* Nav */
+  nav {
+    padding: 10px 4vw 10px 5vw;
+  }
+
+  .brand { font-size: 1rem; }
+
+  .nav-avatar-link {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Grid — single column on phone */
+  .grid {
+    grid-template-columns: 1fr;
+    padding: 0 4vw 6vh;
+    gap: 14px;
+  }
+
+  .card { padding: 22px 20px; }
+
+  /* Card links — ensure touch targets */
+  .card-link-btn {
+    padding: 8px 12px;
+    min-height: 36px;
+    font-size: 0.72rem;
+  }
+
+  /* Tech stack */
+  .stack-grid {
+    padding: 0 4vw;
+    gap: 10px;
+  }
+
+  .tech-badge {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .tech-name { font-size: 0.75rem; }
+
+  /* Terminal */
+  .terminal-block {
+    margin: 0 4vw 8vh;
+    border-radius: 14px;
+  }
+
+  .terminal-body {
+    padding: 18px 16px 22px;
+    overflow-x: auto;
+  }
+
+  .t-line, .t-output {
+    font-size: 0.75rem;
+  }
+
+  /* Section head */
+  .section-head {
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 4vw 12px;
+    margin: 8vh auto 2vh;
+  }
+
+  .section-head h2 { font-size: 1.25rem; }
+
+  /* Footer */
+  footer { padding: 5vh 5vw 7vh; }
+
+  .footer-brand { font-size: 1.1rem; }
+
+  .links { gap: 10px; }
+
+  .links a {
+    padding: 10px 16px;
+    font-size: 0.78rem;
+    min-height: 44px; /* touch target */
+  }
 }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — SMALL PHONE 480px
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  h1 {
+    font-size: clamp(1.6rem, 10vw, 2.2rem);
+    letter-spacing: -0.5px;
+  }
+
+  header { padding: 5vh 5vw 3vh; }
+
+  .card { padding: 18px 16px; }
+
+  .card-title { font-size: 1.05rem; }
+
+  .card-desc { font-size: 0.82rem; }
+
+  .card-features li { font-size: 0.75rem; }
+
+  .tech-badge { padding: 8px 12px; }
+
+  .terminal-body { padding: 14px 12px 18px; }
+
+  .t-output { font-size: 0.72rem; line-height: 1.9; }
+
+  .cta-btn { padding: 13px 16px; }
+}
+
 
 /* ═══════════════════════════════════════════
    ACCESSIBILITY
