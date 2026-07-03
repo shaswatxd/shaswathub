@@ -9,7 +9,13 @@ const PROJECTS = [
     glow: "cyan",
     badge: "LIVE APP",
     githubUrl: "https://github.com/shaswatxd/voicewave",
-    liveUrl: "https://voicewave-production-289f.up.railway.app/"
+    liveUrl: "https://voicewave-production-289f.up.railway.app/",
+    features: [
+      "🎙️ WebRTC Real-Time Audio",
+      "⚡ Socket.IO Room Coordination",
+      "🖥️ Electron Desktop Shell Integration",
+      "🎛️ Ultra Low Latency Connections"
+    ]
   },
   {
     name: "JustPDFCraft",
@@ -18,7 +24,13 @@ const PROJECTS = [
     glow: "violet",
     badge: "LIVE APP",
     githubUrl: "https://github.com/shaswatxd/justpdfcraft",
-    liveUrl: "https://justpdfcraft.xyz/"
+    liveUrl: "https://justpdfcraft.xyz/",
+    features: [
+      "📄 30+ Free PDF & Student Tools",
+      "🔒 100% Secure Client-Side Processing",
+      "🛠️ Merge, Split & Compress Functionality",
+      "🔍 Built-in OCR Text Extraction"
+    ]
   }
 ];
 
@@ -112,6 +124,13 @@ function Card({ project }) {
       </div>
       <h3>{project.name}</h3>
       <p>{project.desc}</p>
+      {project.features && (
+        <ul className="card-features">
+          {project.features.map((feat, fIdx) => (
+            <li key={fIdx}>{feat}</li>
+          ))}
+        </ul>
+      )}
       <span className="badge" style={{ color: col, borderColor: `${col}44` }}>
         {project.badge}
       </span>
