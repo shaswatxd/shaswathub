@@ -573,7 +573,7 @@ export default function App() {
               <span className="t-key">role</span>: Full-Stack &amp; Desktop Developer<br />
               <span className="t-key">focus</span>: Web Apps · Desktop Tools · Automation<br />
               <span className="t-key">currently</span>: Building cool things &amp; shipping fast<br />
-              <span className="t-key">contact</span>: support@shaswathub.xyz
+              <span className="t-key">contact</span>: srijankumardeo777@gmail.com
             </div>
             <div className="t-line">
               <span className="t-prompt">shaswat@devbox</span>

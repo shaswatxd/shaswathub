@@ -866,6 +866,9 @@ footer {
   font-size: 0.72rem;
   color: rgba(136,149,176,0.55);
   letter-spacing: 0.5px;
+  line-height: 1.6;
+  padding: 0 16px;
+  word-wrap: break-word;
 }
 
 /* ═══════════════════════════════════════════
