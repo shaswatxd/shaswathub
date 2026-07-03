@@ -168,7 +168,7 @@ export default function App() {
             <span className="dot"></span>
             SHASWAT<span className="accent">HUB</span>
           </div>
-          <div className="status">SYSTEM ONLINE</div>
+
         </nav>
 
         <header>
