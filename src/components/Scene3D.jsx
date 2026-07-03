@@ -1,28 +1,29 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-const WHEEL_POSITIONS = [
-  [-0.85, 0.34, 1.25],
-  [0.85, 0.34, 1.25],
-  [-0.85, 0.34, -1.25],
-  [0.85, 0.34, -1.25]
-];
-
-const HEADLIGHT_POSITIONS = [
-  [-0.55, 0.5, 2.6],
-  [0.55, 0.5, 2.6]
-];
-
-const TAILLIGHT_POSITIONS = [
-  [-0.55, 0.5, -2.0],
-  [0.55, 0.5, -2.0]
-];
-
-const PALETTE = ['#00f0ff', '#8b6bff', '#ff3d9a', '#f5f7fb'];
+const PALETTE = ['#ff2233', '#00f0ff', '#8b6bff', '#ff3d9a'];
 const LANES = [-3.4, 3.4];
 
 function Car({ initialZ, lane, color, speed, prefersReduced }) {
+  const { scene } = useGLTF('https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/models/gltf/ferrari.glb');
+  const clonedScene = useMemo(() => {
+    const clone = scene.clone();
+    clone.traverse((child) => {
+      if (child.isMesh) {
+        // The body paint material of the three.js Ferrari is typically named "Red" or contains "paint"
+        if (child.material.name.toLowerCase().includes('paint') || 
+            child.material.name.toLowerCase().includes('red') || 
+            child.name.toLowerCase().includes('body')) {
+          child.material = child.material.clone();
+          child.material.color.set(color);
+        }
+      }
+    });
+    return clone;
+  }, [scene, color]);
+
   const groupRef = useRef();
 
   useFrame(() => {
@@ -36,79 +37,13 @@ function Car({ initialZ, lane, color, speed, prefersReduced }) {
   });
 
   return (
-    <group ref={groupRef} position={[lane, 0, initialZ]}>
-      {/* Body paint */}
-      <mesh position={[0, 0.5, 0]}>
-        <boxGeometry args={[1.7, 0.45, 3.8]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={0.45}
-          roughness={0.35}
-          metalness={0.6}
-        />
-      </mesh>
-
-      {/* Nose */}
-      <mesh position={[0, 0.42, 2.1]}>
-        <boxGeometry args={[1.5, 0.35, 1.0]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={0.45}
-          roughness={0.35}
-          metalness={0.6}
-        />
-      </mesh>
-
-      {/* Cabin */}
-      <mesh position={[0, 0.85, -0.3]}>
-        <boxGeometry args={[1.25, 0.4, 1.7]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={0.45}
-          roughness={0.35}
-          metalness={0.6}
-        />
-      </mesh>
-
-      {/* Spoiler */}
-      <mesh position={[0, 0.85, -1.9]}>
-        <boxGeometry args={[1.6, 0.08, 0.3]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={0.45}
-          roughness={0.35}
-          metalness={0.6}
-        />
-      </mesh>
-
-      {/* Wheels */}
-      {WHEEL_POSITIONS.map((pos, idx) => (
-        <mesh key={idx} position={pos} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.34, 0.34, 0.28, 14]} />
-          <meshStandardMaterial color="#0a0a0a" roughness={0.9} />
-        </mesh>
-      ))}
-
-      {/* Headlights */}
-      {HEADLIGHT_POSITIONS.map((pos, idx) => (
-        <mesh key={idx} position={pos}>
-          <sphereGeometry args={[0.07, 8, 8]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-      ))}
-
-      {/* Taillights */}
-      {TAILLIGHT_POSITIONS.map((pos, idx) => (
-        <mesh key={idx} position={pos}>
-          <sphereGeometry args={[0.07, 8, 8]} />
-          <meshBasicMaterial color="#ff2244" />
-        </mesh>
-      ))}
-    </group>
+    <primitive
+      ref={groupRef}
+      object={clonedScene}
+      position={[lane, 0.02, initialZ]}
+      rotation={[0, Math.PI, 0]}
+      scale={1.2}
+    />
   );
 }
 
@@ -183,7 +118,9 @@ export default function Scene3D({ prefersReduced }) {
           <meshBasicMaterial color="#8b6bff" />
         </mesh>
 
-        <Cars prefersReduced={prefersReduced} />
+        <Suspense fallback={null}>
+          <Cars prefersReduced={prefersReduced} />
+        </Suspense>
       </Canvas>
     </div>
   );
