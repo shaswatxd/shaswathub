@@ -19,15 +19,6 @@ const PROJECTS = [
     badge: "LIVE APP",
     githubUrl: "https://github.com/shaswatxd/justpdfcraft",
     liveUrl: "https://justpdfcraft.xyz/"
-  },
-  {
-    name: "StreamVault",
-    desc: "Cinematic, responsive dark-themed movie streaming dashboard integrated with movie database APIs.",
-    icon: "🎬",
-    glow: "magenta",
-    badge: "PROJECT",
-    githubUrl: "#",
-    liveUrl: "#"
   }
 ];
 
