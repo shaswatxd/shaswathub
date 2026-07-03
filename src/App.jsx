@@ -333,7 +333,7 @@ export default function App() {
             className="nav-avatar-link"
             title="GitHub Profile"
           >
-            <img src="/avatar.jpg" alt="GitHub Profile" className="nav-avatar" />
+            <img src="/avatar.png" alt="GitHub Profile" className="nav-avatar" />
           </a>
         </nav>
 
