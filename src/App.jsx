@@ -5,6 +5,21 @@ import Scene3D from './components/Scene3D';
 /* ─── Projects Data ─── */
 const PROJECTS = [
   {
+    name: "We Plays",
+    desc: "Premium glassmorphic desktop music player with integrated YouTube downloader, visualizer, local LAN share, and automatic ID3 metadata fetching.",
+    icon: "🎵",
+    glow: "emerald",
+    badge: "LIVE APP",
+    githubUrl: "https://github.com/shaswatxd/we-plays",
+    liveUrl: "https://website-nine-tau-67.vercel.app",
+    features: [
+      "🎨 Dynamic Album Art Theme Engine",
+      "🚀 In-App yt-dlp YouTube Downloader",
+      "📶 LAN Offline Media Sharing",
+      "🎤 Synchronized Lyrics & Insights"
+    ]
+  },
+  {
     name: "VoiceWave",
     desc: "Real-time voice chat application featuring WebRTC audio streaming, Socket.IO room coordination, and an Electron desktop shell.",
     icon: "🎙️",
@@ -69,7 +84,8 @@ const PROJECTS = [
 const GLOW_COLORS = {
   cyan: "#00f0ff",
   violet: "#8b6bff",
-  magenta: "#ff3d9a"
+  magenta: "#ff3d9a",
+  emerald: "#00cdac"
 };
 
 const TECH_STACK = [
