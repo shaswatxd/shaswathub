@@ -39,7 +39,7 @@ const PROJECTS = [
     desc: "Browser-based client-side PDF utility toolkit to merge, split, compress, watermark, protect, and annotate documents locally.",
     icon: "📄",
     glow: "violet",
-    badge: "LIVE APP",
+    badge: "WEBSITE",
     githubUrl: "https://github.com/shaswatxd/justpdfcraft",
     liveUrl: "https://justpdfcraft.xyz/",
     features: [
