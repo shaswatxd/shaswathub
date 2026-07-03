@@ -178,7 +178,14 @@ export default function App() {
             <span className="dot"></span>
             SHASWAT<span className="accent">HUB</span>
           </div>
-
+          <a
+            href="https://github.com/shaswatxd"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-avatar-link"
+          >
+            <img src="/avatar.jpg" alt="GitHub Profile" className="nav-avatar" />
+          </a>
         </nav>
 
         <header>

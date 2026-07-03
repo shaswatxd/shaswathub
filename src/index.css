@@ -79,6 +79,30 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 
+.nav-avatar-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 40px;
+  height: 40px;
+}
+
+.nav-avatar-link:hover {
+  transform: scale(1.08) rotate(5deg);
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+}
+
+.nav-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .brand {
   display: flex;
   align-items: center;
