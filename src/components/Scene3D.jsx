@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, invalidate } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
