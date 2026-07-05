@@ -93,21 +93,6 @@ export default function PageClient() {
       );
     });
 
-    gsap.fromTo('.terminal-block',
-      { opacity: 0, y: 40, scale: 0.97 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.terminal-block',
-          start: 'top 85%',
-        }
-      }
-    );
-
     return () => {
       mq.removeEventListener("change", handleMQ);
       window.removeEventListener("mousemove", handleMouse);
@@ -160,11 +145,9 @@ export default function PageClient() {
           <TechStack />
         </Suspense>
 
-        <div className="terminal-block">
-          <Suspense fallback={<SectionLoader />}>
-            <Terminal />
-          </Suspense>
-        </div>
+        <Suspense fallback={<SectionLoader />}>
+          <Terminal />
+        </Suspense>
 
         <SectionDivider />
 
