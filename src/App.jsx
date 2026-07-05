@@ -731,9 +731,7 @@ export default function App() {
             <p className="contact-sub">
               Got a project idea, collaboration, or just want to say hi? I'm always open to discussing new opportunities and interesting concepts.
             </p>
-            <div className="contact-btns">
-              <p className="contact-email">srijankumardeo777@gmail.com</p>
-            </div>
+
           </div>
         </div>
 
@@ -743,7 +741,7 @@ export default function App() {
             SHASWAT<span className="accent">HUB</span>
           </div>
           <div className="footer-tagline">Building things that matter, one commit at a time.</div>
-          <div className="footer-copy">© {new Date().getFullYear()} · developed with ❤️ &amp; chai</div>
+          <div className="footer-copy">© {new Date().getFullYear()} · developed with ❤️ &amp; chai · Contact: srijankumardeo777@gmail.com</div>
         </footer>
       </div>
     </>
