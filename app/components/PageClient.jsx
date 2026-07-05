@@ -1,36 +1,28 @@
 "use client";
 
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import dynamic from 'next/dynamic';
 
+import Navigation from './Navigation';
+import Hero from './Hero';
+import StatsStrip from './StatsStrip';
+import WhatIBuild from './WhatIBuild';
+import Projects from './Projects';
+import Marquee from './Marquee';
+import TechStack from './TechStack';
+import Terminal from './Terminal';
+import Contact from './Contact';
+import Footer from './Footer';
+
 const Scene3D = dynamic(() => import('../../src/components/Scene3D'), { ssr: false });
 const AnimatedFavicon = dynamic(() => import('./AnimatedFavicon'), { ssr: false });
-
-const Navigation = lazy(() => import('./Navigation'));
-const Hero = lazy(() => import('./Hero'));
-const StatsStrip = lazy(() => import('./StatsStrip'));
-const WhatIBuild = lazy(() => import('./WhatIBuild'));
-const Projects = lazy(() => import('./Projects'));
-const Marquee = lazy(() => import('./Marquee'));
-const TechStack = lazy(() => import('./TechStack'));
-const Terminal = lazy(() => import('./Terminal'));
-const Contact = lazy(() => import('./Contact'));
-const Footer = lazy(() => import('./Footer'));
 
 gsap.registerPlugin(ScrollTrigger);
 
 function SectionDivider() {
   return <div className="max-w-[1480px] mx-auto h-[1px] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent my-16 opacity-40 animate-glow-pulse" />;
-}
-
-function SectionLoader() {
-  return (
-    <div className="flex items-center justify-center py-20">
-      <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(0,240,255,0.3)', borderTopColor: '#00f0ff' }} />
-    </div>
-  );
 }
 
 export default function PageClient() {
@@ -111,53 +103,20 @@ export default function PageClient() {
       <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1]" />
 
       <div className="relative z-10 w-full max-w-[100vw]">
-        <Suspense fallback={<SectionLoader />}>
-          <Navigation />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
-          <Hero />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
-          <StatsStrip />
-        </Suspense>
-
+        <Navigation />
+        <Hero />
+        <StatsStrip />
         <SectionDivider />
-
-        <Suspense fallback={<SectionLoader />}>
-          <WhatIBuild />
-        </Suspense>
-
+        <WhatIBuild />
         <SectionDivider />
-
-        <Suspense fallback={<SectionLoader />}>
-          <Projects />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
-          <Marquee />
-        </Suspense>
-
+        <Projects />
+        <Marquee />
         <SectionDivider />
-
-        <Suspense fallback={<SectionLoader />}>
-          <TechStack />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
-          <Terminal />
-        </Suspense>
-
+        <TechStack />
+        <Terminal />
         <SectionDivider />
-
-        <Suspense fallback={<SectionLoader />}>
-          <Contact />
-        </Suspense>
-
-        <Suspense fallback={null}>
-          <Footer />
-        </Suspense>
+        <Contact />
+        <Footer />
       </div>
     </>
   );
