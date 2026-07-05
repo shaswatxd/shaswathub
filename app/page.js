@@ -6,6 +6,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
 import { useCountUp } from '../src/hooks';
+import { ReactLenis } from 'lenis/react';
+import 'lenis/dist/lenis.css';
 
 // Dynamically import Scene3D with SSR disabled to prevent Canvas hydration issues
 const Scene3D = dynamic(() => import('../src/components/Scene3D'), { ssr: false });
@@ -635,7 +637,7 @@ export default function Page() {
   }, []);
 
   return (
-    <>
+    <ReactLenis root>
       {/* 3D Background */}
       <Scene3D prefersReduced={prefersReduced} />
 
@@ -853,6 +855,6 @@ export default function Page() {
           </div>
         </footer>
       </div>
-    </>
+    </ReactLenis>
   );
 }
