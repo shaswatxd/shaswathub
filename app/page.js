@@ -17,6 +17,21 @@ gsap.registerPlugin(ScrollTrigger);
 /* ─── Projects Data ─── */
 const PROJECTS = [
   {
+    name: "Beam P2P",
+    desc: "Serverless peer-to-peer file sharing portal using WebRTC for direct device-to-device transfers with zero size boundaries and complete privacy.",
+    icon: "📡",
+    glow: "cyan",
+    badge: "LIVE APP",
+    githubUrl: "https://github.com/shaswatxd/beam-p2p",
+    liveUrl: "https://beamsender.vercel.app",
+    features: [
+      "⚡ Direct Browser-to-Browser WebRTC Transfers",
+      "📁 Zero Size Boundaries & Stream-Saving",
+      "🔒 End-to-End Encrypted Peer Links",
+      "💎 Free & Premium ($9/mo) Plans with Stripe"
+    ]
+  },
+  {
     name: "We Plays",
     desc: "Premium glassmorphic desktop music player with integrated YouTube downloader, visualizer, local LAN share, and automatic ID3 metadata fetching.",
     icon: "🎵",
@@ -92,12 +107,16 @@ const TECH_STACK = [
   { name: "Three.js", icon: "🔺", color: "#8b6bff" },
   { name: "Socket.IO", icon: "🔌", color: "#00f0ff" },
   { name: "WebRTC", icon: "📡", color: "#ff3d9a" },
+  { name: "PeerJS", icon: "🔗", color: "#00cdac" },
   { name: "Vite", icon: "🔥", color: "#f5a623" },
   { name: "FFmpeg", icon: "🎬", color: "#ff3d9a" },
   { name: "Python", icon: "🐍", color: "#ffd43b" },
   { name: "Git", icon: "🔀", color: "#f05032" },
   { name: "MongoDB", icon: "🍃", color: "#00ed64" },
   { name: "Tailwind", icon: "🌊", color: "#38bdf8" },
+  { name: "Stripe", icon: "💳", color: "#8b6bff" },
+  { name: "Prisma", icon: "🔷", color: "#2D3748" },
+  { name: "Supabase", icon: "⚡", color: "#3ECF8E" },
 ];
 
 const WHAT_I_BUILD = [
@@ -116,10 +135,17 @@ const WHAT_I_BUILD = [
     tags: ["React", "Vite", "Three.js"]
   },
   {
+    title: "P2P & Real-Time",
+    desc: "Peer-to-peer file sharing, WebRTC streaming, and real-time communication systems with zero server dependency.",
+    icon: "📡",
+    color: "#ff3d9a",
+    tags: ["WebRTC", "PeerJS", "Socket.IO"]
+  },
+  {
     title: "Developer Tools",
     desc: "CLI utilities, automation scripts, and dev tooling that solve real problems and save hours of manual work.",
     icon: "⚙️",
-    color: "#ff3d9a",
+    color: "#00cdac",
     tags: ["Python", "Git", "Automation"]
   },
 ];
@@ -127,7 +153,7 @@ const WHAT_I_BUILD = [
 const MARQUEE_ITEMS = [
   "REACT", "NODE.JS", "ELECTRON", "THREE.JS", "WEBRTC", "SOCKET.IO",
   "VITE", "FFMPEG", "PYTHON", "MONGODB", "GIT", "TAILWIND CSS",
-  "JAVASCRIPT", "HTML5", "CSS3", "REST APIs"
+  "JAVASCRIPT", "HTML5", "CSS3", "REST APIs", "PEERJS", "STRIPE", "PRISMA", "SUPABASE"
 ];
 
 /* ─── Project Card ─── */
@@ -372,8 +398,8 @@ function StatsStrip() {
     return () => observer.disconnect();
   }, []);
 
-  const projects = useCountUp(4, 1600, inView);
-  const techs = useCountUp(12, 1800, inView);
+  const projects = useCountUp(5, 1600, inView);
+  const techs = useCountUp(16, 1800, inView);
   const commits = useCountUp(1000, 2200, inView);
 
   return (
@@ -745,7 +771,7 @@ export default function Page() {
           <div className="font-mono text-[10px] text-[#8895b0]">// Areas of focus &amp; expertise</div>
         </div>
 
-        <div className="max-w-[1480px] mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="max-w-[1480px] mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {WHAT_I_BUILD.map((item, idx) => (
             <WhatIBuildCard key={idx} item={item} idx={idx} />
           ))}
