@@ -364,15 +364,6 @@ function StatsStrip() {
 export default function App() {
   const [prefersReduced, setPrefersReduced] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
-
-  const handleEmailClick = () => {
-    const email = "srijankumardeo777@gmail.com";
-    navigator.clipboard.writeText(email).then(() => {
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 2000);
-    }).catch(() => {});
-  };
 
   // Animated Glowing 'S' Favicon Effect
   useEffect(() => {
@@ -741,19 +732,10 @@ export default function App() {
               Got a project idea, collaboration, or just want to say hi? I'm always open to discussing new opportunities and interesting concepts.
             </p>
             <div className="contact-btns">
-              <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=srijankumardeo777@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`cta-btn primary ${emailCopied ? 'success' : ''}`}
-                onClick={handleEmailClick}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-                <span>{emailCopied ? 'Email Copied!' : 'Send an Email'}</span>
-              </a>
+              <div className="contact-info">
+                <p>Contact Me</p>
+                <p>srijankumardeo777@gmail.com</p>
+              </div>
             </div>
           </div>
         </div>
