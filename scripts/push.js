@@ -63,7 +63,12 @@ try {
   }
 
   console.log('☁️ Deploying to Vercel...');
-  execSync('npx vercel --prod --yes', { stdio: 'inherit', cwd: rootDir });
+  const vercelToken = process.env.VERCEL_TOKEN;
+  if (vercelToken) {
+    execSync(`npx vercel --prod --yes --token ${vercelToken}`, { stdio: 'inherit', cwd: rootDir });
+  } else {
+    execSync('npx vercel --prod --yes', { stdio: 'inherit', cwd: rootDir });
+  }
 
   console.log('✨ All done! Project is updated and deployed.');
 } catch (error) {
