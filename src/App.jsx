@@ -366,14 +366,12 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [emailCopied, setEmailCopied] = useState(false);
 
-  const handleEmailClick = (e) => {
-    e.preventDefault();
+  const handleEmailClick = () => {
     const email = "srijankumardeo777@gmail.com";
     navigator.clipboard.writeText(email).then(() => {
       setEmailCopied(true);
       setTimeout(() => setEmailCopied(false), 2000);
-    });
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`, '_blank', 'noopener,noreferrer');
+    }).catch(() => {});
   };
 
   // Animated Glowing 'S' Favicon Effect
@@ -744,7 +742,9 @@ export default function App() {
             </p>
             <div className="contact-btns">
               <a
-                href="mailto:srijankumardeo777@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=srijankumardeo777@gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`cta-btn primary ${emailCopied ? 'success' : ''}`}
                 onClick={handleEmailClick}
               >
