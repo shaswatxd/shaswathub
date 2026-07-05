@@ -48,10 +48,12 @@ try {
     console.log('🚀 Pushing to Git...');
     const token = process.env.GITHUB_TOKEN;
     if (token) {
-      // Get the remote URL and inject token for authenticated push
-      const remoteUrl = execSync('git remote get-url origin', { cwd: rootDir }).toString().trim();
+      // Get remote URL, strip any existing credentials, then inject token
+      let remoteUrl = execSync('git remote get-url origin', { cwd: rootDir }).toString().trim();
+      // Remove any existing user:token@ from the URL
+      remoteUrl = remoteUrl.replace(/https:\/\/[^@]+@/, 'https://');
       const authedUrl = remoteUrl.replace('https://', `https://shaswatxd:${token}@`);
-      execSync(`git push ${authedUrl}`, { stdio: 'inherit', cwd: rootDir });
+      execSync(`git push "${authedUrl}"`, { stdio: 'inherit', cwd: rootDir });
     } else {
       console.log('⚠️ No GITHUB_TOKEN found in .env.local — trying default push...');
       execSync('git push', { stdio: 'inherit', cwd: rootDir });
