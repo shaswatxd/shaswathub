@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import dynamic from 'next/dynamic';
@@ -21,9 +21,9 @@ const AnimatedFavicon = dynamic(() => import('./AnimatedFavicon'), { ssr: false 
 
 gsap.registerPlugin(ScrollTrigger);
 
-function SectionDivider() {
+const SectionDivider = React.memo(function SectionDivider() {
   return <div className="max-w-[1480px] mx-auto h-[1px] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent my-16 opacity-40 animate-glow-pulse" />;
-}
+});
 
 export default function PageClient() {
   const [prefersReduced, setPrefersReduced] = useState(false);
@@ -33,37 +33,36 @@ export default function PageClient() {
   const glowSecRef = useRef(null);
   const rafRef = useRef(null);
 
+  const handleMouse = useCallback((e) => {
+    parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(tick);
+    }
+  }, []);
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const tick = useCallback(() => {
+    parallaxRef.current = lerp(parallaxRef.current, parallaxTarget.current, 0.08);
+    const px = parallaxRef.current;
+    if (glowRef.current) {
+      glowRef.current.style.transform = `translate3d(calc(-50% + ${px}px), 0, 0)`;
+    }
+    if (glowSecRef.current) {
+      glowSecRef.current.style.transform = `translate3d(calc(-50% + ${-px * 0.5}px), 0, 0)`;
+    }
+    if (Math.abs(parallaxRef.current - parallaxTarget.current) > 0.05) {
+      rafRef.current = requestAnimationFrame(tick);
+    } else {
+      rafRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReduced(mq.matches);
     const handleMQ = (e) => setPrefersReduced(e.matches);
     mq.addEventListener("change", handleMQ);
-
-    const lerp = (a, b, t) => a + (b - a) * t;
-    let running = false;
-    const tick = () => {
-      parallaxRef.current = lerp(parallaxRef.current, parallaxTarget.current, 0.08);
-      const px = parallaxRef.current;
-      if (glowRef.current) {
-        glowRef.current.style.transform = `translate3d(calc(-50% + ${px}px), 0, 0)`;
-      }
-      if (glowSecRef.current) {
-        glowSecRef.current.style.transform = `translate3d(calc(-50% + ${-px * 0.5}px), 0, 0)`;
-      }
-      if (Math.abs(parallaxRef.current - parallaxTarget.current) > 0.05) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        running = false;
-      }
-    };
-
-    const handleMouse = (e) => {
-      parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
-      if (!running) {
-        running = true;
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
 
     window.addEventListener("mousemove", handleMouse, { passive: true });
 
@@ -91,7 +90,7 @@ export default function PageClient() {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, []);
+  }, [handleMouse]);
 
   return (
     <>
@@ -99,8 +98,8 @@ export default function PageClient() {
       <Scene3D prefersReduced={prefersReduced} />
 
       <div className="fixed inset-0 bg-gradient-to-b from-[#060810]/10 via-[#060810]/50 to-[#060810]/95 pointer-events-none z-[1]" />
-      <div ref={glowRef} className="fixed top-[-25%] left-1/2 w-[1100px] h-[700px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.07)_0%,rgba(0,240,255,0.04)_15%,rgba(139,107,255,0.03)_30%,rgba(139,107,255,0.01)_50%,transparent_65%)] pointer-events-none z-[1]" />
-      <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1]" />
+      <div ref={glowRef} className="fixed top-[-25%] left-1/2 w-[1100px] h-[700px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.07)_0%,rgba(0,240,255,0.04)_15%,rgba(139,107,255,0.03)_30%,rgba(139,107,255,0.01)_50%,transparent_65%)] pointer-events-none z-[1] will-change-transform" />
+      <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1] will-change-transform" />
 
       <div className="relative z-10 w-full max-w-[100vw]">
         <Navigation />

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function Contact() {
+const Contact = React.memo(function Contact() {
   return (
     <motion.div
       id="contact"
@@ -27,4 +27,6 @@ export default function Contact() {
       </div>
     </motion.div>
   );
-}
+});
+
+export default Contact;

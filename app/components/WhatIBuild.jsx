@@ -34,7 +34,7 @@ const WHAT_I_BUILD = [
   },
 ];
 
-function WhatIBuildCard({ item, idx }) {
+const WhatIBuildCard = React.memo(function WhatIBuildCard({ item, idx }) {
   return (
     <motion.div
       className="relative bg-white/[0.02] border border-white/[0.08] rounded-2xl p-8 overflow-hidden backdrop-blur-xl"
@@ -68,7 +68,7 @@ function WhatIBuildCard({ item, idx }) {
       </div>
     </motion.div>
   );
-}
+});
 
 export default function WhatIBuild() {
   return (

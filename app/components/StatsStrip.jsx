@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useCountUp } from '../../src/hooks';
 
-function StatsStrip() {
+const StatsStrip = React.memo(function StatsStrip() {
   const statsRef = useRef(null);
   const [inView, setInView] = useState(false);
 
@@ -50,6 +50,6 @@ function StatsStrip() {
       </div>
     </motion.div>
   );
-}
+});
 
 export default StatsStrip;

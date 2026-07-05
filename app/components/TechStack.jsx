@@ -45,7 +45,7 @@ const TechBadge = React.memo(function TechBadge({ tech, idx }) {
 });
 TechBadge.displayName = 'TechBadge';
 
-export default function TechStack() {
+const TechStack = React.memo(function TechStack() {
   return (
     <>
       <div id="stack" className="max-w-[1480px] mx-auto px-8 flex items-baseline justify-between border-b border-white/[0.08] pb-4 mb-8 animate-section">
@@ -59,4 +59,6 @@ export default function TechStack() {
       </div>
     </>
   );
-}
+});
+
+export default TechStack;

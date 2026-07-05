@@ -8,7 +8,7 @@ const MARQUEE_ITEMS = [
   "JAVASCRIPT", "HTML5", "CSS3", "REST APIs", "PEERJS", "STRIPE", "PRISMA", "SUPABASE"
 ];
 
-export default function Marquee() {
+const Marquee = React.memo(function Marquee() {
   const items = MARQUEE_ITEMS;
   const row = items.map((t, i) => (
     <span key={i} className="inline-flex items-center gap-2.5 px-7 text-xs font-display font-bold tracking-widest text-[#8895b0]/50 hover:opacity-100 transition-all duration-500" style={{ '--tw-text-opacity': 1 }}>
@@ -27,4 +27,6 @@ export default function Marquee() {
       </div>
     </div>
   );
-}
+});
+
+export default Marquee;

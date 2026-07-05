@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function Hero() {
+const Hero = React.memo(function Hero() {
   return (
     <motion.header
       className="relative z-10 px-6 py-[10vh] text-center"
@@ -70,4 +70,6 @@ export default function Hero() {
       </div>
     </motion.header>
   );
-}
+});
+
+export default Hero;

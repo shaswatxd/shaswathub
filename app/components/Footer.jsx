@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function Footer() {
+const Footer = React.memo(function Footer() {
   return (
     <motion.footer
       className="relative border-t border-white/[0.08] text-center py-10 bg-gradient-to-b from-transparent to-[#060810]/50 mt-10"
@@ -21,4 +21,6 @@ export default function Footer() {
       </div>
     </motion.footer>
   );
-}
+});
+
+export default Footer;

@@ -48,6 +48,16 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  * {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
   }
 
   ::selection {
@@ -81,13 +91,12 @@
 
 @keyframes shimmerText {
   0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
 @keyframes marqueeScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 @keyframes glowPulse {
@@ -111,15 +120,18 @@
 
 .animate-shimmer-text {
   background-size: 200% 100%;
-  animation: shimmerText 4s linear infinite;
+  animation: shimmerText 3s linear infinite;
+  will-change: background-position;
 }
 
 .animate-marquee {
   animation: marqueeScroll 45s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee-reverse {
   animation: marqueeScroll 38s linear infinite reverse;
+  will-change: transform;
 }
 
 .animate-glow-pulse {

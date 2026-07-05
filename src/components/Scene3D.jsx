@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react';
+import React, { useRef, useMemo, useState, useEffect, Suspense, memo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -17,9 +17,9 @@ function useIsMobile() {
   return isMobile;
 }
 
-function Particles({ count = 30 }) {
+const Particles = memo(function Particles({ count = 30 }) {
   const mesh = useRef();
-  const { positions, colors } = useMemo(() => {
+  const { positions, colors, geometry, material } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const palette = [
@@ -36,7 +36,20 @@ function Particles({ count = 30 }) {
       col[i * 3 + 1] = c[1];
       col[i * 3 + 2] = c[2];
     }
-    return { positions: pos, colors: col };
+    
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    
+    const mat = new THREE.PointsMaterial({
+      vertexColors: true,
+      size: 0.12,
+      transparent: true,
+      opacity: 0.45,
+      sizeAttenuation: true,
+    });
+    
+    return { positions: pos, colors: col, geometry: geo, material: mat };
   }, [count]);
 
   useFrame(({ clock }) => {
@@ -46,18 +59,10 @@ function Particles({ count = 30 }) {
     mesh.current.position.y = Math.sin(t * 0.08) * 1.2;
   });
 
-  return (
-    <points ref={mesh}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial vertexColors size={0.12} transparent opacity={0.45} sizeAttenuation />
-    </points>
-  );
-}
+  return <points ref={mesh} geometry={geometry} material={material} />;
+});
 
-function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
+const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
   const groupRef = useRef();
   const wheelsRef = useRef([]);
   const { scene } = useGLTF('/models/ferrari.glb');
@@ -68,6 +73,7 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
       if (child.isMesh) {
         child.castShadow = false;
         child.receiveShadow = false;
+        child.frustumCulled = true;
         if (child.name === 'body' || child.name.includes('body') || child.name.includes('paint')) {
           child.material = new THREE.MeshStandardMaterial({
             color: new THREE.Color(color),
@@ -117,19 +123,23 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
     });
   });
 
+  const underglowGeo = useMemo(() => new THREE.PlaneGeometry(1.9, 4.4), []);
+  const underglowMat = useMemo(() => new THREE.MeshBasicMaterial({
+    color: underglowColor,
+    transparent: true,
+    opacity: 0.2,
+  }), [underglowColor]);
+
   return (
     <group ref={groupRef} position={[lane, 0.05, initialZ]} scale={[0.82, 0.82, 0.82]} rotation={[0, Math.PI, 0]}>
       <primitive object={clonedScene} />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
-        <planeGeometry args={[1.9, 4.4]} />
-        <meshBasicMaterial color={underglowColor} transparent opacity={0.2} />
-      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]} geometry={underglowGeo} material={underglowMat} />
       <pointLight color={underglowColor} intensity={1.5} distance={4} position={[0, -0.05, 0]} />
     </group>
   );
-}
+});
 
-function DashLines() {
+const DashLines = memo(function DashLines() {
   const groupRef = useRef();
   const lines = useMemo(() => {
     const arr = [];
@@ -157,9 +167,9 @@ function DashLines() {
       ))}
     </group>
   );
-}
+});
 
-function Cars({ isMobile }) {
+const Cars = memo(function Cars({ isMobile }) {
   const CAR_COUNT = isMobile ? 1 : 2;
 
   const carData = useMemo(() => {
@@ -195,16 +205,22 @@ function Cars({ isMobile }) {
       ))}
     </>
   );
-}
+});
 
 useGLTF.preload('/models/ferrari.glb');
 
-export default function Scene3D({ prefersReduced }) {
+const Scene3D = memo(function Scene3D({ prefersReduced }) {
   const isMobile = useIsMobile();
   const effectiveReduced = prefersReduced || isMobile;
 
+  const roadGeo = useMemo(() => new THREE.PlaneGeometry(18, 550), []);
+  const roadMat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#060810' }), []);
+  const borderGeo = useMemo(() => new THREE.BoxGeometry(0.1, 0.1, 550), []);
+  const border1Mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#00f0ff' }), []);
+  const border2Mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#8b6bff' }), []);
+
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', willChange: 'transform' }}>
       <Canvas
         camera={{ position: [0, 5.2, 16], fov: 48, near: 0.1, far: 300 }}
         style={{ display: 'block', width: '100vw', height: '100vh' }}
@@ -217,21 +233,19 @@ export default function Scene3D({ prefersReduced }) {
           failIfMajorPerformanceCaveat: false,
         }}
         dpr={isMobile ? 0.75 : [1, 1.5]}
-        frameloop={isMobile ? 'demand' : 'always'}
+        frameloop="always"
         onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x060810, 0.024);
           camera.lookAt(0, 0.6, -70);
           if (isMobile) gl.setPixelRatio(0.75);
+          gl.outputColorSpace = THREE.SRGBColorSpace;
         }}
       >
         <hemisphereLight args={[0xaaccff, 0x110022, 0.6]} />
         <directionalLight args={[0xffffff, 1.0]} position={[10, 20, 8]} />
         <pointLight color="#00f0ff" intensity={1.2} distance={20} position={[-8, 4, -20]} />
 
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -200]}>
-          <planeGeometry args={[18, 550]} />
-          <meshBasicMaterial color="#060810" />
-        </mesh>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -200]} geometry={roadGeo} material={roadMat} />
 
         <gridHelper
           args={[550, 55, '#00f0ff', '#1a0e44']}
@@ -242,14 +256,8 @@ export default function Scene3D({ prefersReduced }) {
 
         <DashLines />
 
-        <mesh position={[-8.2, 0.1, -200]}>
-          <boxGeometry args={[0.1, 0.1, 550]} />
-          <meshBasicMaterial color="#00f0ff" />
-        </mesh>
-        <mesh position={[8.2, 0.1, -200]}>
-          <boxGeometry args={[0.1, 0.1, 550]} />
-          <meshBasicMaterial color="#8b6bff" />
-        </mesh>
+        <mesh position={[-8.2, 0.1, -200]} geometry={borderGeo} material={border1Mat} />
+        <mesh position={[8.2, 0.1, -200]} geometry={borderGeo} material={border2Mat} />
 
         {!effectiveReduced && <Particles count={isMobile ? 18 : 30} />}
 
@@ -259,4 +267,6 @@ export default function Scene3D({ prefersReduced }) {
       </Canvas>
     </div>
   );
-}
+});
+
+export default Scene3D;

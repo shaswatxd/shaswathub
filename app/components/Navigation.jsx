@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-export default function Navigation() {
+const Navigation = React.memo(function Navigation() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -75,4 +75,6 @@ export default function Navigation() {
       </div>
     </motion.nav>
   );
-}
+});
+
+export default Navigation;

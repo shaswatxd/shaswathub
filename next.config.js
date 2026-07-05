@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   turbopack: {},
 
   images: {
@@ -16,7 +19,8 @@ const nextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ['framer-motion', 'gsap', 'lenis'],
+    optimizePackageImports: ['framer-motion', 'gsap', 'lenis', '@react-three/fiber', '@react-three/drei', 'three'],
+    optimizeCss: true,
   },
 
   async headers() {
