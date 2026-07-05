@@ -1,6 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Scene3D from './components/Scene3D';
-import { useCountUp, useInView } from './hooks';
+import { useCountUp } from './hooks';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion } from 'framer-motion';
+
+gsap.registerPlugin(ScrollTrigger);
 
 
 /* ─── Projects Data ─── */
@@ -124,20 +129,13 @@ const MARQUEE_ITEMS = [
 /* ─── Project Card ─── */
 function Card({ project, idx }) {
   const cardRef = useRef(null);
-  const [cardInView, setCardInView] = useState(false);
 
   // Lerp tilt state – no re-renders during mouse move
   const tiltRef = useRef({ rx: 0, ry: 0, txRx: 0, txRy: 0, mx: 0.5, my: 0.5, active: false });
   const rafTilt = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setCardInView(true); },
-      { threshold: 0.1 }
-    );
-    if (cardRef.current) observer.observe(cardRef.current);
     return () => {
-      observer.disconnect();
       if (rafTilt.current) cancelAnimationFrame(rafTilt.current);
     };
   }, []);
@@ -195,15 +193,18 @@ function Card({ project, idx }) {
   const col = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
 
   return (
-    <div
+    <motion.div
       ref={cardRef}
-      className={`card${cardInView ? ' card-visible' : ''}`}
+      className="card card-visible"
       style={{
         '--glow-color': `${col}22`,
         '--card-accent': col,
         borderColor: undefined,
-        animationDelay: `${idx * 0.12}s`,
       }}
+      initial={{ opacity: 0, y: 35 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.7, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -248,6 +249,7 @@ function Card({ project, idx }) {
         </div>
       </div>
 
+
       <h3 className="card-title">{project.name}</h3>
       <p className="card-desc">{project.desc}</p>
 
@@ -268,34 +270,46 @@ function Card({ project, idx }) {
 
 /* ─── Tech Stack Badge ─── */
 const TechBadge = React.memo(function TechBadge({ tech, idx }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <div
+    <motion.div
       className="tech-badge"
       style={{
         '--badge-color': tech.color,
-        animationDelay: `${idx * 0.07}s`,
-        boxShadow: hovered ? `0 0 20px ${tech.color}44, 0 0 40px ${tech.color}22` : undefined,
-        borderColor: hovered ? `${tech.color}80` : undefined,
-        transform: hovered ? 'translateY(-4px) scale(1.05)' : 'translateY(0) scale(1)',
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      initial={{ opacity: 0, scale: 0.9, y: 15 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: idx * 0.04, ease: 'easeOut' }}
+      whileHover={{
+        y: -5,
+        scale: 1.04,
+        boxShadow: `0 8px 24px ${tech.color}33, 0 0 40px ${tech.color}11`,
+        borderColor: `${tech.color}99`,
+        transition: { type: 'spring', stiffness: 350, damping: 12 }
+      }}
     >
       <span className="tech-icon">{tech.icon}</span>
       <span className="tech-name">{tech.name}</span>
-    </div>
+    </motion.div>
   );
 });
 
 /* ─── What I Build Card ─── */
 function WhatIBuildCard({ item, idx }) {
-  const [ref, inView] = useInView(0.15);
   return (
-    <div
-      ref={ref}
-      className={`wib-card${inView ? ' wib-visible' : ''}`}
-      style={{ '--wib-color': item.color, animationDelay: `${idx * 0.12}s` }}
+    <motion.div
+      className="wib-card"
+      style={{ '--wib-color': item.color }}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{
+        y: -10,
+        boxShadow: `0 20px 40px -15px rgba(0,0,0,0.65), 0 0 40px -10px ${item.color}33`,
+        borderColor: `rgba(255,255,255,0.15)`,
+        transition: { type: 'spring', stiffness: 220, damping: 14 }
+      }}
     >
       <div className="wib-icon" style={{ background: `${item.color}15`, border: `1px solid ${item.color}33` }}>
         {item.icon}
@@ -307,7 +321,7 @@ function WhatIBuildCard({ item, idx }) {
           <span key={i} className="wib-tag" style={{ color: item.color, borderColor: `${item.color}33` }}>{tag}</span>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -333,13 +347,35 @@ function Marquee() {
 
 /* ─── Stats Strip ─── */
 function StatsStrip() {
-  const [ref, inView] = useInView(0.3);
+  const statsRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (statsRef.current) observer.observe(statsRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const projects = useCountUp(4, 1600, inView);
   const techs = useCountUp(12, 1800, inView);
   const commits = useCountUp(1000, 2200, inView);
 
   return (
-    <div ref={ref} className="stats">
+    <motion.div
+      ref={statsRef}
+      className="stats"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
+    >
       <div className="stat">
         <div className="stat-num g">{projects}+</div>
         <div className="stat-lbl">Projects Shipped</div>
@@ -356,7 +392,7 @@ function StatsStrip() {
         <div className="stat-num g">100%</div>
         <div className="stat-lbl">Open Source</div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -563,11 +599,46 @@ export default function App() {
     window.addEventListener("mousemove", handleMouse, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
 
+    // GSAP ScrollTrigger Animations
+    const sections = gsap.utils.toArray('.animate-section');
+    sections.forEach((sec) => {
+      gsap.fromTo(sec,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sec,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          }
+        }
+      );
+    });
+
+    gsap.fromTo('.terminal-block',
+      { opacity: 0, y: 40, scale: 0.96 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.terminal-block',
+          start: 'top 85%',
+        }
+      }
+    );
+
     return () => {
       mq.removeEventListener("change", handleMQ);
       window.removeEventListener("mousemove", handleMouse);
       window.removeEventListener("scroll", handleScroll);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
@@ -583,7 +654,12 @@ export default function App() {
 
       <div className="content-wrapper">
         {/* ── Navigation ── */}
-        <nav className={scrolled ? 'scrolled' : ''}>
+        <motion.nav 
+          className={scrolled ? 'scrolled' : ''}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <div className="brand">
             <span className="dot" />
             SHASWAT<span className="accent">HUB</span>
@@ -596,20 +672,40 @@ export default function App() {
             <a href="#contact" className="nav-link">Contact</a>
           </div>
 
-          <a
-            href="https://github.com/shaswatxd"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-avatar-link"
-            title="GitHub Profile"
-          >
-            <img src="/avatar.png?v=2" alt="GitHub Profile" className="nav-avatar" />
-          </a>
-        </nav>
+          <div className="nav-right">
+            <a
+              href="https://github.com/shaswatxd"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-github-btn"
+              title="GitHub"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </a>
+            <a
+              href="https://github.com/shaswatxd"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-avatar-link"
+              title="GitHub Profile"
+            >
+              <img src="/avatar.png?v=2" alt="GitHub Profile" className="nav-avatar" />
+            </a>
+          </div>
+        </motion.nav>
 
         {/* ── Hero Header ── */}
-        <header>
-          <div className="eyebrow">Dev Console · Personal Build Log</div>
+        <motion.header
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
+        >
+          <div className="eyebrow">
+            <span className="eyebrow-pulse" />
+            Dev Console · Personal Build Log
+          </div>
           <h1>
             Everything I'm<br />
             <span className="line2">Building, Shipping, Breaking.</span>
@@ -625,6 +721,17 @@ export default function App() {
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </a>
+            <a href="#contact" className="cta-btn ghost">
+              <span>Get In Touch</span>
+            </a>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="scroll-indicator">
+            <div className="scroll-mouse">
+              <div className="scroll-wheel" />
+            </div>
+            <span>Scroll to explore</span>
           </div>
         </header>
 
@@ -635,9 +742,9 @@ export default function App() {
         <div className="section-divider" />
 
         {/* ── What I Build Section ── */}
-        <div id="builds" className="section-head">
+        <div id="builds" className="section-head animate-section">
           <h2>What I Build</h2>
-          <div className="tag">// Areas of focus & expertise</div>
+          <div className="tag">// Areas of focus &amp; expertise</div>
         </div>
 
         <div className="wib-grid">
@@ -650,9 +757,9 @@ export default function App() {
         <div className="section-divider" />
 
         {/* ── Projects Section ── */}
-        <div id="projects" className="section-head">
+        <div id="projects" className="section-head animate-section">
           <h2>Projects &amp; Links</h2>
-          <div className="tag">// Live apps & open source tools</div>
+          <div className="tag">// Live apps &amp; open source tools</div>
         </div>
 
         <div className="grid">
@@ -677,7 +784,7 @@ export default function App() {
         <div className="section-divider" />
 
         {/* ── Tech Stack Section ── */}
-        <div id="stack" className="section-head">
+        <div id="stack" className="section-head animate-section">
           <h2>Tech Stack</h2>
           <div className="tag">// Tools I build with daily</div>
         </div>
@@ -732,6 +839,21 @@ export default function App() {
               Got a project idea, collaboration, or just want to say hi? I'm always open to discussing new opportunities and interesting concepts.
             </p>
 
+            <div className="contact-btns">
+              <a href="mailto:srijankumardeo777@gmail.com" className="cta-btn primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>Send Email</span>
+              </a>
+              <a href="https://github.com/shaswatxd" target="_blank" rel="noopener noreferrer" className="cta-btn ghost">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>GitHub Profile</span>
+              </a>
+            </div>
           </div>
         </div>
 
