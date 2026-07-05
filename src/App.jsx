@@ -732,10 +732,7 @@ export default function App() {
               Got a project idea, collaboration, or just want to say hi? I'm always open to discussing new opportunities and interesting concepts.
             </p>
             <div className="contact-btns">
-              <div className="contact-info">
-                <p>Contact Me</p>
-                <p>srijankumardeo777@gmail.com</p>
-              </div>
+              <p className="contact-email">srijankumardeo777@gmail.com</p>
             </div>
           </div>
         </div>
