@@ -69,6 +69,21 @@ const PROJECTS = [
       "⚡ Background Component Auto-Updates",
       "📻 Built-in Media Playback Shell"
     ]
+  },
+  {
+    name: "Beam P2P",
+    desc: "Peer-to-peer file sharing application built with WebRTC data channels. Features end-to-end encrypted transfers, drag-and-drop, and real-time progress tracking.",
+    icon: "📡",
+    glow: "cyan",
+    badge: "LIVE APP",
+    githubUrl: "https://github.com/shaswatxd/beam-p2p",
+    liveUrl: "https://beamsender.vercel.app",
+    features: [
+      "📡 WebRTC Peer-to-Peer Transfers",
+      "🔒 End-to-End Encrypted File Sharing",
+      "⚡ Zero Server Storage — Direct P2P",
+      "📱 Cross-Platform Browser-Based"
+    ]
   }
 ];
 
@@ -363,7 +378,7 @@ function StatsStrip() {
     return () => observer.disconnect();
   }, []);
 
-  const projects = useCountUp(4, 1600, inView);
+  const projects = useCountUp(5, 1600, inView);
   const techs = useCountUp(12, 1800, inView);
   const commits = useCountUp(1000, 2200, inView);
 

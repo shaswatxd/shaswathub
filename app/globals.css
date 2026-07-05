@@ -24,7 +24,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
   }
@@ -40,7 +39,6 @@
   }
 }
 
-/* ─── Custom Animations (Keep vanilla-like performance) ─── */
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.45; transform: scale(0.9); }

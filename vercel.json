@@ -1,5 +1,0 @@
-{
-  "framework": "nextjs",
-  "buildCommand": "npx rimraf .next && next build",
-  "outputDirectory": ".next"
-}

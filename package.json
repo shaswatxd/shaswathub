@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npx rimraf .next && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "oxlint",
     "push": "node scripts/push.js"
