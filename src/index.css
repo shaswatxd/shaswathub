@@ -527,7 +527,23 @@ h1 .line2 {
   transform: scale(1.12) rotate(-4deg);
 }
 
-.card-links { display: flex; gap: 8px; }
+.card-links {
+  display: flex;
+  gap: 8px;
+  position: relative;
+  z-index: 3;
+}
+
+.card:has(.card-click-overlay) {
+  cursor: pointer;
+}
+
+.card-click-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: pointer;
+}
 
 .card-link-btn {
   text-decoration: none;
