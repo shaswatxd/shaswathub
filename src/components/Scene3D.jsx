@@ -1,5 +1,5 @@
-import React, { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react';
+import { Canvas, useFrame, invalidate } from '@react-three/fiber';
 import * as THREE from 'three';
 
 const PALETTE = ['#ff2233', '#00f0ff', '#8b6bff', '#ff3d9a'];
@@ -23,6 +23,7 @@ function Particles({ count = 50 }) {
     const t = clock.getElapsedTime();
     mesh.current.rotation.y = t * 0.015;
     mesh.current.position.y = Math.sin(t * 0.2) * 1.5;
+    invalidate();
   });
 
   return (
@@ -45,6 +46,7 @@ function LowPolyCar({ initialZ, lane, color, speed }) {
     if (groupRef.current.position.z > 18) {
       groupRef.current.position.z = -180 - Math.random() * 20;
     }
+    invalidate();
   });
 
   const mat = useMemo(() => new THREE.MeshStandardMaterial({
@@ -117,6 +119,7 @@ function DashLines() {
       child.position.z += 0.28;
       if (child.position.z > 18) child.position.z -= 375;
     });
+    invalidate();
   });
 
   const geo = useMemo(() => new THREE.BoxGeometry(0.06, 0.02, 4), []);
@@ -173,6 +176,24 @@ export default function Scene3D({ prefersReduced }) {
 
   const effectiveReduced = prefersReduced || isMobile;
 
+  /* Throttle 3D rendering while user is scrolling to free up GPU for compositing */
+  const [isScrolling, setIsScrolling] = useState(false);
+  useEffect(() => {
+    let scrollTimer = null;
+    const onScroll = () => {
+      if (!isScrolling) setIsScrolling(true);
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => setIsScrolling(false), 200);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, [isScrolling]);
+
+  const frameloop = isMobile ? 'demand' : (isScrolling ? 'demand' : 'always');
+
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
       <Canvas
@@ -185,8 +206,8 @@ export default function Scene3D({ prefersReduced }) {
           stencil: false,
           depth: true,
         }}
-        dpr={isMobile ? 1 : [1, 1.25]}
-        frameloop={isMobile ? 'demand' : 'always'}
+        dpr={isMobile ? 1 : [1, 1.15]}
+        frameloop={frameloop}
         onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x080b12, 0.035);
           camera.lookAt(0, 1, -60);

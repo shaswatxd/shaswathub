@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Scene3D from './components/Scene3D';
+import { useCountUp, useInView } from './hooks';
 
 
 /* ─── Projects Data ─── */
@@ -82,6 +83,40 @@ const TECH_STACK = [
   { name: "WebRTC", icon: "📡", color: "#ff3d9a" },
   { name: "Vite", icon: "🔥", color: "#f5a623" },
   { name: "FFmpeg", icon: "🎬", color: "#ff3d9a" },
+  { name: "Python", icon: "🐍", color: "#ffd43b" },
+  { name: "Git", icon: "🔀", color: "#f05032" },
+  { name: "MongoDB", icon: "🍃", color: "#00ed64" },
+  { name: "Tailwind", icon: "🌊", color: "#38bdf8" },
+];
+
+const WHAT_I_BUILD = [
+  {
+    title: "Desktop Apps",
+    desc: "Native-feeling desktop experiences with Electron, system-level APIs, and offline-first architectures.",
+    icon: "🖥️",
+    color: "#00f0ff",
+    tags: ["Electron", "Node.js", "FFmpeg"]
+  },
+  {
+    title: "Web Applications",
+    desc: "Full-stack React web apps with real-time features, modern UI frameworks, and production-grade deployments.",
+    icon: "🌐",
+    color: "#8b6bff",
+    tags: ["React", "Vite", "Three.js"]
+  },
+  {
+    title: "Developer Tools",
+    desc: "CLI utilities, automation scripts, and dev tooling that solve real problems and save hours of manual work.",
+    icon: "⚙️",
+    color: "#ff3d9a",
+    tags: ["Python", "Git", "Automation"]
+  },
+];
+
+const MARQUEE_ITEMS = [
+  "REACT", "NODE.JS", "ELECTRON", "THREE.JS", "WEBRTC", "SOCKET.IO",
+  "VITE", "FFMPEG", "PYTHON", "MONGODB", "GIT", "TAILWIND CSS",
+  "JAVASCRIPT", "HTML5", "CSS3", "REST APIs"
 ];
 
 
@@ -252,6 +287,78 @@ const TechBadge = React.memo(function TechBadge({ tech, idx }) {
   );
 });
 
+/* ─── What I Build Card ─── */
+function WhatIBuildCard({ item, idx }) {
+  const [ref, inView] = useInView(0.15);
+  return (
+    <div
+      ref={ref}
+      className={`wib-card${inView ? ' wib-visible' : ''}`}
+      style={{ '--wib-color': item.color, animationDelay: `${idx * 0.12}s` }}
+    >
+      <div className="wib-icon" style={{ background: `${item.color}15`, border: `1px solid ${item.color}33` }}>
+        {item.icon}
+      </div>
+      <h3 className="wib-title">{item.title}</h3>
+      <p className="wib-desc">{item.desc}</p>
+      <div className="wib-tags">
+        {item.tags.map((tag, i) => (
+          <span key={i} className="wib-tag" style={{ color: item.color, borderColor: `${item.color}33` }}>{tag}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Infinite Marquee ─── */
+function Marquee() {
+  const items = MARQUEE_ITEMS;
+  const row = items.map((t, i) => (
+    <span key={i} className="marquee-item">
+      <span className="marquee-dot">◆</span> {t}
+    </span>
+  ));
+  return (
+    <div className="marquee-wrap">
+      <div className="marquee-track">
+        <div className="marquee-inner">{row}{row}</div>
+      </div>
+      <div className="marquee-track reverse">
+        <div className="marquee-inner">{row}{row}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Stats Strip ─── */
+function StatsStrip() {
+  const [ref, inView] = useInView(0.3);
+  const projects = useCountUp(4, 1600, inView);
+  const techs = useCountUp(12, 1800, inView);
+  const commits = useCountUp(1000, 2200, inView);
+
+  return (
+    <div ref={ref} className="stats">
+      <div className="stat">
+        <div className="stat-num g">{projects}+</div>
+        <div className="stat-lbl">Projects Shipped</div>
+      </div>
+      <div className="stat">
+        <div className="stat-num g">{techs}+</div>
+        <div className="stat-lbl">Technologies</div>
+      </div>
+      <div className="stat">
+        <div className="stat-num g">{commits}+</div>
+        <div className="stat-lbl">Commits</div>
+      </div>
+      <div className="stat">
+        <div className="stat-num g">100%</div>
+        <div className="stat-lbl">Open Source</div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main App ─── */
 export default function App() {
   const [prefersReduced, setPrefersReduced] = useState(false);
@@ -415,7 +522,14 @@ export default function App() {
     const handleMQ = (e) => setPrefersReduced(e.matches);
     mq.addEventListener("change", handleMQ);
 
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let lastScrolled = false;
+    const handleScroll = () => {
+      const nowScrolled = window.scrollY > 20;
+      if (nowScrolled !== lastScrolled) {
+        lastScrolled = nowScrolled;
+        setScrolled(nowScrolled);
+      }
+    };
 
     // RAF loop for smooth lerp — only runs when mouse moves, stops when idle
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -475,9 +589,10 @@ export default function App() {
           </div>
 
           <div className="nav-center">
+            <a href="#builds" className="nav-link">Builds</a>
             <a href="#projects" className="nav-link">Projects</a>
             <a href="#stack" className="nav-link">Stack</a>
-            <a href="mailto:srijankumardeo777@gmail.com" className="nav-link">Contact</a>
+            <a href="#contact" className="nav-link">Contact</a>
           </div>
 
           <a
@@ -509,21 +624,34 @@ export default function App() {
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </a>
-            <a href="https://github.com/shaswatxd" target="_blank" rel="noopener noreferrer" className="cta-btn ghost">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
-              <span>GitHub</span>
-            </a>
           </div>
         </header>
 
+        {/* ── Stats Strip ── */}
+        <StatsStrip />
 
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
+
+        {/* ── What I Build Section ── */}
+        <div id="builds" className="section-head">
+          <h2>What I Build</h2>
+          <div className="tag">// Areas of focus & expertise</div>
+        </div>
+
+        <div className="wib-grid">
+          {WHAT_I_BUILD.map((item, idx) => (
+            <WhatIBuildCard key={idx} item={item} idx={idx} />
+          ))}
+        </div>
+
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
 
         {/* ── Projects Section ── */}
         <div id="projects" className="section-head">
           <h2>Projects &amp; Links</h2>
-          <div className="tag">// React Three Fiber powered dev console</div>
+          <div className="tag">// Live apps & open source tools</div>
         </div>
 
         <div className="grid">
@@ -540,6 +668,12 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* ── Scrolling Marquee ── */}
+        <Marquee />
+
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
 
         {/* ── Tech Stack Section ── */}
         <div id="stack" className="section-head">
@@ -584,6 +718,30 @@ export default function App() {
           </div>
         </div>
 
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
+
+        {/* ── Contact CTA Section ── */}
+        <div id="contact" className="contact-cta">
+          <div className="contact-glow" />
+          <div className="contact-inner">
+            <div className="contact-eyebrow">Get In Touch</div>
+            <h2 className="contact-heading">Let's Build Something<br /><span>Together.</span></h2>
+            <p className="contact-sub">
+              Got a project idea, collaboration, or just want to say hi? I'm always open to discussing new opportunities and interesting concepts.
+            </p>
+            <div className="contact-btns">
+              <a href="mailto:srijankumardeo777@gmail.com" className="cta-btn primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>Send an Email</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* ── Footer ── */}
         <footer>
           <div className="footer-brand">
@@ -591,12 +749,6 @@ export default function App() {
           </div>
           <div className="footer-tagline">Building things that matter, one commit at a time.</div>
           <div className="links">
-            <a href="https://github.com/shaswatxd" target="_blank" rel="noopener noreferrer">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
-              GitHub
-            </a>
             <a href="mailto:srijankumardeo777@gmail.com">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -605,7 +757,7 @@ export default function App() {
               Email
             </a>
           </div>
-          <div className="footer-copy">© {new Date().getFullYear()} shaswatxd · developed with ❤️ &amp; chai</div>
+          <div className="footer-copy">© {new Date().getFullYear()} · developed with ❤️ &amp; chai</div>
         </footer>
       </div>
     </>
