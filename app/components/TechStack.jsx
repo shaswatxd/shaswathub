@@ -25,7 +25,7 @@ const TECH_STACK = [
 const TechBadge = React.memo(function TechBadge({ tech, idx }) {
   return (
     <motion.div
-      className="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.08] cursor-default will-change-transform"
+      className="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-white/[0.02] border border-white/[0.08] cursor-default"
       initial={{ opacity: 0, scale: 0.92, y: 12 }}
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}

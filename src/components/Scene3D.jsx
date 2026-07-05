@@ -17,7 +17,7 @@ function useIsMobile() {
   return isMobile;
 }
 
-function Particles({ count = 40 }) {
+function Particles({ count = 30 }) {
   const mesh = useRef();
   const { positions, colors } = useMemo(() => {
     const pos = new Float32Array(count * 3);
@@ -42,8 +42,8 @@ function Particles({ count = 40 }) {
   useFrame(({ clock }) => {
     if (!mesh.current) return;
     const t = clock.getElapsedTime();
-    mesh.current.rotation.y = t * 0.01;
-    mesh.current.position.y = Math.sin(t * 0.1) * 1.5;
+    mesh.current.rotation.y = t * 0.008;
+    mesh.current.position.y = Math.sin(t * 0.08) * 1.2;
   });
 
   return (
@@ -52,7 +52,7 @@ function Particles({ count = 40 }) {
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
-      <pointsMaterial vertexColors size={0.12} transparent opacity={0.5} sizeAttenuation />
+      <pointsMaterial vertexColors size={0.12} transparent opacity={0.45} sizeAttenuation />
     </points>
   );
 }
@@ -122,9 +122,9 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
       <primitive object={clonedScene} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
         <planeGeometry args={[1.9, 4.4]} />
-        <meshBasicMaterial color={underglowColor} transparent opacity={0.25} />
+        <meshBasicMaterial color={underglowColor} transparent opacity={0.2} />
       </mesh>
-      <pointLight color={underglowColor} intensity={2.0} distance={5} position={[0, -0.05, 0]} />
+      <pointLight color={underglowColor} intensity={1.5} distance={4} position={[0, -0.05, 0]} />
     </group>
   );
 }
@@ -133,8 +133,8 @@ function DashLines() {
   const groupRef = useRef();
   const lines = useMemo(() => {
     const arr = [];
-    for (let i = 0; i < 25; i++) {
-      arr.push({ z: -i * 15 - 5, key: i });
+    for (let i = 0; i < 18; i++) {
+      arr.push({ z: -i * 18 - 5, key: i });
     }
     return arr;
   }, []);
@@ -143,53 +143,17 @@ function DashLines() {
     if (!groupRef.current) return;
     groupRef.current.children.forEach(child => {
       child.position.z += 0.32;
-      if (child.position.z > 22) child.position.z -= 375;
+      if (child.position.z > 22) child.position.z -= 324;
     });
   });
 
   const geo = useMemo(() => new THREE.BoxGeometry(0.08, 0.02, 4.5), []);
-  const mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.3 }), []);
+  const mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.25 }), []);
 
   return (
     <group ref={groupRef}>
       {lines.map(({ z, key }) => (
         <mesh key={key} position={[0, 0.04, z]} geometry={geo} material={mat} />
-      ))}
-    </group>
-  );
-}
-
-function SpeedLines() {
-  const groupRef = useRef();
-  const lines = useMemo(() => {
-    const arr = [];
-    for (let i = 0; i < 15; i++) {
-      const x = (Math.random() - 0.5) * 14;
-      arr.push({
-        x,
-        z: -Math.random() * 300 - 20,
-        speed: 0.45 + Math.random() * 0.3,
-        key: i,
-      });
-    }
-    return arr;
-  }, []);
-
-  useFrame(() => {
-    if (!groupRef.current) return;
-    groupRef.current.children.forEach((child, i) => {
-      child.position.z += lines[i].speed;
-      if (child.position.z > 22) child.position.z = -300 - Math.random() * 50;
-    });
-  });
-
-  return (
-    <group ref={groupRef}>
-      {lines.map(({ x, z, key }) => (
-        <mesh key={key} position={[x, 0.06, z]}>
-          <boxGeometry args={[0.02, 0.01, 3]} />
-          <meshBasicMaterial color="#00f0ff" transparent opacity={0.1} />
-        </mesh>
       ))}
     </group>
   );
@@ -239,28 +203,6 @@ export default function Scene3D({ prefersReduced }) {
   const isMobile = useIsMobile();
   const effectiveReduced = prefersReduced || isMobile;
 
-  const [isScrolling, setIsScrolling] = useState(false);
-  useEffect(() => {
-    let scrollTimer = null;
-    let scrollCount = 0;
-    const onScroll = () => {
-      scrollCount++;
-      if (!isScrolling) setIsScrolling(true);
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        scrollCount--;
-        if (scrollCount === 0) setIsScrolling(false);
-      }, 150);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      clearTimeout(scrollTimer);
-    };
-  }, [isScrolling]);
-
-  const frameloop = isMobile ? 'demand' : (isScrolling ? 'demand' : 'always');
-
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
       <Canvas
@@ -274,34 +216,31 @@ export default function Scene3D({ prefersReduced }) {
           depth: true,
           failIfMajorPerformanceCaveat: false,
         }}
-        dpr={isMobile ? 0.75 : 1}
-        frameloop={frameloop}
+        dpr={isMobile ? 0.75 : [1, 1.5]}
+        frameloop={isMobile ? 'demand' : 'always'}
         onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x060810, 0.024);
           camera.lookAt(0, 0.6, -70);
           if (isMobile) gl.setPixelRatio(0.75);
         }}
       >
-        <hemisphereLight args={[0xaaccff, 0x110022, 0.75]} />
-        <directionalLight args={[0xffffff, 1.2]} position={[10, 20, 8]} />
-        <directionalLight args={[0x8888ff, 0.3]} position={[-10, 10, -10]} />
-        <pointLight color="#00f0ff" intensity={1.5} distance={25} position={[-8, 4, -20]} />
-        <pointLight color="#8b6bff" intensity={1.2} distance={20} position={[8, 4, -40]} />
+        <hemisphereLight args={[0xaaccff, 0x110022, 0.6]} />
+        <directionalLight args={[0xffffff, 1.0]} position={[10, 20, 8]} />
+        <pointLight color="#00f0ff" intensity={1.2} distance={20} position={[-8, 4, -20]} />
 
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -200]}>
           <planeGeometry args={[18, 550]} />
-          <meshStandardMaterial color="#060810" roughness={0.2} metalness={0.85} />
+          <meshBasicMaterial color="#060810" />
         </mesh>
 
         <gridHelper
           args={[550, 55, '#00f0ff', '#1a0e44']}
           position={[0, 0.02, -200]}
           material-transparent
-          material-opacity={0.18}
+          material-opacity={0.15}
         />
 
         <DashLines />
-        {!effectiveReduced && <SpeedLines />}
 
         <mesh position={[-8.2, 0.1, -200]}>
           <boxGeometry args={[0.1, 0.1, 550]} />
@@ -312,20 +251,7 @@ export default function Scene3D({ prefersReduced }) {
           <meshBasicMaterial color="#8b6bff" />
         </mesh>
 
-        {!effectiveReduced && [-1, -2, -3, -4, -5].map(i => (
-          <React.Fragment key={i}>
-            <mesh position={[-8.2, 0.6, i * 32 - 40]}>
-              <sphereGeometry args={[0.08, 8, 8]} />
-              <meshBasicMaterial color="#00f0ff" />
-            </mesh>
-            <mesh position={[8.2, 0.6, i * 32 - 40]}>
-              <sphereGeometry args={[0.08, 8, 8]} />
-              <meshBasicMaterial color="#8b6bff" />
-            </mesh>
-          </React.Fragment>
-        ))}
-
-        {!effectiveReduced && <Particles count={isMobile ? 25 : 40} />}
+        {!effectiveReduced && <Particles count={isMobile ? 18 : 30} />}
 
         <Suspense fallback={null}>
           <Cars isMobile={isMobile} />

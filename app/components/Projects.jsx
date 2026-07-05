@@ -151,7 +151,7 @@ function Card({ project, idx }) {
   return (
     <motion.div
       ref={cardRef}
-      className="relative bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] rounded-2xl p-7 transform-gpu overflow-hidden backdrop-blur-xl transition-all duration-300 will-change-transform"
+      className="relative bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] rounded-2xl p-7 overflow-hidden backdrop-blur-xl transition-all duration-300"
       style={{
         '--glow-color': `${col}22`,
         '--card-accent': col,

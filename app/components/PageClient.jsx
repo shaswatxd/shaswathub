@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ReactLenis } from 'lenis/react';
-import 'lenis/dist/lenis.css';
 import dynamic from 'next/dynamic';
 
 const Scene3D = dynamic(() => import('../../src/components/Scene3D'), { ssr: false });
@@ -52,7 +50,7 @@ export default function PageClient() {
     const lerp = (a, b, t) => a + (b - a) * t;
     let running = false;
     const tick = () => {
-      parallaxRef.current = lerp(parallaxRef.current, parallaxTarget.current, 0.045);
+      parallaxRef.current = lerp(parallaxRef.current, parallaxTarget.current, 0.08);
       const px = parallaxRef.current;
       if (glowRef.current) {
         glowRef.current.style.transform = `translate3d(calc(-50% + ${px}px), 0, 0)`;
@@ -60,7 +58,7 @@ export default function PageClient() {
       if (glowSecRef.current) {
         glowSecRef.current.style.transform = `translate3d(calc(-50% + ${-px * 0.5}px), 0, 0)`;
       }
-      if (Math.abs(parallaxRef.current - parallaxTarget.current) > 0.02) {
+      if (Math.abs(parallaxRef.current - parallaxTarget.current) > 0.05) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
         running = false;
@@ -77,21 +75,18 @@ export default function PageClient() {
 
     window.addEventListener("mousemove", handleMouse, { passive: true });
 
-    // GSAP ScrollTrigger Section Transitions with smoother easing
     const sections = gsap.utils.toArray('.animate-section');
-    sections.forEach((sec, i) => {
+    sections.forEach((sec) => {
       gsap.fromTo(sec,
-        { opacity: 0, y: 40, willChange: 'transform, opacity' },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.9,
-          delay: i * 0.03,
-          ease: 'power4.out',
-          clearProps: 'willChange',
+          duration: 0.7,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sec,
-            start: 'top 90%',
+            start: 'top 88%',
             toggleActions: 'play none none none',
           }
         }
@@ -99,17 +94,16 @@ export default function PageClient() {
     });
 
     gsap.fromTo('.terminal-block',
-      { opacity: 0, y: 50, scale: 0.97, willChange: 'transform, opacity' },
+      { opacity: 0, y: 40, scale: 0.97 },
       {
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 1.1,
-        ease: 'power4.out',
-        clearProps: 'willChange',
+        duration: 0.9,
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: '.terminal-block',
-          start: 'top 88%',
+          start: 'top 85%',
         }
       }
     );
@@ -123,25 +117,15 @@ export default function PageClient() {
   }, []);
 
   return (
-    <ReactLenis
-      root
-      options={{
-        lerp: 0.08,
-        duration: 1.4,
-        smoothWheel: true,
-        wheelMultiplier: 0.9,
-        touchMultiplier: 1.5,
-        infinite: false,
-      }}
-    >
+    <>
       <AnimatedFavicon prefersReduced={prefersReduced} />
       <Scene3D prefersReduced={prefersReduced} />
 
-      <div className="fixed inset-0 bg-gradient-to-b from-[#060810]/10 via-[#060810]/50 to-[#060810]/95 pointer-events-none z-[1] will-change-[opacity] transform-gpu" />
-      <div ref={glowRef} className="fixed top-[-25%] left-1/2 w-[1100px] h-[700px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.07)_0%,rgba(0,240,255,0.04)_15%,rgba(139,107,255,0.03)_30%,rgba(139,107,255,0.01)_50%,transparent_65%)] pointer-events-none z-[1] will-change-transform transform-gpu" />
-      <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1] will-change-transform transform-gpu" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#060810]/10 via-[#060810]/50 to-[#060810]/95 pointer-events-none z-[1]" />
+      <div ref={glowRef} className="fixed top-[-25%] left-1/2 w-[1100px] h-[700px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.07)_0%,rgba(0,240,255,0.04)_15%,rgba(139,107,255,0.03)_30%,rgba(139,107,255,0.01)_50%,transparent_65%)] pointer-events-none z-[1]" />
+      <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1]" />
 
-      <div className="relative z-10 w-full max-w-[100vw] transform-gpu">
+      <div className="relative z-10 w-full max-w-[100vw]">
         <Suspense fallback={<SectionLoader />}>
           <Navigation />
         </Suspense>
@@ -192,6 +176,6 @@ export default function PageClient() {
           <Footer />
         </Suspense>
       </div>
-    </ReactLenis>
+    </>
   );
 }

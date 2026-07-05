@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 export default function Hero() {
   return (
     <motion.header
-      className="relative z-10 px-6 py-[10vh] text-center will-change-transform"
+      className="relative z-10 px-6 py-[10vh] text-center"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -42,7 +42,7 @@ export default function Hero() {
       <div className="flex items-center justify-center gap-4.5 max-w-[290px] sm:max-w-none mx-auto flex-col sm:flex-row">
         <a
           href="#projects"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-display text-[13px] font-bold px-7 py-3.5 rounded-xl text-[#030303] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 will-change-transform"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 font-display text-[13px] font-bold px-7 py-3.5 rounded-xl text-[#030303] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
           style={{
             background: 'linear-gradient(135deg, #00f0ff, #8b6bff)',
             boxShadow: '0 0 24px rgba(0,240,255,0.25)',

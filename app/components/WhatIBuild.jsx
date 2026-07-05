@@ -37,7 +37,7 @@ const WHAT_I_BUILD = [
 function WhatIBuildCard({ item, idx }) {
   return (
     <motion.div
-      className="relative bg-white/[0.02] border border-white/[0.08] rounded-2xl p-8 overflow-hidden backdrop-blur-xl will-change-transform"
+      className="relative bg-white/[0.02] border border-white/[0.08] rounded-2xl p-8 overflow-hidden backdrop-blur-xl"
       style={{ '--wib-color': item.color }}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}

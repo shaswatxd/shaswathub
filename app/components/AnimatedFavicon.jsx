@@ -16,54 +16,62 @@ export default function AnimatedFavicon({ prefersReduced }) {
       document.getElementsByTagName('head')[0].appendChild(link);
     }
 
+    if (prefersReduced) {
+      ctx.clearRect(0, 0, 32, 32);
+      const bgGrad = ctx.createRadialGradient(16, 16, 2, 16, 16, 16);
+      bgGrad.addColorStop(0, '#0f1326');
+      bgGrad.addColorStop(1, '#05070f');
+      ctx.fillStyle = bgGrad;
+      ctx.beginPath();
+      ctx.arc(16, 16, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
+      ctx.stroke();
+      const grad = ctx.createLinearGradient(10, 10, 22, 22);
+      grad.addColorStop(0, '#00f0ff');
+      grad.addColorStop(0.5, '#8b6bff');
+      grad.addColorStop(1, '#ff3d9a');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(22, 10);
+      ctx.lineTo(14, 10);
+      ctx.arcTo(10, 10, 10, 16, 4);
+      ctx.arcTo(10, 16, 22, 16, 4);
+      ctx.lineTo(18, 16);
+      ctx.arcTo(22, 16, 22, 22, 4);
+      ctx.arcTo(22, 22, 10, 22, 4);
+      ctx.lineTo(10, 22);
+      ctx.stroke();
+      link.href = canvas.toDataURL('image/png');
+      return;
+    }
+
     let animationFrameId;
     let lastUpdate = 0;
-    const interval = 80;
+    let isVisible = true;
+    const interval = 120;
+
+    const onVisibility = () => {
+      isVisible = !document.hidden;
+      if (isVisible && !animationFrameId) {
+        lastUpdate = 0;
+        animationFrameId = requestAnimationFrame(draw);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility, { passive: true });
 
     const draw = (timestamp) => {
-      if (prefersReduced) {
-        ctx.clearRect(0, 0, 32, 32);
-
-        const bgGrad = ctx.createRadialGradient(16, 16, 2, 16, 16, 16);
-        bgGrad.addColorStop(0, '#0f1326');
-        bgGrad.addColorStop(1, '#05070f');
-        ctx.fillStyle = bgGrad;
-        ctx.beginPath();
-        ctx.arc(16, 16, 15, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = '#00f0ff';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
-        ctx.stroke();
-
-        const grad = ctx.createLinearGradient(10, 10, 22, 22);
-        grad.addColorStop(0, '#00f0ff');
-        grad.addColorStop(0.5, '#8b6bff');
-        grad.addColorStop(1, '#ff3d9a');
-
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.beginPath();
-        ctx.moveTo(22, 10);
-        ctx.lineTo(14, 10);
-        ctx.arcTo(10, 10, 10, 16, 4);
-        ctx.arcTo(10, 16, 22, 16, 4);
-        ctx.lineTo(18, 16);
-        ctx.arcTo(22, 16, 22, 22, 4);
-        ctx.arcTo(22, 22, 10, 22, 4);
-        ctx.lineTo(10, 22);
-        ctx.stroke();
-
-        link.href = canvas.toDataURL('image/png');
+      if (!isVisible) {
+        animationFrameId = null;
         return;
       }
-
       animationFrameId = requestAnimationFrame(draw);
-
       if (timestamp - lastUpdate < interval) return;
       lastUpdate = timestamp;
 
@@ -83,7 +91,7 @@ export default function AnimatedFavicon({ prefersReduced }) {
       ctx.arc(16, 16, 13.5, 0, Math.PI * 2);
       ctx.stroke();
 
-      const angle = (timestamp / 450) % (Math.PI * 2);
+      const angle = (timestamp / 600) % (Math.PI * 2);
       const px = 16 + Math.cos(angle) * 13.5;
       const py = 16 + Math.sin(angle) * 13.5;
 
@@ -96,18 +104,19 @@ export default function AnimatedFavicon({ prefersReduced }) {
       ctx.arc(px, py, 1.5, 0, Math.PI * 2);
       ctx.fill();
 
+      const hue = (timestamp / 18) % 360;
       const grad = ctx.createLinearGradient(10, 10, 22, 22);
-      grad.addColorStop(0, `hsl(${(timestamp / 12) % 360}, 100%, 65%)`);
-      grad.addColorStop(0.5, `hsl(${(timestamp / 12 + 60) % 360}, 100%, 60%)`);
-      grad.addColorStop(1, `hsl(${(timestamp / 12 + 120) % 360}, 100%, 55%)`);
+      grad.addColorStop(0, `hsl(${hue}, 100%, 65%)`);
+      grad.addColorStop(0.5, `hsl(${(hue + 60) % 360}, 100%, 60%)`);
+      grad.addColorStop(1, `hsl(${(hue + 120) % 360}, 100%, 55%)`);
 
-      const glowIntensity = Math.sin(timestamp / 150) * 1.5 + 4.5;
+      const glowIntensity = Math.sin(timestamp / 200) * 1.5 + 4.5;
 
       ctx.strokeStyle = grad;
       ctx.lineWidth = 5.5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.shadowColor = `hsl(${(timestamp / 12 + 30) % 360}, 100%, 60%)`;
+      ctx.shadowColor = `hsl(${(hue + 30) % 360}, 100%, 60%)`;
       ctx.shadowBlur = glowIntensity;
 
       ctx.beginPath();
@@ -131,7 +140,10 @@ export default function AnimatedFavicon({ prefersReduced }) {
     };
 
     animationFrameId = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, [prefersReduced]);
 
   return null;
