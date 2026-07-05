@@ -1,21 +1,31 @@
 "use client";
 import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react';
-import { Canvas, useFrame, invalidate } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 const LANES = [-3.6, 3.6];
 
-/* ─── Floating Particle System ─── */
-function Particles({ count = 50 }) {
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+    check();
+    window.addEventListener('resize', check, { passive: true });
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isMobile;
+}
+
+function Particles({ count = 40 }) {
   const mesh = useRef();
   const { positions, colors } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const palette = [
-      [0, 0.94, 1],    // cyan
-      [0.545, 0.42, 1], // violet
-      [1, 0.24, 0.6],   // magenta
+      [0, 0.94, 1],
+      [0.545, 0.42, 1],
+      [1, 0.24, 0.6],
     ];
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 80;
@@ -34,7 +44,6 @@ function Particles({ count = 50 }) {
     const t = clock.getElapsedTime();
     mesh.current.rotation.y = t * 0.01;
     mesh.current.position.y = Math.sin(t * 0.1) * 1.5;
-    invalidate();
   });
 
   return (
@@ -48,25 +57,17 @@ function Particles({ count = 50 }) {
   );
 }
 
-/* ─── Realistic 3D Ferrari Model Component (Optimized) ─── */
 function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
   const groupRef = useRef();
   const wheelsRef = useRef([]);
-  
-  // Load the downloaded Ferrari model
   const { scene } = useGLTF('/models/ferrari.glb');
-  
-  // Clone the scene so each instance has its own position, rotation, and materials
+
   const clonedScene = useMemo(() => {
     const clone = scene.clone();
-    
-    // Customize materials with high-performance Standard Material (no Physical Material clearcoat)
     clone.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = false;
         child.receiveShadow = false;
-
-        // Customize the paint color with Standard Shader to save GPU calculations
         if (child.name === 'body' || child.name.includes('body') || child.name.includes('paint')) {
           child.material = new THREE.MeshStandardMaterial({
             color: new THREE.Color(color),
@@ -74,8 +75,6 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
             roughness: 0.15,
           });
         }
-        
-        // Add chrome metalness to rims/wheels
         if (child.name.includes('rim') || child.name.includes('spoke')) {
           child.material = new THREE.MeshStandardMaterial({
             color: '#ffffff',
@@ -83,8 +82,6 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
             roughness: 0.1,
           });
         }
-        
-        // Darken tires
         if (child.name.includes('tire') || child.name.includes('wheel')) {
           child.material = new THREE.MeshStandardMaterial({
             color: '#121212',
@@ -94,11 +91,9 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
         }
       }
     });
-    
     return clone;
   }, [scene, color]);
 
-  // Find wheels to animate rotation
   useEffect(() => {
     wheelsRef.current = [];
     clonedScene.traverse((child) => {
@@ -110,48 +105,30 @@ function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
     });
   }, [clonedScene]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!groupRef.current) return;
-    
-    // Move car forward along Z-axis
     groupRef.current.position.z += speed;
-    
-    // Reset position if it goes past the camera viewport
     if (groupRef.current.position.z > 22) {
       groupRef.current.position.z = -220 - Math.random() * 40;
     }
-
-    // Rotate wheels relative to car speed
     const wheelRotationSpeed = (speed / 0.2) * 8 * delta;
     wheelsRef.current.forEach((wheel) => {
       wheel.rotation.x += wheelRotationSpeed;
     });
-
-    invalidate();
   });
 
   return (
     <group ref={groupRef} position={[lane, 0.05, initialZ]} scale={[0.82, 0.82, 0.82]} rotation={[0, Math.PI, 0]}>
-      {/* Real Ferrari GLB model primitive */}
       <primitive object={clonedScene} />
-
-      {/* Realistic Glowing Underglow Plate */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
         <planeGeometry args={[1.9, 4.4]} />
-        <meshBasicMaterial
-          color={underglowColor}
-          transparent
-          opacity={0.25}
-        />
+        <meshBasicMaterial color={underglowColor} transparent opacity={0.25} />
       </mesh>
-
-      {/* Optimized Underglow Point Light (single point light per car) */}
       <pointLight color={underglowColor} intensity={2.0} distance={5} position={[0, -0.05, 0]} />
     </group>
   );
 }
 
-/* ─── Neon Road Dash Lines ─── */
 function DashLines() {
   const groupRef = useRef();
   const lines = useMemo(() => {
@@ -168,7 +145,6 @@ function DashLines() {
       child.position.z += 0.32;
       if (child.position.z > 22) child.position.z -= 375;
     });
-    invalidate();
   });
 
   const geo = useMemo(() => new THREE.BoxGeometry(0.08, 0.02, 4.5), []);
@@ -183,7 +159,6 @@ function DashLines() {
   );
 }
 
-/* ─── Speed Lines Effect ─── */
 function SpeedLines() {
   const groupRef = useRef();
   const lines = useMemo(() => {
@@ -206,7 +181,6 @@ function SpeedLines() {
       child.position.z += lines[i].speed;
       if (child.position.z > 22) child.position.z = -300 - Math.random() * 50;
     });
-    invalidate();
   });
 
   return (
@@ -221,17 +195,14 @@ function SpeedLines() {
   );
 }
 
-/* ─── Cars Fleet ─── */
 function Cars({ isMobile }) {
-  // REDUCED CAR COUNT FOR MAXIMUM PERFORMANCE (Desktop: 2, Mobile: 1)
   const CAR_COUNT = isMobile ? 1 : 2;
-  
-  const carSpecs = [
-    { color: '#ff1100', underglow: '#ff1144' }, // Rosso Corsa (Classic Red)
-    { color: '#00ccff', underglow: '#00f0ff' }, // Modena Cyan
-  ];
 
   const carData = useMemo(() => {
+    const specs = [
+      { color: '#ff1100', underglow: '#ff1144' },
+      { color: '#00ccff', underglow: '#00f0ff' },
+    ];
     const data = [];
     for (let i = 0; i < CAR_COUNT; i++) {
       data.push({
@@ -239,8 +210,8 @@ function Cars({ isMobile }) {
         initialZ: -20 - i * 65,
         lane: LANES[i % 2],
         speed: 0.16 + Math.random() * 0.06,
-        color: carSpecs[i % carSpecs.length].color,
-        underglow: carSpecs[i % carSpecs.length].underglow,
+        color: specs[i % specs.length].color,
+        underglow: specs[i % specs.length].underglow,
       });
     }
     return data;
@@ -262,25 +233,24 @@ function Cars({ isMobile }) {
   );
 }
 
-/* Preload model to ensure zero pop-in delay */
 useGLTF.preload('/models/ferrari.glb');
 
-/* ─── Main Scene ─── */
 export default function Scene3D({ prefersReduced }) {
-  const isMobile = useMemo(() =>
-    typeof window !== 'undefined' &&
-    (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent))
-  , []);
-
+  const isMobile = useIsMobile();
   const effectiveReduced = prefersReduced || isMobile;
 
   const [isScrolling, setIsScrolling] = useState(false);
   useEffect(() => {
     let scrollTimer = null;
+    let scrollCount = 0;
     const onScroll = () => {
+      scrollCount++;
       if (!isScrolling) setIsScrolling(true);
       clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => setIsScrolling(false), 200);
+      scrollTimer = setTimeout(() => {
+        scrollCount--;
+        if (scrollCount === 0) setIsScrolling(false);
+      }, 150);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
@@ -302,29 +272,27 @@ export default function Scene3D({ prefersReduced }) {
           powerPreference: 'high-performance',
           stencil: false,
           depth: true,
+          failIfMajorPerformanceCaveat: false,
         }}
-        dpr={1} // Static DPR for buttery smooth 60fps on Retina and 4K screens
+        dpr={isMobile ? 0.75 : 1}
         frameloop={frameloop}
         onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x060810, 0.024);
           camera.lookAt(0, 0.6, -70);
-          if (isMobile) gl.setPixelRatio(1);
+          if (isMobile) gl.setPixelRatio(0.75);
         }}
       >
-        {/* Rich Studio Lights for Metallic Car Reflections */}
         <hemisphereLight args={[0xaaccff, 0x110022, 0.75]} />
         <directionalLight args={[0xffffff, 1.2]} position={[10, 20, 8]} />
         <directionalLight args={[0x8888ff, 0.3]} position={[-10, 10, -10]} />
         <pointLight color="#00f0ff" intensity={1.5} distance={25} position={[-8, 4, -20]} />
         <pointLight color="#8b6bff" intensity={1.2} distance={20} position={[8, 4, -40]} />
 
-        {/* Shiny & Reflective Road Surface (Merged to prevent transparent overdraw lag) */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -200]}>
           <planeGeometry args={[18, 550]} />
           <meshStandardMaterial color="#060810" roughness={0.2} metalness={0.85} />
         </mesh>
 
-        {/* Neon Grid */}
         <gridHelper
           args={[550, 55, '#00f0ff', '#1a0e44']}
           position={[0, 0.02, -200]}
@@ -332,13 +300,9 @@ export default function Scene3D({ prefersReduced }) {
           material-opacity={0.18}
         />
 
-        {/* Dash Lines */}
         <DashLines />
-
-        {/* Speed Lines */}
         {!effectiveReduced && <SpeedLines />}
 
-        {/* Edge Strips */}
         <mesh position={[-8.2, 0.1, -200]}>
           <boxGeometry args={[0.1, 0.1, 550]} />
           <meshBasicMaterial color="#00f0ff" />
@@ -348,7 +312,6 @@ export default function Scene3D({ prefersReduced }) {
           <meshBasicMaterial color="#8b6bff" />
         </mesh>
 
-        {/* Side barrier lights */}
         {!effectiveReduced && [-1, -2, -3, -4, -5].map(i => (
           <React.Fragment key={i}>
             <mesh position={[-8.2, 0.6, i * 32 - 40]}>
@@ -362,10 +325,8 @@ export default function Scene3D({ prefersReduced }) {
           </React.Fragment>
         ))}
 
-        {/* Particle System */}
-        {!effectiveReduced && <Particles count={50} />}
+        {!effectiveReduced && <Particles count={isMobile ? 25 : 40} />}
 
-        {/* Supercars fleet */}
         <Suspense fallback={null}>
           <Cars isMobile={isMobile} />
         </Suspense>

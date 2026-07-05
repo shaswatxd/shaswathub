@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg: #030303;
+  --color-panel: #0e1424;
+  --color-cyan: #00f0ff;
+  --color-violet: #8b6bff;
+  --color-magenta: #ff3d9a;
+  --color-green: #3ef07c;
+  --color-muted: #8895b0;
+  --color-text: #e8edf8;
+
+  --font-mono: var(--font-mono), monospace;
+  --font-display: var(--font-display), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-marquee: marqueeScroll 45s linear infinite;
+  --animate-marquee-reverse: marqueeScroll 38s linear infinite reverse;
+  --animate-glow-pulse: glowPulse 3s ease-in-out infinite;
+  --animate-scroll-bounce: scrollBounce 2s ease-in-out infinite;
+  --animate-blink: blink 1s step-end infinite;
+}
+
 @layer base {
   :root {
     --bg: #030303;
@@ -12,16 +34,25 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     scroll-padding-top: 80px;
     background-color: var(--bg);
     color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     overflow-x: hidden;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgba(0, 240, 255, 0.2);
+    color: var(--text);
   }
 
   ::-webkit-scrollbar {
@@ -33,9 +64,18 @@
   ::-webkit-scrollbar-thumb {
     background: rgba(139,107,255,0.3);
     border-radius: 3px;
+    transition: background 0.3s ease;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(139,107,255,0.6);
+  }
+
+  img, video, canvas {
+    will-change: auto;
+  }
+
+  a, button {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -72,29 +112,70 @@
 
 .animate-pulse-custom {
   animation: pulse 2.2s ease-in-out infinite;
+  will-change: opacity, transform;
 }
 
 .animate-shimmer-text {
   background-size: 200% 100%;
   animation: shimmerText 4s linear infinite;
+  will-change: background-position;
 }
 
 .animate-marquee {
   animation: marqueeScroll 45s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee-reverse {
   animation: marqueeScroll 38s linear infinite reverse;
+  will-change: transform;
 }
 
 .animate-glow-pulse {
   animation: glowPulse 3s ease-in-out infinite;
+  will-change: opacity;
 }
 
 .animate-scroll-bounce {
   animation: scrollBounce 2s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 .animate-blink {
   animation: blink 1s step-end infinite;
+  will-change: opacity;
+}
+
+/* GPU-accelerated transforms for smooth scrolling */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Smooth hover transitions on interactive elements */
+a, button, [role="button"] {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none !important;
+  }
+
+  .animate-scroll-bounce {
+    animation: none !important;
+  }
 }
