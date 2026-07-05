@@ -713,7 +713,7 @@ export default function App() {
               <span className="t-cmd">whoami</span>
             </div>
             <div className="t-output">
-              <span className="t-key">name</span>: Shaswat<br />
+              <span className="t-key">name</span>: Srijan Shaswat<br />
               <span className="t-key">role</span>: Full-Stack &amp; Desktop Developer<br />
               <span className="t-key">focus</span>: Web Apps · Desktop Tools · Automation<br />
               <span className="t-key">currently</span>: Building cool things &amp; shipping fast<br />
