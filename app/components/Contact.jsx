@@ -22,7 +22,7 @@ export default function Contact() {
           <span style={{ backgroundImage: 'linear-gradient(to right, #00f0ff, #8b6bff, #ff3d9a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Together.</span>
         </h2>
         <p className="max-w-[500px] mx-auto text-[#8895b0] text-xs sm:text-sm leading-relaxed">
-          Got a project idea, collaboration, or just want to say hi? I&apos;m always open to discussing new opportunities and interesting concepts at <a href="mailto:srijankumardeo777@gmail.com" className="underline hover:text-[#e8edf8] transition-colors duration-300" style={{ color: '#00f0ff' }}>srijankumardeo777@gmail.com</a>.
+          Got a project idea, collaboration, or just want to say hi? I&apos;m always open to discussing new opportunities and interesting concepts. Reach out anytime.
         </p>
       </div>
     </motion.div>
