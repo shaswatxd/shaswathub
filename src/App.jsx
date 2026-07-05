@@ -264,7 +264,7 @@ function Card({ project, idx }) {
       <span className="badge" style={{ color: col, borderColor: `${col}44` }}>
         {project.badge}
       </span>
-    </div>
+    </motion.div>
   );
 }
 
@@ -733,7 +733,7 @@ export default function App() {
             </div>
             <span>Scroll to explore</span>
           </div>
-        </header>
+        </motion.header>
 
         {/* ── Stats Strip ── */}
         <StatsStrip />
