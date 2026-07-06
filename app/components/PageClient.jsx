@@ -64,7 +64,9 @@ export default function PageClient() {
     const handleMQ = (e) => setPrefersReduced(e.matches);
     mq.addEventListener("change", handleMQ);
 
-    window.addEventListener("mousemove", handleMouse, { passive: true });
+    if (window.innerWidth >= 768) {
+      window.addEventListener("mousemove", handleMouse, { passive: true });
+    }
 
     const sections = gsap.utils.toArray('.animate-section');
     sections.forEach((sec) => {
@@ -98,10 +100,10 @@ export default function PageClient() {
       <Scene3D prefersReduced={prefersReduced} />
 
       <div className="fixed inset-0 bg-gradient-to-b from-[#060810]/10 via-[#060810]/50 to-[#060810]/95 pointer-events-none z-[1]" />
-      <div ref={glowRef} className="fixed top-[-25%] left-1/2 w-[1100px] h-[700px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.07)_0%,rgba(0,240,255,0.04)_15%,rgba(139,107,255,0.03)_30%,rgba(139,107,255,0.01)_50%,transparent_65%)] pointer-events-none z-[1] will-change-transform" />
-      <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1] will-change-transform" />
+      <div ref={glowRef} className="fixed top-[-25%] left-1/2 w-[90vw] md:w-[1100px] h-[50vh] md:h-[700px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.07)_0%,rgba(0,240,255,0.04)_15%,rgba(139,107,255,0.03)_30%,rgba(139,107,255,0.01)_50%,transparent_65%)] pointer-events-none z-[1] will-change-transform" />
+      <div ref={glowSecRef} className="fixed top-[30%] left-1/2 w-[80vw] md:w-[700px] h-[40vh] md:h-[500px] bg-[radial-gradient(ellipse,rgba(255,61,154,0.05)_0%,rgba(139,107,255,0.02)_30%,transparent_60%)] pointer-events-none z-[1] will-change-transform" />
 
-      <div className="relative z-10 w-full max-w-[100vw]">
+      <div className="relative z-10 w-full max-w-[100vw] overflow-x-clip">
         <Navigation />
         <Hero />
         <StatsStrip />

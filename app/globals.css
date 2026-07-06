@@ -40,10 +40,13 @@
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+    max-width: 100%;
   }
 
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
+    max-width: 100%;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

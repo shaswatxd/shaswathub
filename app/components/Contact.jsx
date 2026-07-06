@@ -13,7 +13,7 @@ const Contact = React.memo(function Contact() {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.06)_0%,rgba(139,107,255,0.04)_40%,transparent_70%)] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[90vw] max-w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(0,240,255,0.06)_0%,rgba(139,107,255,0.04)_40%,transparent_70%)] pointer-events-none z-0" />
       <div className="relative z-10 text-center p-12 bg-white/[0.02] border border-white/[0.08] rounded-3xl overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-[2px]" style={{ background: 'linear-gradient(to right, transparent, #00f0ff, transparent)' }} />
         <div className="font-mono text-[10px] tracking-[3px] uppercase mb-4.5" style={{ color: '#00f0ff' }}>Get In Touch</div>

@@ -69,7 +69,7 @@ const Particles = memo(function Particles({ count = 30 }) {
   return <points ref={mesh} geometry={geometry} material={material} />;
 });
 
-const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, underglowColor }) {
+const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, underglowColor, isMobile }) {
   const groupRef = useRef();
   const wheelsRef = useRef([]);
   const { scene } = useGLTF('/models/ferrari.glb');
@@ -164,7 +164,7 @@ const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, unde
     <group ref={groupRef} position={[lane, 0.05, initialZ]} scale={[0.82, 0.82, 0.82]} rotation={[0, Math.PI, 0]}>
       <primitive object={clonedScene} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]} geometry={underglowGeo} material={underglowMat} />
-      <pointLight color={underglowColor} intensity={1.5} distance={4} position={[0, -0.05, 0]} />
+      {!isMobile && <pointLight color={underglowColor} intensity={1.5} distance={4} position={[0, -0.05, 0]} />}
     </group>
   );
 });
@@ -238,6 +238,7 @@ const Cars = memo(function Cars({ isMobile }) {
           speed={car.speed}
           color={car.color}
           underglowColor={car.underglow}
+          isMobile={isMobile}
         />
       ))}
     </>
@@ -290,7 +291,7 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
       >
         <hemisphereLight args={[0xaaccff, 0x110022, 0.6]} />
         <directionalLight args={[0xffffff, 1.0]} position={[10, 20, 8]} />
-        <pointLight color="#00f0ff" intensity={1.2} distance={20} position={[-8, 4, -20]} />
+        {!isMobile && <pointLight color="#00f0ff" intensity={1.2} distance={20} position={[-8, 4, -20]} />}
 
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -200]} geometry={roadGeo} material={roadMat} />
 

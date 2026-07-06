@@ -127,6 +127,7 @@ function Card({ project, idx }) {
   };
 
   const handleMouseMove = (e) => {
+    if (window.innerWidth < 768) return;
     if (!cardRef.current) return;
     const r = cardRef.current.getBoundingClientRect();
     const nx = (e.clientX - r.left) / r.width;
@@ -140,6 +141,7 @@ function Card({ project, idx }) {
   };
 
   const handleMouseLeave = () => {
+    if (window.innerWidth < 768) return;
     tiltRef.current.txRx = 0;
     tiltRef.current.txRy = 0;
     tiltRef.current.tmx = 0.5;
@@ -153,7 +155,7 @@ function Card({ project, idx }) {
   return (
     <motion.div
       ref={cardRef}
-      className="relative bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] rounded-2xl p-7 overflow-hidden backdrop-blur-xl transition-all duration-300"
+      className="relative bg-white/[0.03] md:bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] rounded-2xl p-7 overflow-hidden backdrop-blur-none md:backdrop-blur-xl transition-all duration-300"
       style={{
         '--glow-color': `${col}22`,
         '--card-accent': col,

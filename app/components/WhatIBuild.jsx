@@ -37,7 +37,7 @@ const WHAT_I_BUILD = [
 const WhatIBuildCard = React.memo(function WhatIBuildCard({ item, idx }) {
   return (
     <motion.div
-      className="relative bg-white/[0.02] border border-white/[0.08] rounded-2xl p-8 overflow-hidden backdrop-blur-xl"
+      className="relative bg-white/[0.03] md:bg-white/[0.02] border border-white/[0.08] rounded-2xl p-8 overflow-hidden backdrop-blur-none md:backdrop-blur-xl"
       style={{ '--wib-color': item.color }}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}

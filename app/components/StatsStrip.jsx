@@ -26,7 +26,7 @@ const StatsStrip = React.memo(function StatsStrip() {
   return (
     <motion.div
       ref={statsRef}
-      className="max-w-[900px] mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 bg-white/[0.02] border border-white/[0.08] rounded-2xl overflow-hidden backdrop-blur-xl"
+      className="max-w-[900px] mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 bg-white/[0.03] md:bg-white/[0.02] border border-white/[0.08] rounded-2xl overflow-hidden backdrop-blur-none md:backdrop-blur-xl"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
