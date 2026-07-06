@@ -5,21 +5,6 @@ import { motion } from 'framer-motion';
 
 const PROJECTS = [
   {
-    name: "Beam P2P",
-    desc: "Serverless peer-to-peer file sharing portal using WebRTC for direct device-to-device transfers with zero size boundaries and complete privacy.",
-    icon: "📡",
-    glow: "cyan",
-    badge: "LIVE APP",
-    githubUrl: "https://github.com/shaswatxd/beam-p2p",
-    liveUrl: "https://beamsender.vercel.app",
-    features: [
-      "⚡ Direct Browser-to-Browser WebRTC Transfers",
-      "📁 Zero Size Boundaries & Stream-Saving",
-      "🔒 End-to-End Encrypted Peer Links",
-      "💎 Free & Premium ($9/mo) Plans with Stripe"
-    ]
-  },
-  {
     name: "We Plays",
     desc: "Premium glassmorphic desktop music player with integrated YouTube downloader, visualizer, local LAN share, and automatic ID3 metadata fetching.",
     icon: "🎵",
@@ -34,22 +19,6 @@ const PROJECTS = [
       "🎤 Synchronized Lyrics & Insights"
     ]
   },
-  {
-    name: "VoiceWave",
-    desc: "Real-time voice chat application featuring WebRTC audio streaming, Socket.IO room coordination, and an Electron desktop shell.",
-    icon: "🎙️",
-    glow: "cyan",
-    badge: "LIVE APP",
-    githubUrl: "https://github.com/shaswatxd/voicewave",
-    liveUrl: "https://voicewave-tj0e.onrender.com/",
-    features: [
-      "🎙️ WebRTC Real-Time Audio",
-      "⚡ Socket.IO Room Coordination",
-      "🖥️ Electron Desktop Shell Integration",
-      "🎛️ Ultra Low Latency Connections"
-    ]
-  },
-
 
   {
     name: "JustPDFCraft",
