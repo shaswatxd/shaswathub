@@ -19,13 +19,6 @@ const WHAT_I_BUILD = [
     tags: ["React", "Vite", "Three.js"]
   },
   {
-    title: "P2P & Real-Time",
-    desc: "Peer-to-peer file sharing, WebRTC streaming, and real-time communication systems with zero server dependency.",
-    icon: "📡",
-    color: "#ff3d9a",
-    tags: ["WebRTC", "PeerJS", "Socket.IO"]
-  },
-  {
     title: "Developer Tools",
     desc: "CLI utilities, automation scripts, and dev tooling that solve real problems and save hours of manual work.",
     icon: "⚙️",

@@ -19,7 +19,7 @@ const StatsStrip = React.memo(function StatsStrip() {
     return () => observer.disconnect();
   }, []);
 
-  const projects = useCountUp(5, 1600, inView);
+  const projects = useCountUp(3, 1600, inView);
   const techs = useCountUp(16, 1800, inView);
   const commits = useCountUp(1000, 2200, inView);
 
