@@ -33,13 +33,6 @@ export default function PageClient() {
   const glowSecRef = useRef(null);
   const rafRef = useRef(null);
 
-  const handleMouse = useCallback((e) => {
-    parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
-    if (!rafRef.current) {
-      rafRef.current = requestAnimationFrame(tick);
-    }
-  }, [tick]);
-
   const lerp = (a, b, t) => a + (b - a) * t;
 
   const tick = useCallback(() => {
@@ -57,6 +50,13 @@ export default function PageClient() {
       rafRef.current = null;
     }
   }, []);
+
+  const handleMouse = useCallback((e) => {
+    parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(tick);
+    }
+  }, [tick]);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
