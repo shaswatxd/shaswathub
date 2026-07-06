@@ -41,7 +41,7 @@ const PROJECTS = [
     glow: "cyan",
     badge: "LIVE APP",
     githubUrl: "https://github.com/shaswatxd/voicewave",
-    liveUrl: "https://voicewave-production-289f.up.railway.app/",
+    liveUrl: "https://voicewave-tj0e.onrender.com/",
     features: [
       "🎙️ WebRTC Real-Time Audio",
       "⚡ Socket.IO Room Coordination",
@@ -49,6 +49,8 @@ const PROJECTS = [
       "🎛️ Ultra Low Latency Connections"
     ]
   },
+
+
   {
     name: "JustPDFCraft",
     desc: "Browser-based client-side PDF utility toolkit to merge, split, compress, watermark, protect, and annotate documents locally.",
