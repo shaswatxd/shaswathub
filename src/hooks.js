@@ -7,14 +7,20 @@ export function useCountUp(target, duration = 2000, started = false) {
   useEffect(() => {
     if (!started) return;
     let start = null;
+    let animationFrameId;
     const step = (timestamp) => {
       if (!start) start = timestamp;
       const progress = Math.min((timestamp - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setCount(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(step);
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
     };
-    requestAnimationFrame(step);
+    animationFrameId = requestAnimationFrame(step);
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, [target, duration, started]);
 
   return count;

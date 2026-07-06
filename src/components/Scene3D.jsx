@@ -19,7 +19,7 @@ function useIsMobile() {
 
 const Particles = memo(function Particles({ count = 30 }) {
   const mesh = useRef();
-  const { positions, colors, geometry, material } = useMemo(() => {
+  const { geometry, material } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const palette = [
@@ -49,8 +49,15 @@ const Particles = memo(function Particles({ count = 30 }) {
       sizeAttenuation: true,
     });
     
-    return { positions: pos, colors: col, geometry: geo, material: mat };
+    return { geometry: geo, material: mat };
   }, [count]);
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
 
   useFrame(({ clock }) => {
     if (!mesh.current) return;
@@ -69,34 +76,42 @@ const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, unde
 
   const clonedScene = useMemo(() => {
     const clone = scene.clone();
+    const createdMaterials = [];
     clone.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = false;
         child.receiveShadow = false;
         child.frustumCulled = true;
         if (child.name === 'body' || child.name.includes('body') || child.name.includes('paint')) {
-          child.material = new THREE.MeshStandardMaterial({
+          const m = new THREE.MeshStandardMaterial({
             color: new THREE.Color(color),
             metalness: 0.9,
             roughness: 0.15,
           });
+          child.material = m;
+          createdMaterials.push(m);
         }
         if (child.name.includes('rim') || child.name.includes('spoke')) {
-          child.material = new THREE.MeshStandardMaterial({
+          const m = new THREE.MeshStandardMaterial({
             color: '#ffffff',
             metalness: 0.95,
             roughness: 0.1,
           });
+          child.material = m;
+          createdMaterials.push(m);
         }
         if (child.name.includes('tire') || child.name.includes('wheel')) {
-          child.material = new THREE.MeshStandardMaterial({
+          const m = new THREE.MeshStandardMaterial({
             color: '#121212',
             roughness: 0.85,
             metalness: 0.1,
           });
+          child.material = m;
+          createdMaterials.push(m);
         }
       }
     });
+    clone.userData.materials = createdMaterials;
     return clone;
   }, [scene, color]);
 
@@ -109,6 +124,14 @@ const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, unde
         }
       }
     });
+  }, [clonedScene]);
+
+  useEffect(() => {
+    return () => {
+      if (clonedScene.userData.materials) {
+        clonedScene.userData.materials.forEach(m => m.dispose());
+      }
+    };
   }, [clonedScene]);
 
   useFrame((_, delta) => {
@@ -129,6 +152,13 @@ const FerrariCar = memo(function FerrariCar({ initialZ, lane, speed, color, unde
     transparent: true,
     opacity: 0.2,
   }), [underglowColor]);
+
+  useEffect(() => {
+    return () => {
+      underglowGeo.dispose();
+      underglowMat.dispose();
+    };
+  }, [underglowGeo, underglowMat]);
 
   return (
     <group ref={groupRef} position={[lane, 0.05, initialZ]} scale={[0.82, 0.82, 0.82]} rotation={[0, Math.PI, 0]}>
@@ -159,6 +189,13 @@ const DashLines = memo(function DashLines() {
 
   const geo = useMemo(() => new THREE.BoxGeometry(0.08, 0.02, 4.5), []);
   const mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.25 }), []);
+
+  useEffect(() => {
+    return () => {
+      geo.dispose();
+      mat.dispose();
+    };
+  }, [geo, mat]);
 
   return (
     <group ref={groupRef}>
@@ -219,6 +256,16 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
   const border1Mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#00f0ff' }), []);
   const border2Mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#8b6bff' }), []);
 
+  useEffect(() => {
+    return () => {
+      roadGeo.dispose();
+      roadMat.dispose();
+      borderGeo.dispose();
+      border1Mat.dispose();
+      border2Mat.dispose();
+    };
+  }, [roadGeo, roadMat, borderGeo, border1Mat, border2Mat]);
+
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', willChange: 'transform' }}>
       <Canvas
@@ -232,7 +279,7 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
           depth: true,
           failIfMajorPerformanceCaveat: false,
         }}
-        dpr={isMobile ? 0.75 : [1, 1.5]}
+        dpr={isMobile ? 0.75 : 1}
         frameloop="always"
         onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x060810, 0.024);

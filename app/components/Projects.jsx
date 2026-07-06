@@ -121,6 +121,8 @@ function Card({ project, idx }) {
     const stillMoving = Math.abs(t.rx - t.txRx) > 0.01 || Math.abs(t.ry - t.txRy) > 0.01;
     if (stillMoving || t.active) {
       rafTilt.current = requestAnimationFrame(animateTilt);
+    } else {
+      rafTilt.current = null;
     }
   };
 

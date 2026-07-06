@@ -38,7 +38,7 @@ export default function PageClient() {
     if (!rafRef.current) {
       rafRef.current = requestAnimationFrame(tick);
     }
-  }, []);
+  }, [tick]);
 
   const lerp = (a, b, t) => a + (b - a) * t;
 

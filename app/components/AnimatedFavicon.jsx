@@ -55,7 +55,7 @@ export default function AnimatedFavicon({ prefersReduced }) {
     let animationFrameId;
     let lastUpdate = 0;
     let isVisible = true;
-    const interval = 120;
+    const interval = 1200;
 
     const onVisibility = () => {
       isVisible = !document.hidden;

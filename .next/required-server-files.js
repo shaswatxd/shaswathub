@@ -99,7 +99,9 @@ self.__SERVER_FILES_MANIFEST={
       "serverFunctions": true,
       "browserToTerminal": "warn"
     },
-    "compiler": {},
+    "compiler": {
+      "removeConsole": true
+    },
     "expireTime": 31536000,
     "staticPageGenerationTimeout": 60,
     "modularizeImports": {
@@ -181,7 +183,7 @@ self.__SERVER_FILES_MANIFEST={
       "imgOptSkipMetadata": null,
       "isrFlushToDisk": true,
       "workerThreads": false,
-      "optimizeCss": false,
+      "optimizeCss": true,
       "nextScriptWorkers": false,
       "scrollRestoration": false,
       "externalDir": false,
@@ -230,6 +232,9 @@ self.__SERVER_FILES_MANIFEST={
         "framer-motion",
         "gsap",
         "lenis",
+        "@react-three/fiber",
+        "@react-three/drei",
+        "three",
         "lucide-react",
         "date-fns",
         "lodash-es",
@@ -341,7 +346,8 @@ self.__SERVER_FILES_MANIFEST={
     ".next\\BUILD_ID",
     ".next\\server\\next-font-manifest.js",
     ".next\\server\\next-font-manifest.json",
-    ".next\\required-server-files.json"
+    ".next\\required-server-files.json",
+    ".next\\static\\chunks\\2d7f7u9egdelv.css"
   ],
   "ignore": []
 }
