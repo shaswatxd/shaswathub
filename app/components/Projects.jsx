@@ -5,6 +5,21 @@ import { motion } from 'framer-motion';
 
 const PROJECTS = [
   {
+    name: "VoiceWave",
+    desc: "Crystal-clear real-time voice chat powered by WebRTC peer-to-peer connections. No accounts, no downloads required — just click and talk.",
+    icon: "🎙️",
+    glow: "cyan",
+    badge: "LIVE APP",
+    githubUrl: "https://github.com/shaswatxd/voicewave",
+    liveUrl: "https://voicewave-7ozn.onrender.com",
+    features: [
+      "🔗 WebRTC Peer-to-Peer Voice",
+      "🔒 Password Protected Rooms",
+      "💬 Built-in Text Chat & Emoji",
+      "🎵 Soundboard with 10+ Sounds"
+    ]
+  },
+  {
     name: "We Plays",
     desc: "Premium glassmorphic desktop music player with integrated YouTube downloader, visualizer, local LAN share, and automatic ID3 metadata fetching.",
     icon: "🎵",
