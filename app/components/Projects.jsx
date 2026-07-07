@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 
 const PROJECTS = [
@@ -74,21 +74,15 @@ const GLOW_COLORS = {
   emerald: "#00cdac"
 };
 
-function Card({ project, idx }) {
+const lerp = (a, b, t) => a + (b - a) * t;
+const SPEED = 0.1;
+
+const Card = memo(function Card({ project, idx }) {
   const cardRef = useRef(null);
   const tiltRef = useRef({ rx: 0, ry: 0, txRx: 0, txRy: 0, mx: 0.5, my: 0.5, active: false });
   const rafTilt = useRef(null);
 
-  useEffect(() => {
-    return () => {
-      if (rafTilt.current) cancelAnimationFrame(rafTilt.current);
-    };
-  }, []);
-
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const SPEED = 0.1;
-
-  const animateTilt = () => {
+  const animateTilt = useCallback(() => {
     const t = tiltRef.current;
     t.rx = lerp(t.rx, t.txRx, SPEED);
     t.ry = lerp(t.ry, t.txRy, SPEED);
@@ -110,9 +104,9 @@ function Card({ project, idx }) {
     } else {
       rafTilt.current = null;
     }
-  };
+  }, []);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     if (window.innerWidth < 768) return;
     if (!cardRef.current) return;
     const r = cardRef.current.getBoundingClientRect();
@@ -124,9 +118,9 @@ function Card({ project, idx }) {
     tiltRef.current.tmy = ny;
     tiltRef.current.active = true;
     if (!rafTilt.current) rafTilt.current = requestAnimationFrame(animateTilt);
-  };
+  }, [animateTilt]);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     if (window.innerWidth < 768) return;
     tiltRef.current.txRx = 0;
     tiltRef.current.txRy = 0;
@@ -134,7 +128,13 @@ function Card({ project, idx }) {
     tiltRef.current.tmy = 0.5;
     tiltRef.current.active = false;
     rafTilt.current = requestAnimationFrame(animateTilt);
-  };
+  }, [animateTilt]);
+
+  useEffect(() => {
+    return () => {
+      if (rafTilt.current) cancelAnimationFrame(rafTilt.current);
+    };
+  }, []);
 
   const col = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
 
@@ -215,9 +215,9 @@ function Card({ project, idx }) {
       </span>
     </motion.div>
   );
-}
+});
 
-export default function Projects() {
+export default memo(function Projects() {
   return (
     <>
       <div id="projects" className="max-w-[1480px] mx-auto px-8 flex items-baseline justify-between border-b border-white/[0.08] pb-4 mb-8 animate-section">
@@ -241,4 +241,4 @@ export default function Projects() {
       </div>
     </>
   );
-}
+});

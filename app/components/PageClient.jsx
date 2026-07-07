@@ -25,7 +25,7 @@ const SectionDivider = React.memo(function SectionDivider() {
   return <div className="max-w-[1480px] mx-auto h-[1px] bg-gradient-to-r from-transparent via-white/[0.12] to-transparent my-16 opacity-40 animate-glow-pulse" />;
 });
 
-export default function PageClient() {
+const PageClient = React.memo(function PageClient() {
   const [prefersReduced, setPrefersReduced] = useState(false);
   const parallaxRef = useRef(0);
   const parallaxTarget = useRef(0);
@@ -33,7 +33,7 @@ export default function PageClient() {
   const glowSecRef = useRef(null);
   const rafRef = useRef(null);
 
-  const lerp = (a, b, t) => a + (b - a) * t;
+  const lerp = useCallback((a, b, t) => a + (b - a) * t, []);
 
   const tick = useCallback(() => {
     parallaxRef.current = lerp(parallaxRef.current, parallaxTarget.current, 0.08);
@@ -49,7 +49,7 @@ export default function PageClient() {
     } else {
       rafRef.current = null;
     }
-  }, []);
+  }, [lerp]);
 
   const handleMouse = useCallback((e) => {
     parallaxTarget.current = (e.clientX / window.innerWidth - 0.5) * 40;
@@ -121,4 +121,6 @@ export default function PageClient() {
       </div>
     </>
   );
-}
+});
+
+export default PageClient;

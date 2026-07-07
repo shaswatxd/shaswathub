@@ -15,8 +15,8 @@
   --font-body: var(--font-body), sans-serif;
 
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-marquee: marqueeScroll 45s linear infinite;
-  --animate-marquee-reverse: marqueeScroll 38s linear infinite reverse;
+  --animate-marquee: marqueeScroll 60s linear infinite;
+  --animate-marquee-reverse: marqueeScroll 50s linear infinite reverse;
   --animate-glow-pulse: glowPulse 3s ease-in-out infinite;
   --animate-scroll-bounce: scrollBounce 2s ease-in-out infinite;
   --animate-blink: blink 1s step-end infinite;
@@ -123,12 +123,12 @@
 }
 
 .animate-marquee {
-  animation: marqueeScroll 45s linear infinite;
+  animation: marqueeScroll 60s linear infinite;
   will-change: transform;
 }
 
 .animate-marquee-reverse {
-  animation: marqueeScroll 38s linear infinite reverse;
+  animation: marqueeScroll 50s linear infinite reverse;
   will-change: transform;
 }
 

@@ -279,13 +279,14 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
           stencil: false,
           depth: true,
           failIfMajorPerformanceCaveat: false,
+          precision: isMobile ? 'lowp' : 'highp',
         }}
-        dpr={isMobile ? 0.75 : 1}
-        frameloop="always"
+        dpr={isMobile ? 0.6 : 1}
+        frameloop={effectiveReduced ? "never" : "always"}
         onCreated={({ scene, camera, gl }) => {
           scene.fog = new THREE.FogExp2(0x060810, 0.024);
           camera.lookAt(0, 0.6, -70);
-          if (isMobile) gl.setPixelRatio(0.75);
+          if (isMobile) gl.setPixelRatio(0.6);
           gl.outputColorSpace = THREE.SRGBColorSpace;
         }}
       >
@@ -307,7 +308,7 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
         <mesh position={[-8.2, 0.1, -200]} geometry={borderGeo} material={border1Mat} />
         <mesh position={[8.2, 0.1, -200]} geometry={borderGeo} material={border2Mat} />
 
-        {!effectiveReduced && <Particles count={isMobile ? 18 : 30} />}
+        {!effectiveReduced && <Particles count={isMobile ? 12 : 20} />}
 
         <Suspense fallback={null}>
           <Cars isMobile={isMobile} />

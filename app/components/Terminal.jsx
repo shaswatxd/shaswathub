@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 
-export default function Terminal() {
+export default memo(function Terminal() {
   return (
     <div className="max-w-[760px] mx-auto mb-20 px-8">
       <motion.div
@@ -42,4 +42,4 @@ export default function Terminal() {
       </motion.div>
     </div>
   );
-}
+});
