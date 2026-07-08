@@ -77,7 +77,6 @@ const LuxuryCar = memo(function LuxuryCar({ initialZ, lane, speed, color, rimCol
   const groupRef = useRef();
   const bodyGroupRef = useRef();
   const wheelsRef = useRef([]);
-  const trailRef = useRef();
   const phase = useMemo(() => Math.random() * Math.PI * 2, []);
   const { scene } = useGLTF('/models/ferrari.glb');
 
@@ -90,23 +89,19 @@ const LuxuryCar = memo(function LuxuryCar({ initialZ, lane, speed, color, rimCol
         child.receiveShadow = false;
         child.frustumCulled = true;
         if (child.name === 'body' || child.name.includes('body') || child.name.includes('paint')) {
-          const m = new THREE.MeshPhysicalMaterial({
+          const m = new THREE.MeshStandardMaterial({
             color: new THREE.Color(color),
             metalness: 0.85,
-            roughness: 0.1,
-            clearcoat: 1,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 1.4,
+            roughness: 0.15,
           });
           child.material = m;
           createdMaterials.push(m);
         }
         if (child.name.includes('rim') || child.name.includes('spoke')) {
-          const m = new THREE.MeshPhysicalMaterial({
+          const m = new THREE.MeshStandardMaterial({
             color: rimColor,
             metalness: 0.95,
-            roughness: 0.08,
-            clearcoat: 0.6,
+            roughness: 0.1,
           });
           child.material = m;
           createdMaterials.push(m);
@@ -162,13 +157,6 @@ const LuxuryCar = memo(function LuxuryCar({ initialZ, lane, speed, color, rimCol
       const t = state.clock.getElapsedTime();
       bodyGroupRef.current.position.y = Math.sin(t * 3.2 + phase) * 0.012;
       bodyGroupRef.current.rotation.z = Math.sin(t * 1.7 + phase) * 0.006;
-      bodyGroupRef.current.rotation.x = Math.sin(t * 2.1 + phase) * 0.004;
-    }
-
-    if (trailRef.current) {
-      const speedNorm = THREE.MathUtils.clamp((speed - 0.14) / 0.1, 0, 1);
-      trailRef.current.material.opacity = 0.1 + speedNorm * 0.16;
-      trailRef.current.scale.z = 1 + speedNorm * 0.6;
     }
   });
 
@@ -177,27 +165,14 @@ const LuxuryCar = memo(function LuxuryCar({ initialZ, lane, speed, color, rimCol
     color: underglowColor,
     transparent: true,
     opacity: 0.22,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  }), [underglowColor]);
-
-  const trailGeo = useMemo(() => new THREE.PlaneGeometry(1.5, 9), []);
-  const trailMat = useMemo(() => new THREE.MeshBasicMaterial({
-    color: underglowColor,
-    transparent: true,
-    opacity: 0.12,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
   }), [underglowColor]);
 
   useEffect(() => {
     return () => {
       underglowGeo.dispose();
       underglowMat.dispose();
-      trailGeo.dispose();
-      trailMat.dispose();
     };
-  }, [underglowGeo, underglowMat, trailGeo, trailMat]);
+  }, [underglowGeo, underglowMat]);
 
   return (
     <group ref={groupRef} position={[lane, 0.05, initialZ]} scale={[0.82, 0.82, 0.82]} rotation={[0, Math.PI, 0]}>
@@ -206,15 +181,6 @@ const LuxuryCar = memo(function LuxuryCar({ initialZ, lane, speed, color, rimCol
       </group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]} geometry={underglowGeo} material={underglowMat} />
       {!isMobile && <pointLight color={underglowColor} intensity={1.5} distance={4} position={[0, -0.05, 0]} />}
-      {!isMobile && (
-        <mesh
-          ref={trailRef}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -0.02, -6.2]}
-          geometry={trailGeo}
-          material={trailMat}
-        />
-      )}
     </group>
   );
 });
@@ -265,7 +231,7 @@ const CAR_SPECS = [
 ];
 
 const Cars = memo(function Cars({ isMobile, reduced }) {
-  const CAR_COUNT = isMobile ? 1 : 3;
+  const CAR_COUNT = isMobile ? 1 : 2;
 
   const carData = useMemo(() => {
     const data = [];
@@ -325,7 +291,7 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
   const effectiveReduced = prefersReduced || isMobile;
 
   const roadGeo = useMemo(() => new THREE.PlaneGeometry(18, 550), []);
-  const roadMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#060810', roughness: 0.35, metalness: 0.4 }), []);
+  const roadMat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#060810' }), []);
   const borderGeo = useMemo(() => new THREE.BoxGeometry(0.1, 0.1, 550), []);
   const border1Mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#00f0ff' }), []);
   const border2Mat = useMemo(() => new THREE.MeshBasicMaterial({ color: '#8b6bff' }), []);
@@ -368,7 +334,6 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
         <hemisphereLight args={[0xaaccff, 0x110022, 0.6]} />
         <directionalLight args={[0xffffff, 1.0]} position={[10, 20, 8]} />
         {!isMobile && <pointLight color="#00f0ff" intensity={1.2} distance={20} position={[-8, 4, -20]} />}
-        {!isMobile && <pointLight color="#ff9de2" intensity={0.6} distance={18} position={[8, 5, -12]} />}
 
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -200]} geometry={roadGeo} material={roadMat} />
 
@@ -384,7 +349,7 @@ const Scene3D = memo(function Scene3D({ prefersReduced }) {
         <mesh position={[-8.2, 0.1, -200]} geometry={borderGeo} material={border1Mat} />
         <mesh position={[8.2, 0.1, -200]} geometry={borderGeo} material={border2Mat} />
 
-        {!effectiveReduced && <Particles count={isMobile ? 12 : 24} />}
+        {!effectiveReduced && <Particles count={isMobile ? 12 : 20} />}
 
         <Suspense fallback={null}>
           <Cars isMobile={isMobile} reduced={effectiveReduced} />
