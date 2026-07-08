@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 import dynamic from 'next/dynamic';
 
 import Navigation from './Navigation';
@@ -60,12 +61,27 @@ const PageClient = React.memo(function PageClient() {
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReduced(mq.matches);
+    const reduced = mq.matches;
+    setPrefersReduced(reduced);
     const handleMQ = (e) => setPrefersReduced(e.matches);
     mq.addEventListener("change", handleMQ);
 
     if (window.innerWidth >= 768) {
       window.addEventListener("mousemove", handleMouse, { passive: true });
+    }
+
+    let lenis;
+    if (!reduced) {
+      lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.1,
+      });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
     }
 
     const sections = gsap.utils.toArray('.animate-section');
@@ -91,6 +107,7 @@ const PageClient = React.memo(function PageClient() {
       window.removeEventListener("mousemove", handleMouse);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      if (lenis) lenis.destroy();
     };
   }, [handleMouse]);
 
