@@ -74,96 +74,32 @@ const GLOW_COLORS = {
   emerald: "#00cdac"
 };
 
-const lerp = (a, b, t) => a + (b - a) * t;
-const SPEED = 0.1;
-
 const Card = memo(function Card({ project, idx }) {
-  const cardRef = useRef(null);
-  const tiltRef = useRef({ rx: 0, ry: 0, txRx: 0, txRy: 0, mx: 0.5, my: 0.5, active: false });
-  const rafTilt = useRef(null);
-
-  const animateTilt = useCallback(() => {
-    const t = tiltRef.current;
-    t.rx = lerp(t.rx, t.txRx, SPEED);
-    t.ry = lerp(t.ry, t.txRy, SPEED);
-    t.mx = lerp(t.mx, t.tmx ?? 0.5, SPEED);
-    t.my = lerp(t.my, t.tmy ?? 0.5, SPEED);
-
-    if (cardRef.current) {
-      const dy = t.active ? -8 : 0;
-      const sc = t.active ? 1.015 : 1;
-      cardRef.current.style.transform =
-        `perspective(700px) rotateX(${t.rx}deg) rotateY(${t.ry}deg) translateY(${dy}px) scale(${sc})`;
-      cardRef.current.style.setProperty('--mx', `${t.mx * 100}%`);
-      cardRef.current.style.setProperty('--my', `${t.my * 100}%`);
-    }
-
-    const stillMoving = Math.abs(t.rx - t.txRx) > 0.01 || Math.abs(t.ry - t.txRy) > 0.01;
-    if (stillMoving || t.active) {
-      rafTilt.current = requestAnimationFrame(animateTilt);
-    } else {
-      rafTilt.current = null;
-    }
-  }, []);
-
-  const handleMouseMove = useCallback((e) => {
-    if (window.innerWidth < 768) return;
-    if (!cardRef.current) return;
-    const r = cardRef.current.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width;
-    const ny = (e.clientY - r.top) / r.height;
-    tiltRef.current.txRx = (ny - 0.5) * -12;
-    tiltRef.current.txRy = (nx - 0.5) * 12;
-    tiltRef.current.tmx = nx;
-    tiltRef.current.tmy = ny;
-    tiltRef.current.active = true;
-    if (!rafTilt.current) rafTilt.current = requestAnimationFrame(animateTilt);
-  }, [animateTilt]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (window.innerWidth < 768) return;
-    tiltRef.current.txRx = 0;
-    tiltRef.current.txRy = 0;
-    tiltRef.current.tmx = 0.5;
-    tiltRef.current.tmy = 0.5;
-    tiltRef.current.active = false;
-    rafTilt.current = requestAnimationFrame(animateTilt);
-  }, [animateTilt]);
-
-  useEffect(() => {
-    return () => {
-      if (rafTilt.current) cancelAnimationFrame(rafTilt.current);
-    };
-  }, []);
-
   const col = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
 
   return (
     <motion.div
-      ref={cardRef}
-      className="relative bg-white/[0.03] md:bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] rounded-2xl p-7 overflow-hidden backdrop-blur-none md:backdrop-blur-xl transition-all duration-300"
+      className="relative bg-[#080b16] border border-white/[0.08] hover:border-white/[0.18] rounded-2xl p-7 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:scale-[1.015] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8),0_0_35px_-10px_var(--glow-color)] group"
       style={{
-        '--glow-color': `${col}22`,
+        '--glow-color': `${col}1c`,
         '--card-accent': col,
       }}
       initial={{ opacity: 0, y: 35 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.8, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      transition={{ type: "spring", stiffness: 75, damping: 14, delay: idx * 0.06 }}
     >
       <div
-        className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
         style={{
-          background: `radial-gradient(350px circle at var(--mx, 50%) var(--my, 50%), ${col}18, transparent 65%)`
+          background: `radial-gradient(280px circle at 50% 50%, ${col}0f, transparent 70%)`
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent bg-[length:200%_200%] opacity-0 hover:opacity-100 transition-opacity duration-300 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.01] to-transparent bg-[length:200%_200%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 pointer-events-none" />
 
       <div className="relative z-10 flex items-center justify-between mb-5">
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform duration-300 hover:scale-110 hover:-rotate-3"
+          className="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
           style={{ background: `${col}1a`, border: `1px solid ${col}44`, color: col }}
         >
           {project.icon}

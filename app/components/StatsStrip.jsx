@@ -26,11 +26,11 @@ const StatsStrip = React.memo(function StatsStrip() {
   return (
     <motion.div
       ref={statsRef}
-      className="max-w-[900px] mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 bg-white/[0.03] md:bg-white/[0.02] border border-white/[0.08] rounded-2xl overflow-hidden backdrop-blur-none md:backdrop-blur-xl"
-      initial={{ opacity: 0, y: 30 }}
+      className="max-w-[900px] mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 bg-[#080b16] border border-white/[0.08] rounded-2xl overflow-hidden"
+      initial={{ opacity: 0, y: 25 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ type: "spring", stiffness: 60, damping: 14 }}
     >
       <div className="p-7 text-center border-r border-white/[0.08] hover:bg-white/[0.01] transition-colors duration-300">
         <div className="font-display font-bold text-3xl" style={{ backgroundImage: 'linear-gradient(to right, #00f0ff, #8b6bff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{projects}+</div>

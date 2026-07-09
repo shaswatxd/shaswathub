@@ -30,21 +30,18 @@ const WHAT_I_BUILD = [
 const WhatIBuildCard = React.memo(function WhatIBuildCard({ item, idx }) {
   return (
     <motion.div
-      className="relative bg-white/[0.03] md:bg-white/[0.02] border border-white/[0.08] rounded-2xl p-8 overflow-hidden backdrop-blur-none md:backdrop-blur-xl"
-      style={{ '--wib-color': item.color }}
-      initial={{ opacity: 0, y: 40 }}
+      className="relative bg-[#080b16] border border-white/[0.08] rounded-2xl p-8 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.8),0_0_35px_-10px_var(--wib-glow)] hover:border-white/[0.16] group"
+      style={{ 
+        '--wib-color': item.color,
+        '--wib-glow': `${item.color}20`
+      }}
+      initial={{ opacity: 0, y: 25 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.8, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{
-        y: -8,
-        boxShadow: `0 20px 40px -15px rgba(0,0,0,0.7), 0 0 45px -10px ${item.color}25`,
-        borderColor: `rgba(255,255,255,0.16)`,
-        transition: { type: 'spring', stiffness: 220, damping: 14 }
-      }}
+      transition={{ type: "spring", stiffness: 70, damping: 14, delay: idx * 0.08 }}
     >
       <div
-        className="absolute top-0 left-0 right-0 h-[2px] opacity-0 hover:opacity-100 transition-opacity duration-500"
+        className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{ background: `linear-gradient(90deg, transparent, ${item.color}, transparent)` }}
       />
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5 transition-transform duration-300 hover:scale-110 hover:-rotate-3" style={{ background: `${item.color}15`, border: `1px solid ${item.color}33` }}>

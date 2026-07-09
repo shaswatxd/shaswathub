@@ -8,7 +8,7 @@ const Contact = React.memo(function Contact() {
     <motion.div
       id="contact"
       className="max-w-[900px] mx-auto px-8 mb-16 relative"
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}

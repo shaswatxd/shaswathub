@@ -22,7 +22,7 @@ const Navigation = React.memo(function Navigation() {
 
   return (
     <motion.nav
-      className={`sticky top-0 z-[100] flex items-center justify-between px-8 py-3.5 transition-all duration-500 border-b ${scrolled ? 'bg-[#060810]/95 md:bg-[#060810]/85 border-white/[0.12] shadow-2xl backdrop-blur-none md:backdrop-blur-xl' : 'bg-transparent border-white/[0.04]'}`}
+      className={`sticky top-0 z-[100] flex items-center justify-between px-8 py-3.5 transition-all duration-500 border-b ${scrolled ? 'bg-[#060810] border-white/[0.12] shadow-2xl' : 'bg-transparent border-white/[0.04]'}`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}

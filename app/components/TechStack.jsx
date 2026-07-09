@@ -29,13 +29,13 @@ const TechBadge = React.memo(function TechBadge({ tech, idx }) {
       initial={{ opacity: 0, scale: 0.92, y: 12 }}
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.5, delay: idx * 0.03, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, delay: idx * 0.025, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{
-        y: -4,
-        scale: 1.04,
-        boxShadow: `0 8px 24px ${tech.color}33`,
-        borderColor: `${tech.color}99`,
-        transition: { type: 'spring', stiffness: 350, damping: 12 }
+        y: -3,
+        scale: 1.03,
+        boxShadow: `0 8px 24px ${tech.color}18`,
+        borderColor: `${tech.color}77`,
+        transition: { duration: 0.2, ease: 'easeOut' }
       }}
     >
       <span className="text-lg">{tech.icon}</span>

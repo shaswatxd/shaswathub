@@ -87,10 +87,6 @@
   50%       { opacity: 0.45; transform: scale(0.9); }
 }
 
-@keyframes shimmerText {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
 
 @keyframes marqueeScroll {
   from { transform: translateX(0); }
@@ -116,11 +112,6 @@
   animation: pulse 2.2s ease-in-out infinite;
 }
 
-.animate-shimmer-text {
-  background-size: 200% 100%;
-  animation: shimmerText 3s linear infinite;
-  will-change: background-position;
-}
 
 .animate-marquee {
   animation: marqueeScroll 60s linear infinite;
@@ -142,6 +133,21 @@
 
 .animate-blink {
   animation: blink 1s step-end infinite;
+}
+
+@keyframes ambientGlowPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translate(-50%, 0) scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: translate(-50%, 0) scale(1.1);
+  }
+}
+
+.animate-ambient-glow {
+  animation: ambientGlowPulse 8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

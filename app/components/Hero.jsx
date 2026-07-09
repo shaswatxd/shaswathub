@@ -23,13 +23,11 @@ const Hero = React.memo(function Hero() {
       <h1 className="font-display font-bold text-4xl sm:text-6xl md:text-7xl tracking-[-1.5px] leading-[1.05] text-[#e8edf8] mb-6">
         Everything I&apos;m<br />
         <span
-          className="animate-shimmer-text"
           style={{
             backgroundImage: 'linear-gradient(to right, #00f0ff, #8b6bff, #ff3d9a)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            backgroundSize: '200% 100%',
           }}
         >
           Building, Shipping, Breaking.
