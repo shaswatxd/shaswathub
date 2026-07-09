@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import dynamic from 'next/dynamic';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 import Navigation from './Navigation';
 import Hero from './Hero';
@@ -19,8 +19,8 @@ import Accordions from './Accordions';
 import Contact from './Contact';
 import Footer from './Footer';
 
-// Dynamically load R3F Scene to ensure it works on the client and is optimized
-const Scene3D = dynamic(() => import('../../src/components/Scene3D'), { ssr: false });
+// Lightweight CSS background (no WebGL) + deferred favicon animation
+const CyberBackground = dynamic(() => import('./CyberBackground'), { ssr: false });
 const AnimatedFavicon = dynamic(() => import('./AnimatedFavicon'), { ssr: false });
 
 // Register GSAP ScrollTrigger plugin
@@ -37,88 +37,118 @@ const SectionDivider = React.memo(function SectionDivider() {
   );
 });
 
-// Boot Terminal Preloader Component
+// Cinematic branded boot animation
 function Preloader({ onComplete }) {
-  const [progress, setProgress] = useState(0);
-  const [logIndex, setLogIndex] = useState(0);
-  
-  const logs = useMemo(() => [
-    "[BOOT] Initializing ShaswatHub terminal v4.2.0...",
-    "[CORE] Loading WebGL rendering pipelines...",
-    "[SYS] Calibrating 3D digital wireframe grid...",
-    "[SYS] Loading assets: materials, vectors, shaders...",
-    "[ANIM] Synced GSAP + Lenis scroll controllers...",
-    "[SEC] Establishing secure sandbox environment...",
-    "[OK] Systems nominal. Booting user interface..."
-  ], []);
+  const [display, setDisplay] = useState(0);
+
+  const raw = useMotionValue(0);
+  const smooth = useSpring(raw, { damping: 26, stiffness: 180, mass: 0.5 });
+  const width = useTransform(smooth, (v) => `${v}%`);
+  const glow = useTransform(smooth, [0, 100], [0.3, 1]);
+
+  const status = display < 35
+    ? "Initializing console"
+    : display < 70
+      ? "Loading WebGL grid"
+      : display < 99
+        ? "Syncing motion engine"
+        : "Ready";
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(onComplete, 550);
-          return 100;
-        }
-        const diff = Math.random() * 9 + 4;
-        return Math.min(prev + diff, 100);
-      });
-    }, 70);
-
-    return () => clearInterval(interval);
-  }, [onComplete]);
+    const unsub = smooth.on("change", (v) => setDisplay(Math.round(v)));
+    return () => unsub();
+  }, [smooth]);
 
   useEffect(() => {
-    const targetIdx = Math.min(Math.floor((progress / 100) * logs.length), logs.length - 1);
-    if (targetIdx > logIndex) {
-      setLogIndex(targetIdx);
-    }
-  }, [progress, logIndex, logs.length]);
+    let timer;
+    let val = 0;
+    const tick = () => {
+      val = Math.min(val + Math.random() * 12 + 10, 100);
+      raw.set(val);
+      if (val >= 100) {
+        timer = setTimeout(onComplete, 160);
+        return;
+      }
+      timer = setTimeout(tick, 28);
+    };
+    timer = setTimeout(tick, 28);
+    return () => clearTimeout(timer);
+  }, [onComplete, raw]);
 
   return (
     <motion.div
-      className="fixed inset-0 bg-[#020204] z-[99999] flex flex-col items-center justify-center font-mono text-xs px-6"
+      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#020204] overflow-hidden select-none"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      exit={{ opacity: 0, scale: 1.04 }}
+      transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
     >
+      {/* Ambient radial glow */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{ background: "radial-gradient(circle at 50% 46%, rgba(0,240,255,0.10), transparent 55%)" }}
+      />
+      {/* Drifting cyber grid */}
+      <div aria-hidden className="preloader-grid" />
       <div className="preloader-scanline" />
-      <div className="w-full max-w-[460px]">
-        {/* Terminal Header */}
-        <div className="border border-white/[0.08] bg-white/[0.02] px-4 py-2.5 rounded-t-xl flex items-center justify-between">
-          <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+
+      <div className="relative flex flex-col items-center gap-9 px-6">
+        {/* Logo lockup */}
+        <motion.div
+          className="flex items-center gap-3"
+          initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <motion.span
+            className="preloader-dot"
+            animate={{ scale: [1, 1.4, 1], opacity: [0.75, 1, 0.75] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <div className="font-display font-bold uppercase text-2xl sm:text-4xl tracking-[6px] text-[#e8edf8]">
+            SHASWAT<span className="preloader-grad">HUB</span>
           </div>
-          <span className="text-[10px] text-[#8895b0]">shaswat-hub-bootloader.sh</span>
+        </motion.div>
+
+        {/* Status line */}
+        <div className="h-4 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={status}
+              className="font-mono text-[10px] sm:text-[11px] tracking-[4px] uppercase text-[#8895b0]"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              {status}
+            </motion.div>
+          </AnimatePresence>
         </div>
-        
-        {/* Terminal Body */}
-        <div className="border-x border-b border-white/[0.08] bg-[#05070f]/90 p-6 rounded-b-xl min-h-[170px] flex flex-col justify-between">
-          <div className="space-y-1.5 text-[#8895b0] text-[10px] sm:text-xs">
-            {logs.slice(0, logIndex + 1).map((log, i) => (
-              <div key={i} className={i === logIndex ? "text-[#00f0ff] font-medium" : ""}>
-                {log}
-              </div>
-            ))}
+
+        {/* Progress bar */}
+        <motion.div
+          className="w-[220px] sm:w-[300px] flex flex-col gap-2.5"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          <div className="h-[3px] w-full rounded-full bg-white/[0.06] overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{
+                width,
+                opacity: glow,
+                background: "linear-gradient(90deg,#00f0ff,#8b6bff,#ff3d9a)",
+                boxShadow: "0 0 12px rgba(0,240,255,0.6)",
+              }}
+            />
           </div>
-          
-          {/* Progress Section */}
-          <div className="mt-8">
-            <div className="flex justify-between font-mono text-[10px] text-[#8895b0] mb-2">
-              <span>LOADING NEURAL NETWORK...</span>
-              <span>{Math.floor(progress)}%</span>
-            </div>
-            <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.06]">
-              <motion.div
-                className="h-full bg-gradient-to-r from-[#00f0ff] via-[#8b6bff] to-[#ff3d9a]"
-                style={{ width: `${progress}%` }}
-                transition={{ ease: "easeOut" }}
-              />
-            </div>
+          <div className="flex justify-between font-mono text-[9px] tracking-[2px] text-[#8895b0]/70 uppercase">
+            <span>Booting</span>
+            <span className="tabular-nums">{display}%</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -127,6 +157,18 @@ function Preloader({ onComplete }) {
 const PageClient = React.memo(function PageClient() {
   const [loading, setLoading] = useState(true);
   const [prefersReduced, setPrefersReduced] = useState(false);
+
+  // Skip the boot preloader if it already played this session (instant load on repeat visits)
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("booted") === "1") {
+      setLoading(false);
+    }
+  }, []);
+
+  const finishBoot = React.useCallback(() => {
+    if (typeof window !== "undefined") sessionStorage.setItem("booted", "1");
+    setLoading(false);
+  }, []);
 
   // Mouse coordinates using MotionValues for GPU accelerated mouse glow
   const mouseX = useMotionValue(-200);
@@ -223,13 +265,13 @@ const PageClient = React.memo(function PageClient() {
   return (
     <>
       <AnimatePresence>
-        {loading && <Preloader onComplete={() => setLoading(false)} />}
+        {loading && <Preloader onComplete={finishBoot} />}
       </AnimatePresence>
 
       <AnimatedFavicon prefersReduced={prefersReduced} />
       
-      {/* 3D Interactive Cyber Grid */}
-      <Scene3D prefersReduced={prefersReduced} />
+      {/* Lightweight animated cyber background */}
+      <CyberBackground prefersReduced={prefersReduced} />
 
       {/* Mouse cursor glow background asset */}
       {!prefersReduced && (

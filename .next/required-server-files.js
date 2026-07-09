@@ -232,9 +232,6 @@ self.__SERVER_FILES_MANIFEST={
         "framer-motion",
         "gsap",
         "lenis",
-        "@react-three/fiber",
-        "@react-three/drei",
-        "three",
         "lucide-react",
         "date-fns",
         "lodash-es",
@@ -347,7 +344,7 @@ self.__SERVER_FILES_MANIFEST={
     ".next\\server\\next-font-manifest.js",
     ".next\\server\\next-font-manifest.json",
     ".next\\required-server-files.json",
-    ".next\\static\\chunks\\00coh2w3maj_p.css"
+    ".next\\static\\chunks\\2i4ctkl0so4ia.css"
   ],
   "ignore": []
 }

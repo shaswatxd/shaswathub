@@ -18,7 +18,7 @@ const nextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ['framer-motion', 'gsap', 'lenis', '@react-three/fiber', '@react-three/drei', 'three'],
+    optimizePackageImports: ['framer-motion', 'gsap', 'lenis'],
     optimizeCss: true,
   },
 
