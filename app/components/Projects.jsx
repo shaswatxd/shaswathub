@@ -308,11 +308,14 @@ const Card = memo(function Card({ project, idx, onOpenDetails }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="launch-btn relative overflow-hidden flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#030303] bg-gradient-to-r from-[#e8edf8] to-[#ffffff] px-5 py-2 rounded-xl transition-all duration-300 hover:scale-110 hover:translate-y-[-2px] cursor-pointer"
-              style={{ boxShadow: `0 0 20px ${col}55, 0 0 40px ${col}22` }}
+              className="launch-btn relative overflow-hidden flex items-center gap-1.5 font-mono text-[10px] font-bold text-white px-4 py-1.5 rounded-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+              style={{
+                background: `linear-gradient(135deg, ${col}, ${col}99)`,
+                boxShadow: `0 0 15px ${col}44, inset 0 1px 0 rgba(255,255,255,0.2)`,
+              }}
             >
-              <span>Launch</span>
-              <span className="text-[13px]">↗</span>
+              <span className="launch-shimmer">Launch</span>
+              <span className="text-[12px]">↗</span>
             </a>
           )}
         </div>
