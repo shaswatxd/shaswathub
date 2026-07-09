@@ -109,46 +109,29 @@ const WaveGrid = React.memo(function WaveGrid({ prefersReduced }) {
   );
 });
 
-// Floating Particle System
+// Floating Particle System - GPU Animated (Zero CPU Buffer Uploads)
 const FloatingParticles = React.memo(function FloatingParticles({ count = 35, prefersReduced }) {
   const pointsRef = useRef();
   
-  const [positions, speeds] = useMemo(() => {
+  const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const spd = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       // Random spread in a bounding volume
-      pos[i * 3] = (Math.random() - 0.5) * 35;     // X
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 20; // Y
-      pos[i * 3 + 2] = (Math.random() - 0.7) * 25; // Z
-      
-      spd[i] = 0.05 + Math.random() * 0.08;        // speed
+      pos[i * 3] = (Math.random() - 0.5) * 40;     // X
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 25; // Y
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 30; // Z
     }
-    return [pos, spd];
+    return pos;
   }, [count]);
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (prefersReduced || !pointsRef.current) return;
     
-    const geo = pointsRef.current.geometry;
-    const posAttr = geo.attributes.position;
-    const array = posAttr.array;
-    const dt = Math.min(delta, 0.05);
-
-    for (let i = 0; i < count; i++) {
-      // Float upward on Y axis
-      array[i * 3 + 1] += speeds[i] * dt * 30;
-      
-      // Sway left and right on X axis
-      array[i * 3] += Math.sin(state.clock.getElapsedTime() * 0.5 + i) * 0.005;
-
-      // Reset when particle floats out of bounds
-      if (array[i * 3 + 1] > 10) {
-        array[i * 3 + 1] = -10;
-        array[i * 3] = (Math.random() - 0.5) * 35;
-      }
-    }
-    posAttr.needsUpdate = true;
+    const t = state.clock.getElapsedTime();
+    // Rotate and sway the entire group on the GPU
+    pointsRef.current.rotation.y = t * 0.025;
+    pointsRef.current.rotation.x = t * 0.015;
+    pointsRef.current.position.y = Math.sin(t * 0.25) * 1.5;
   });
 
   return (
@@ -161,7 +144,7 @@ const FloatingParticles = React.memo(function FloatingParticles({ count = 35, pr
       </bufferGeometry>
       <pointsMaterial
         color="#00f0ff"
-        size={0.065}
+        size={0.075}
         transparent={true}
         opacity={0.35}
         sizeAttenuation={true}

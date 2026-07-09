@@ -125,26 +125,26 @@
 
 /* Custom Utilities */
 .glass-panel {
-  background: rgba(8, 11, 22, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(8, 11, 22, 0.75);
+  backdrop-filter: blur(6px); /* Optimized from 16px for rendering performance */
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .glass-card {
-  background: rgba(8, 11, 22, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(8, 11, 22, 0.45);
+  backdrop-filter: blur(5px); /* Optimized from 12px for rendering performance */
+  -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .glass-card-hover:hover {
-  border-color: rgba(0, 240, 255, 0.25);
-  background: rgba(8, 11, 22, 0.65);
+  border-color: rgba(0, 240, 255, 0.22);
+  background: rgba(8, 11, 22, 0.6);
   box-shadow: 
-    0 20px 40px -15px rgba(0, 0, 0, 0.8),
-    0 0 30px -5px rgba(0, 240, 255, 0.08);
+    0 15px 30px -10px rgba(0, 0, 0, 0.8),
+    0 0 20px -8px rgba(0, 240, 255, 0.05);
 }
 
 /* Card Mouse Spotlight Hover Effect */
@@ -157,16 +157,16 @@
   position: absolute;
   inset: -1px;
   background: radial-gradient(
-    300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(0, 240, 255, 0.2) 0%,
-    rgba(139, 107, 255, 0.1) 40%,
+    250px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(0, 240, 255, 0.15) 0%,
+    rgba(139, 107, 255, 0.06) 40%,
     transparent 80%
   );
   border-radius: inherit;
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s ease;
 }
 .spotlight-card:hover::before {
   opacity: 1;
@@ -175,23 +175,23 @@
 /* Active Nav Dot glow */
 .nav-active-glow {
   box-shadow: 
-    0 0 10px rgba(0, 240, 255, 0.6),
-    0 0 20px rgba(0, 240, 255, 0.3);
+    0 0 8px rgba(0, 240, 255, 0.5),
+    0 0 16px rgba(0, 240, 255, 0.25);
 }
 
-/* Custom Cursor Glow */
+/* Custom Cursor Glow - Optimized */
 .cursor-follower {
   position: fixed;
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.07) 0%, rgba(139, 107, 255, 0.03) 45%, transparent 70%);
+  width: 250px; /* Optimized size */
+  height: 250px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.06) 0%, rgba(139, 107, 255, 0.02) 50%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
   will-change: transform;
-  mix-blend-mode: screen;
-  transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
+  /* Removed mix-blend-mode: screen to save heavy backdrop redraw cycles */
+  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Ripple Click Effect styles */
