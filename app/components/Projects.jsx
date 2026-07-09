@@ -308,13 +308,15 @@ const Card = memo(function Card({ project, idx, onOpenDetails }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="launch-btn relative overflow-hidden flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#00f0ff] px-5 py-2 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer border border-[#00f0ff]/40 hover:border-[#00f0ff]/80 tracking-wider uppercase"
+              className="launch-btn group/launch relative overflow-hidden flex items-center gap-2 font-mono text-[11px] font-black text-[#00f0ff] px-6 py-2.5 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer border border-[#00f0ff]/30 hover:border-[#00f0ff]/70 uppercase"
               style={{
-                background: 'rgba(0, 240, 255, 0.08)',
-                boxShadow: '0 0 12px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.05)',
+                background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.03))',
+                boxShadow: '0 0 15px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(0, 240, 255, 0.15)',
+                letterSpacing: '0.2em',
+                textShadow: '0 0 10px rgba(0, 240, 255, 0.5)',
               }}
             >
-              <span className="launch-shimmer">Launch</span>
+              <span className="launch-shimmer relative z-10">Launch</span>
             </a>
           )}
         </div>
