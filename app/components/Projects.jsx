@@ -308,11 +308,10 @@ const Card = memo(function Card({ project, idx, onOpenDetails }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="launch-btn group/launch relative overflow-hidden flex items-center gap-2 font-mono text-[11px] font-black text-[#00f0ff] px-6 py-2.5 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer border border-[#00f0ff]/30 hover:border-[#00f0ff]/70 uppercase"
+              className="launch-btn group/launch relative overflow-hidden flex items-center gap-2 font-mono text-[10px] font-bold text-[#00f0ff] px-4 py-1.5 rounded-lg transition-all duration-300 hover:scale-105 cursor-pointer border border-[#00f0ff]/30 hover:border-[#00f0ff]/70"
               style={{
                 background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.03))',
                 boxShadow: '0 0 15px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(0, 240, 255, 0.15)',
-                letterSpacing: '0.2em',
                 textShadow: '0 0 10px rgba(0, 240, 255, 0.5)',
               }}
             >
