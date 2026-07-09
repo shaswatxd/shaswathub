@@ -83,6 +83,26 @@ const PROJECTS = [
       modules: ["Task queue dispatcher", "FFmpeg codec merger", "yt-dlp updater core", "Node playback stream"],
       command: "git clone https://github.com/shaswatxd/snapgrab-downloader.git"
     }
+  },
+  {
+    name: "Viscordz",
+    desc: "Full-featured Discord clone with real-time messaging, voice/video channels, server management, role-based permissions, and seamless Google & GitHub OAuth integration.",
+    icon: "💬",
+    glow: "cyan",
+    badge: "LIVE APP",
+    githubUrl: "https://github.com/shaswatxd/viscordz",
+    liveUrl: "https://viscordz.up.railway.app",
+    features: [
+      "💬 Real-time Messaging & Channels",
+      "🔐 Google & GitHub OAuth Login",
+      "🎙️ Voice & Video Channels",
+      "⚙️ Server Roles & Permissions"
+    ],
+    details: {
+      architecture: "Next.js full-stack application with real-time WebSocket communication, OAuth2 authentication providers, and role-based access control for guild management.",
+      modules: ["Next.js App Router", "WebSocket real-time engine", "OAuth2 auth providers", "Role-based access control"],
+      command: "git clone https://github.com/shaswatxd/viscordz.git"
+    }
   }
 ];
 
