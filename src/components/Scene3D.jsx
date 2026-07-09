@@ -55,7 +55,7 @@ const WaveGrid = React.memo(function WaveGrid({ prefersReduced }) {
           vec3 magenta = vec3(1.0, 0.24, 0.6);   // #ff3d9a
           
           // Mix colors based on position z-displacement
-          float heightFactor = (vPosition.z + 1.0) * 0.5;
+          float heightFactor = (vPosition.z + 1.2) * 0.45;
           heightFactor = clamp(heightFactor, 0.0, 1.0);
           vec3 baseColor = mix(cyan, violet, heightFactor);
           
@@ -66,12 +66,13 @@ const WaveGrid = React.memo(function WaveGrid({ prefersReduced }) {
             baseColor += cyan * glow * 0.3; // add glow emission
           }
           
-          // Distance radial fade to blend with deep dark bg
-          float radialFade = 1.0 - (length(vPosition.xy) / 24.0);
+          // Distance radial fade - expanded to reach further but still blend out before edges
+          float dist = length(vPosition.xy);
+          float radialFade = 1.0 - (dist / 32.0); // completely black at radius 32
           radialFade = clamp(radialFade, 0.0, 1.0);
-          radialFade = pow(radialFade, 1.5); // smoother falloff
+          radialFade = radialFade * radialFade; // quadratic falloff
           
-          gl_FragColor = vec4(baseColor, radialFade * 0.28);
+          gl_FragColor = vec4(baseColor, radialFade * 0.24);
         }
       `
     };
@@ -93,8 +94,8 @@ const WaveGrid = React.memo(function WaveGrid({ prefersReduced }) {
   });
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2.3, 0, 0]} position={[0, -2, -4]}>
-      <planeGeometry args={[45, 30, 48, 32]} />
+    <mesh ref={meshRef} rotation={[-Math.PI / 2.18, 0, 0]} position={[0, -3.6, -7]}>
+      <planeGeometry args={[80, 70, 64, 48]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={shaderData.vertexShader}
