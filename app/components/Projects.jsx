@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback, memo } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useState, useEffect, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PROJECTS = [
   {
@@ -17,7 +17,12 @@ const PROJECTS = [
       "🔒 Password Protected Rooms",
       "💬 Built-in Text Chat & Emoji",
       "🎵 Soundboard with 10+ Sounds"
-    ]
+    ],
+    details: {
+      architecture: "In-browser client WebRTC voice loop operating directly. Links peers via signaling servers and routes audio streams locally.",
+      modules: ["PeerJS connection engine", "Web Audio API nodes", "Secure signaling sockets", "Offline cache database"],
+      command: "git clone https://github.com/shaswatxd/voicewave.git"
+    }
   },
   {
     name: "We Plays",
@@ -32,9 +37,13 @@ const PROJECTS = [
       "🚀 In-App yt-dlp YouTube Downloader",
       "📶 LAN Offline Media Sharing",
       "🎤 Synchronized Lyrics & Insights"
-    ]
+    ],
+    details: {
+      architecture: "Desktop system orchestrating Electron IPC frames, local LAN streaming servers, and yt-dlp bindings.",
+      modules: ["Electron IPC broker", "yt-dlp child nodes", "LAN discovery server", "Lyric scraper engine"],
+      command: "git clone https://github.com/shaswatxd/we-plays.git"
+    }
   },
-
   {
     name: "JustPDFCraft",
     desc: "Browser-based client-side PDF utility toolkit to merge, split, compress, watermark, protect, and annotate documents locally.",
@@ -48,7 +57,12 @@ const PROJECTS = [
       "🔒 100% Secure Client-Side Processing",
       "🛠️ Merge, Split & Compress Functionality",
       "🔍 Built-in OCR Text Extraction"
-    ]
+    ],
+    details: {
+      architecture: "100% Client-side sandbox. Intercepts files and updates buffer maps in WASM, keeping data completely local.",
+      modules: ["pdf-lib compiler", "PDF.js parser", "Tesseract.js WASM engine", "Local browser memory stream"],
+      command: "git clone https://github.com/shaswatxd/justpdfcraft.git"
+    }
   },
   {
     name: "SnapGrab",
@@ -63,7 +77,12 @@ const PROJECTS = [
       "🎬 Automated FFmpeg Muxing & Quality Merge",
       "⚡ Background Component Auto-Updates",
       "📻 Built-in Media Playback Shell"
-    ]
+    ],
+    details: {
+      architecture: "Concurrent download manager queuing sub-tasks. Auto-updates dependencies on system startups.",
+      modules: ["Task queue dispatcher", "FFmpeg codec merger", "yt-dlp updater core", "Node playback stream"],
+      command: "git clone https://github.com/shaswatxd/snapgrab-downloader.git"
+    }
   }
 ];
 
@@ -71,110 +90,305 @@ const GLOW_COLORS = {
   cyan: "#00f0ff",
   violet: "#8b6bff",
   magenta: "#ff3d9a",
-  emerald: "#00cdac"
+  emerald: "#3ef07c"
 };
 
-const Card = memo(function Card({ project, idx }) {
+// Details Modal Component
+const ProjectModal = memo(function ProjectModal({ project, onClose }) {
+  const [copied, setCopied] = useState(false);
+  const color = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
+
+  const copyToClipboard = async (e) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(project.details.command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy path: ", err);
+    }
+  };
+
+  useEffect(() => {
+    // Disable scroll behind modal
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-6">
+      {/* Backdrop blur overlay */}
+      <motion.div 
+        className="absolute inset-0 bg-[#020204]/85 backdrop-filter backdrop-blur-md"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      />
+
+      {/* Modal Container */}
+      <motion.div 
+        className="relative w-full max-w-[620px] rounded-2xl border border-white/[0.08] bg-[#060812]/95 shadow-3xl overflow-hidden z-10"
+        initial={{ scale: 0.93, opacity: 0, y: 25 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.93, opacity: 0, y: 25 }}
+        transition={{ type: "spring", damping: 25, stiffness: 350 }}
+        style={{
+          boxShadow: `0 30px 60px -15px rgba(0,0,0,0.9), 0 0 40px -10px ${color}1a`
+        }}
+      >
+        {/* Glowing border top */}
+        <div className="absolute top-0 inset-x-0 h-[2px]" style={{ background: `linear-gradient(to right, transparent, ${color}, transparent)` }} />
+        
+        {/* Terminal Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-white/[0.02]">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }} />
+            <span className="font-mono text-[10px] text-[#8895b0]">{project.name.toLowerCase()}-specs.json</span>
+          </div>
+          <button 
+            onClick={onClose}
+            className="w-6 h-6 rounded-lg flex items-center justify-center border border-white/[0.06] hover:border-white/[0.2] bg-white/[0.01] hover:bg-white/[0.04] text-[#8895b0] hover:text-white transition-all duration-200"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Modal content body */}
+        <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto scrollbar-thin">
+          <div className="flex items-center gap-3.5 mb-5">
+            <div 
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+              style={{ background: `${color}15`, border: `1px solid ${color}33`, color: color }}
+            >
+              {project.icon}
+            </div>
+            <div>
+              <h3 className="font-display font-bold text-xl text-[#e8edf8]">{project.name}</h3>
+              <span className="font-mono text-[9px] tracking-widest px-2.5 py-0.5 rounded-full border border-white/[0.08]" style={{ color: color, borderColor: `${color}33` }}>
+                {project.badge}
+              </span>
+            </div>
+          </div>
+
+          <p className="text-[#8895b0] text-[12px] leading-relaxed mb-6">
+            {project.desc}
+          </p>
+
+          {/* Architecture breakdown */}
+          <div className="mb-6 p-4 rounded-xl border border-white/[0.05] bg-white/[0.01]">
+            <h4 className="font-mono text-[10px] uppercase text-[#e8edf8] mb-2 tracking-wider flex items-center gap-1.5">
+              <span className="text-[6px]" style={{ color: color }}>◆</span> System Architecture
+            </h4>
+            <p className="text-[#8895b0]/90 text-[11px] leading-relaxed">
+              {project.details.architecture}
+            </p>
+          </div>
+
+          {/* Key Modules lists */}
+          <div className="mb-6">
+            <h4 className="font-mono text-[10px] uppercase text-[#e8edf8] mb-2.5 tracking-wider flex items-center gap-1.5">
+              <span className="text-[6px]" style={{ color: color }}>◆</span> Modules &amp; Subsystems
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              {project.details.modules.map((mod, i) => (
+                <div key={i} className="flex items-center gap-2 border border-white/[0.04] bg-[#080c18]/40 px-3 py-2 rounded-lg">
+                  <span className="w-1 h-1 rounded-full" style={{ backgroundColor: color }} />
+                  <span className="font-mono text-[9.5px] text-[#8895b0]">{mod}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Command Terminal box */}
+          <div>
+            <h4 className="font-mono text-[10px] uppercase text-[#e8edf8] mb-2 tracking-wider flex items-center gap-1.5">
+              <span className="text-[6px]" style={{ color: color }}>◆</span> Local Installation
+            </h4>
+            <div 
+              onClick={copyToClipboard}
+              className="flex items-center justify-between border border-white/[0.08] hover:border-white/[0.18] bg-[#020204] p-3 rounded-lg font-mono text-[11px] text-[#8895b0] cursor-pointer transition-all duration-300 group"
+            >
+              <div className="flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
+                <span className="text-[#00f0ff]">$</span>
+                <span className="text-[#e8edf8]">{project.details.command}</span>
+              </div>
+              <button 
+                className="ml-3 font-mono text-[8px] tracking-wider uppercase font-bold px-2 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-white transition-all duration-200"
+                style={{ color: copied ? '#3ef07c' : '#ffffff' }}
+              >
+                {copied ? "COPIED" : "COPY"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Links Footer */}
+        <div className="flex border-t border-white/[0.08] bg-white/[0.02]">
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 py-4 text-center border-r border-white/[0.08] font-mono text-[10px] tracking-widest uppercase font-bold text-[#8895b0] hover:text-[#e8edf8] hover:bg-white/[0.02] transition-all duration-200"
+          >
+            GitHub Repo ↗
+          </a>
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 py-4 text-center font-mono text-[10px] tracking-widest uppercase font-bold text-[#020204] hover:scale-[1.01] transition-all duration-200"
+            style={{
+              background: `linear-gradient(135deg, ${color}, #8b6bff)`,
+            }}
+          >
+            Launch Console ↗
+          </a>
+        </div>
+      </motion.div>
+    </div>
+  );
+});
+
+// Card Component
+const Card = memo(function Card({ project, idx, onOpenDetails }) {
   const col = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
+  const cardRef = useRef(null);
+
+  // Mousemove handler for card spotlight
+  const handleMouseMove = (e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--mouse-x", `${(x / rect.width) * 100}%`);
+    card.style.setProperty("--mouse-y", `${(y / rect.height) * 100}%`);
+  };
+
+  const handleLaunch = (e, url) => {
+    e.stopPropagation(); // Don't trigger details modal
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <motion.div
-      className="relative bg-[#080b16] border border-white/[0.08] hover:border-white/[0.18] rounded-2xl p-7 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:scale-[1.015] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8),0_0_35px_-10px_var(--glow-color)] group"
-      style={{
-        '--glow-color': `${col}1c`,
-        '--card-accent': col,
-      }}
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onClick={() => onOpenDetails(project)}
+      className="relative glass-card spotlight-card p-6 rounded-2xl overflow-hidden hover:scale-[1.015] hover:-translate-y-1.5 group cursor-pointer transition-all duration-300"
       initial={{ opacity: 0, y: 35 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ type: "spring", stiffness: 75, damping: 14, delay: idx * 0.06 }}
+      style={{
+        '--wib-accent': col,
+      }}
     >
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
-        style={{
-          background: `radial-gradient(280px circle at 50% 50%, ${col}0f, transparent 70%)`
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.01] to-transparent bg-[length:200%_200%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 pointer-events-none" />
-
       <div className="relative z-10 flex items-center justify-between mb-5">
         <div
           className="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
-          style={{ background: `${col}1a`, border: `1px solid ${col}44`, color: col }}
+          style={{ background: `${col}15`, border: `1px solid ${col}33`, color: col }}
         >
           {project.icon}
         </div>
         <div className="flex gap-2">
           {project.githubUrl && project.githubUrl !== '#' && (
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-[11px] font-medium text-[#8895b0] hover:text-[#e8edf8] border border-white/[0.08] hover:border-white/[0.2] bg-white/[0.02] px-3 py-1.5 rounded-lg transition-all duration-300"
+            <button
+              onClick={(e) => handleLaunch(e, project.githubUrl)}
+              className="flex items-center gap-1.5 font-mono text-[10px] font-medium text-[#8895b0] hover:text-[#e8edf8] border border-white/[0.08] hover:border-white/[0.18] bg-white/[0.01] px-3 py-1.5 rounded-lg transition-all duration-300 cursor-pointer"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
               </svg>
               GitHub ↗
-            </a>
+            </button>
           )}
           {project.liveUrl && project.liveUrl !== '#' && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative overflow-hidden flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#030303] bg-gradient-to-r from-[#e8edf8] to-[#ffffff] px-3.5 py-1.5 rounded-lg transition-all duration-300 hover:scale-105 hover:translate-y-[-1px]"
-              style={{ boxShadow: `0 0 15px ${col}44` }}
+            <button
+              onClick={(e) => handleLaunch(e, project.liveUrl)}
+              className="relative overflow-hidden flex items-center gap-1.5 font-mono text-[10px] font-bold text-[#030303] bg-gradient-to-r from-[#e8edf8] to-[#ffffff] px-3.5 py-1.5 rounded-lg transition-all duration-300 hover:scale-105 hover:translate-y-[-1px] cursor-pointer"
+              style={{ boxShadow: `0 0 12px ${col}33` }}
             >
               <span>Launch ↗</span>
-            </a>
+            </button>
           )}
         </div>
       </div>
 
-      <h3 className="relative z-10 font-display font-bold text-lg mb-2 text-[#e8edf8]">{project.name}</h3>
-      <p className="relative z-10 text-[#8895b0] text-xs leading-relaxed mb-4 min-h-[3.6rem]">{project.desc}</p>
+      <h3 className="relative z-10 font-display font-bold text-base mb-2 text-[#e8edf8] group-hover:text-white transition-colors duration-300">{project.name}</h3>
+      <p className="relative z-10 text-[#8895b0] text-[11px] leading-relaxed mb-4.5 min-h-[3.6rem]">{project.desc}</p>
 
       {project.features && (
-        <ul className="relative z-10 border-t border-white/[0.08] pt-3.5 flex flex-col gap-1.5 mb-4">
+        <ul className="relative z-10 border-t border-white/[0.04] pt-3.5 flex flex-col gap-1.5 mb-4">
           {project.features.map((feat, fIdx) => (
-            <li key={fIdx} className="text-[11px] text-[#8895b0] flex items-center gap-2 hover:text-[#e8edf8] transition-colors duration-300">
+            <li key={fIdx} className="text-[10px] text-[#8895b0] flex items-center gap-2 hover:text-[#e8edf8] transition-colors duration-300">
               {feat}
             </li>
           ))}
         </ul>
       )}
 
-      <span className="relative z-10 inline-flex items-center gap-1.5 font-mono text-[9px] tracking-wider uppercase border border-white/[0.08] px-3 py-1 rounded-full" style={{ color: col, borderColor: `${col}33` }}>
-        <span className="w-1 h-1 rounded-full animate-pulse-custom" style={{ backgroundColor: col, boxShadow: `0 0 6px ${col}` }} />
-        {project.badge}
-      </span>
+      <div className="flex items-center justify-between pt-1 select-none">
+        <span 
+          className="relative z-10 inline-flex items-center gap-1.5 font-mono text-[8px] tracking-wider uppercase border px-2.5 py-0.5 rounded-full" 
+          style={{ color: col, borderColor: `${col}22`, backgroundColor: `${col}05` }}
+        >
+          <span className="w-1 h-1 rounded-full animate-pulse-custom" style={{ backgroundColor: col, boxShadow: `0 0 6px ${col}` }} />
+          {project.badge}
+        </span>
+        
+        <span className="font-mono text-[8px] tracking-widest text-[#8895b0]/40 group-hover:text-white/60 transition-colors duration-300">
+          READ SPECS &rarr;
+        </span>
+      </div>
     </motion.div>
   );
 });
 
 export default memo(function Projects() {
+  const [activeProject, setActiveProject] = useState(null);
+
   return (
     <>
       <div id="projects" className="max-w-[1480px] mx-auto px-8 flex items-baseline justify-between border-b border-white/[0.08] pb-4 mb-8 animate-section">
         <h2 className="font-display font-bold text-xl" style={{ backgroundImage: 'linear-gradient(to right, #e8edf8, #00f0ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Projects &amp; Links</h2>
-        <div className="font-mono text-[10px] text-[#8895b0]">// Live apps &amp; open source tools</div>
+        <div className="font-mono text-[10px] text-[#8895b0] select-none">// Live consoles &amp; open systems</div>
       </div>
 
       <div className="max-w-[1480px] mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {PROJECTS.map((project, idx) => (
-          <Card key={idx} project={project} idx={idx} />
+          <Card 
+            key={idx} 
+            project={project} 
+            idx={idx} 
+            onOpenDetails={setActiveProject}
+          />
         ))}
-        <div className="flex flex-col items-center justify-center border border-dashed border-white/[0.08] hover:border-violet/40 hover:bg-violet/[0.02] text-[#8895b0] hover:text-violet rounded-2xl min-h-[260px] text-center gap-4 transition-all duration-300">
-          <div className="w-[56px] h-[56px] rounded-full border border-dashed border-white/[0.12] flex items-center justify-center text-xl transition-all duration-300 hover:rotate-90 hover:scale-105 hover:border-violet">
+        
+        {/* Placeholder Coming Soon Box */}
+        <div className="flex flex-col items-center justify-center border border-dashed border-white/[0.08] hover:border-violet/40 hover:bg-violet/[0.01] text-[#8895b0] hover:text-violet rounded-2xl min-h-[260px] text-center gap-4 transition-all duration-300 select-none group">
+          <div className="w-[52px] h-[52px] rounded-full border border-dashed border-white/[0.12] flex items-center justify-center text-lg transition-all duration-500 group-hover:rotate-90 group-hover:scale-105 group-hover:border-violet/50 group-hover:bg-violet/[0.04]">
             <span>⚡</span>
           </div>
-          <div className="text-sm font-medium">
-            More Projects<br />
-            <span className="font-mono text-[10px] text-[#8895b0]/60">Coming Soon</span>
+          <div className="text-xs font-medium">
+            More Systems<br />
+            <span className="font-mono text-[9px] text-[#8895b0]/50">INDEX_INITIALIZING</span>
           </div>
         </div>
       </div>
+
+      {/* Details Modal overlay */}
+      <AnimatePresence>
+        {activeProject && (
+          <ProjectModal 
+            project={activeProject} 
+            onClose={() => setActiveProject(null)} 
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 });
