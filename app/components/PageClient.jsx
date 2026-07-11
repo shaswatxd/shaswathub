@@ -63,14 +63,31 @@ function Preloader({ onComplete }) {
     >
       <div className="relative flex flex-col items-center gap-6 px-6">
         <motion.div
-          className="flex items-center gap-2.5"
+          className="flex items-center gap-3"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="w-2 h-2 bg-cyan rounded-full" />
+          {/* Animated S Logo Icon */}
+          <div className="relative w-8 h-8 bg-[#0a0a0a] dark:bg-white/10 rounded-[6px] flex items-center justify-center overflow-hidden">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-4 h-4"
+            >
+              <motion.path
+                d="M18 8.5C18 6.5 15.5 5 12 5C8.5 5 6 6.5 6 8.5C6 11 9 11.5 12 12C15 12.5 18 13 18 15.5C18 17.5 15.5 19 12 19C8.5 19 6 17.5 6 15.5"
+                fill="none"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0, stroke: "#00c2d1" }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+              />
+            </svg>
+          </div>
           <div className="font-semibold tracking-tight text-xl sm:text-2xl text-[#0a0a0a] dark:text-[#f2f2f2]">
-            SHASWATHUB
+            ShaswatHub
           </div>
         </motion.div>
 

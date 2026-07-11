@@ -78,18 +78,14 @@ const triggerRipple = (e) => {
 };
 
 const Hero = React.memo(function Hero() {
-  // Split headings into words for staggered text reveal
-  const title1 = "Everything I'm".split(" ");
-  const title2 = "Building, Shipping,".split(" ");
-
   // Motion variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.4
+        staggerChildren: 0.015,
+        delayChildren: 0.3
       }
     }
   };
@@ -103,55 +99,85 @@ const Hero = React.memo(function Hero() {
     }
   };
 
-  const wordVariants = {
-    hidden: { opacity: 0, y: 15 },
+  const letterVariants = {
+    hidden: { opacity: 0, y: 40 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
   return (
     <motion.header
       id="top"
-      className="relative px-6 lg:px-16 pt-28 pb-24 max-w-[1440px] mx-auto"
+      className="relative px-6 lg:px-16 pt-10 pb-24 max-w-[1440px] mx-auto"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      {/* Console Badge */}
-      <motion.div
-        className="flex items-center gap-3 mb-10 select-none"
-        variants={itemVariants}
-      >
-        <span className="w-6 h-px bg-[#0a0a0a] dark:bg-white/40" />
-        <span className="flex items-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase text-[#666] dark:text-[#999]">
-          <span className="w-1.5 h-1.5 bg-cyan rounded-full animate-pulse-custom" />
-          ShaswatHub · Dev Console
-        </span>
-      </motion.div>
 
-      {/* Main Heading with Word-by-Word Animation */}
-      <h1 className="font-semibold tracking-tight leading-[1.02] text-6xl sm:text-7xl lg:text-[96px] max-w-6xl text-[#0a0a0a] dark:text-[#f2f2f2]">
-        <div className="flex flex-wrap gap-x-4 overflow-hidden py-1">
-          {title1.map((word, i) => (
-            <motion.span key={i} className="inline-block" variants={wordVariants}>
-              {word}
-            </motion.span>
+      {/* Main Heading with Word-Safe Letter-by-Letter Animation & Hover Bounce */}
+      <h1 className="font-semibold tracking-tight leading-[1.02] text-6xl sm:text-7xl lg:text-[96px] max-w-6xl text-[#0a0a0a] dark:text-[#f2f2f2] select-none">
+        <div className="flex flex-wrap py-1">
+          {"Everything I'm".split(" ").map((word, wIdx) => (
+            <span key={`w1-${wIdx}`} className="inline-block whitespace-nowrap mr-[0.25em]">
+              {word.split("").map((char, cIdx) => (
+                <motion.span
+                  key={`c1-${wIdx}-${cIdx}`}
+                  className="inline-block"
+                  variants={letterVariants}
+                  whileHover={{ 
+                    y: -10, 
+                    color: "#00c2d1",
+                    transition: { type: "spring", stiffness: 350, damping: 10 } 
+                  }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
           ))}
         </div>
-        <div className="flex flex-wrap gap-x-4 overflow-hidden py-1">
-          {title2.map((word, i) => (
-            <motion.span key={i} className="inline-block" variants={wordVariants}>
-              {word}
-            </motion.span>
+        <div className="flex flex-wrap py-1">
+          {"Building, Shipping,".split(" ").map((word, wIdx) => (
+            <span key={`w2-${wIdx}`} className="inline-block whitespace-nowrap mr-[0.25em]">
+              {word.split("").map((char, cIdx) => (
+                <motion.span
+                  key={`c2-${wIdx}-${cIdx}`}
+                  className="inline-block"
+                  variants={letterVariants}
+                  whileHover={{ 
+                    y: -10, 
+                    color: "#00c2d1",
+                    transition: { type: "spring", stiffness: 350, damping: 10 } 
+                  }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
           ))}
         </div>
-        <div className="flex flex-wrap gap-x-4 overflow-hidden py-1">
-          <motion.span className="inline-block text-cyan" variants={wordVariants}>
-            Breaking.
-          </motion.span>
+        <div className="flex flex-wrap py-1">
+          {"Breaking.".split(" ").map((word, wIdx) => (
+            <span key={`w3-${wIdx}`} className="inline-block whitespace-nowrap mr-[0.25em]">
+              {word.split("").map((char, cIdx) => (
+                <motion.span
+                  key={`c3-${wIdx}-${cIdx}`}
+                  className="inline-block text-cyan"
+                  variants={letterVariants}
+                  whileHover={{ 
+                    y: -10, 
+                    color: "#00f0ff",
+                    transition: { type: "spring", stiffness: 350, damping: 10 } 
+                  }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
+          ))}
         </div>
       </h1>
 
