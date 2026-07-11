@@ -25,14 +25,16 @@ import * as THREE from 'three';
 
 const ACCENTS = ['#00f0ff', '#8b6bff', '#ff3d9a', '#3ef07c'];
 
-// Deterministic pseudo-random layout so shapes don't jump around between renders/reloads
+// Deterministic pseudo-random layout so shapes don't jump around between renders/reloads.
+// Pushed wide + deep (radius 6.5-9, z -11 to -23) so shapes sit as an ambient frame around
+// content instead of colliding with the centered hero text — reads as background, not foreground.
 const SHAPE_LAYOUT = Array.from({ length: 7 }).map((_, i) => {
   const angle = (i / 7) * Math.PI * 2;
-  const radius = 3.4 + (i % 3) * 0.9;
+  const radius = 6.5 + (i % 3) * 1.3;
   return {
-    position: [Math.cos(angle) * radius, Math.sin(angle * 1.3) * 2.1, -2 - (i % 4) * 1.4],
-    scale: 0.55 + (i % 3) * 0.22,
-    speed: 0.15 + (i % 5) * 0.05,
+    position: [Math.cos(angle) * radius, Math.sin(angle * 1.3) * 3.2, -11 - (i % 4) * 4],
+    scale: 0.34 + (i % 3) * 0.14,
+    speed: 0.12 + (i % 5) * 0.04,
     rotAxis: [Math.sin(i), Math.cos(i * 1.7), Math.sin(i * 0.5)],
     color: ACCENTS[i % ACCENTS.length],
     geo: i % 3, // 0: icosahedron, 1: torus knot, 2: octahedron
@@ -66,28 +68,28 @@ function GlassShape({ position, scale, speed, rotAxis, color, geo, quality }) {
         <MeshTransmissionMaterial
           color={color}
           thickness={0.6}
-          roughness={0.08}
+          roughness={0.18}
           transmission={1}
-          ior={1.25}
-          chromaticAberration={0.02}
+          ior={1.2}
+          chromaticAberration={0.01}
           backside
           samples={6}
           resolution={256}
-          distortion={0.1}
-          temporalDistortion={0.1}
+          distortion={0.08}
+          temporalDistortion={0.08}
           emissive={color}
-          emissiveIntensity={0.05}
+          emissiveIntensity={0.015}
         />
       ) : (
         <meshPhysicalMaterial
           color={color}
-          roughness={0.15}
-          metalness={0.3}
-          transmission={0.85}
+          roughness={0.25}
+          metalness={0.25}
+          transmission={0.8}
           transparent
-          opacity={0.65}
+          opacity={0.4}
           emissive={color}
-          emissiveIntensity={0.06}
+          emissiveIntensity={0.02}
         />
       )}
     </mesh>
@@ -103,14 +105,14 @@ function LightRays({ quality }) {
   });
   const count = quality === 'high' ? 3 : 2;
   return (
-    <group ref={group} position={[0, 2, -6]}>
+    <group ref={group} position={[0, 3, -16]}>
       {Array.from({ length: count }).map((_, i) => (
         <mesh key={i} rotation={[Math.PI, 0, (i / count) * Math.PI * 2]} frustumCulled>
-          <coneGeometry args={[2.6, 9, 24, 1, true]} />
+          <coneGeometry args={[4, 14, 24, 1, true]} />
           <meshBasicMaterial
             color={ACCENTS[i % ACCENTS.length]}
             transparent
-            opacity={0.035}
+            opacity={0.025}
             side={THREE.DoubleSide}
             depthWrite={false}
             blending={THREE.AdditiveBlending}
@@ -147,12 +149,12 @@ function SceneContents({ quality }) {
   return (
     <>
       <color attach="background" args={['#020204']} />
-      <fogExp2 attach="fog" args={['#020204', 0.055]} />
+      <fogExp2 attach="fog" args={['#020204', 0.075]} />
 
-      <ambientLight intensity={0.25} />
-      <pointLight position={[6, 4, 4]} intensity={40} color="#00f0ff" distance={20} decay={2} />
-      <pointLight position={[-6, -3, 2]} intensity={35} color="#8b6bff" distance={20} decay={2} />
-      <pointLight position={[0, 5, -4]} intensity={25} color="#ff3d9a" distance={22} decay={2} />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[9, 5, -4]} intensity={22} color="#00f0ff" distance={26} decay={2} />
+      <pointLight position={[-9, -4, -6]} intensity={18} color="#8b6bff" distance={26} decay={2} />
+      <pointLight position={[0, 6, -14]} intensity={14} color="#ff3d9a" distance={28} decay={2} />
 
       <LightRays quality={quality} />
 
@@ -161,11 +163,11 @@ function SceneContents({ quality }) {
       ))}
 
       <Sparkles
-        count={quality === 'high' ? 180 : 60}
-        scale={[14, 8, 10]}
-        size={2.2}
-        speed={0.25}
-        opacity={0.55}
+        count={quality === 'high' ? 140 : 50}
+        scale={[18, 10, 16]}
+        size={1.5}
+        speed={0.2}
+        opacity={0.35}
         color="#e8edf8"
         noise={1}
       />
@@ -197,9 +199,9 @@ const Scene3D = React.memo(function Scene3D({ pointerRef }) {
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.15,
+          toneMappingExposure: 0.9,
         }}
-        camera={{ position: [0, 0, 9], fov: 45, near: 0.1, far: 40 }}
+        camera={{ position: [0, 0, 9], fov: 42, near: 0.1, far: 50 }}
         frameloop="always"
       >
         <PerformanceMonitor onDecline={handleDecline} bounds={() => [40, 58]} />
@@ -207,8 +209,8 @@ const Scene3D = React.memo(function Scene3D({ pointerRef }) {
         <CameraRig pointerRef={pointerRef} />
         {quality === 'high' && (
           <EffectComposer multisampling={0}>
-            <Bloom intensity={0.55} luminanceThreshold={0.15} luminanceSmoothing={0.9} mipmapBlur />
-            <Vignette eskil={false} offset={0.25} darkness={0.65} />
+            <Bloom intensity={0.25} luminanceThreshold={0.4} luminanceSmoothing={0.9} mipmapBlur />
+            <Vignette eskil={false} offset={0.3} darkness={0.7} />
           </EffectComposer>
         )}
       </Canvas>
