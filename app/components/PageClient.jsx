@@ -17,7 +17,6 @@ import Terminal from './Terminal';
 import Accordions from './Accordions';
 import Contact from './Contact';
 import Footer from './Footer';
-import FaviconAnimator from './FaviconAnimator';
 
 // Register GSAP ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -215,7 +214,6 @@ const PageClient = React.memo(function PageClient() {
 
   return (
     <>
-      <FaviconAnimator />
       <AnimatePresence>
         {loading && <Preloader onComplete={finishBoot} />}
       </AnimatePresence>
