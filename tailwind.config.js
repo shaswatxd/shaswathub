@@ -9,14 +9,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#030303',
-        panel: '#0e1424',
-        cyan: '#00f0ff',
+        bg: '#ffffff',
+        panel: '#fafafa',
+        ink: '#0a0a0a',
+        cyan: '#00c2d1',
         violet: '#8b6bff',
         magenta: '#ff3d9a',
         green: '#3ef07c',
-        muted: '#8895b0',
-        text: '#e8edf8',
+        muted: '#666666',
+        line: '#e8e8e8',
+        text: '#0a0a0a',
       },
       fontFamily: {
         mono: ['var(--font-mono)', 'monospace'],

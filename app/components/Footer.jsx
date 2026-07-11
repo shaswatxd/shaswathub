@@ -17,61 +17,54 @@ const Footer = React.memo(function Footer() {
 
   return (
     <motion.footer
-      className="relative border-t border-white/[0.08] bg-gradient-to-b from-transparent to-[#04060f]/60 py-12 mt-16 pb-16 overflow-hidden"
+      className="relative border-t border-[#0a0a0a] dark:border-white/15 px-6 lg:px-16 py-10"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
-      <div className="max-w-[1480px] mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        
+      <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Logo and Tagline */}
         <div className="text-center md:text-left">
-          <div className="font-display font-bold text-base tracking-widest text-[#e8edf8] mb-1.5 uppercase select-none">
-            SHASWAT<span style={{ backgroundImage: 'linear-gradient(to right, #00f0ff, #8b6bff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>HUB</span>
+          <div className="flex items-center gap-2.5 justify-center md:justify-start mb-1.5 select-none">
+            <span className="w-2 h-2 bg-cyan rounded-full" />
+            <span className="font-semibold text-sm text-[#0a0a0a] dark:text-[#f2f2f2]">SHASWATHUB</span>
           </div>
-          <div className="font-mono text-[9px] text-[#8895b0] tracking-wide">// Building things that matter, one commit at a time.</div>
+          <div className="font-mono text-[9px] text-[#999] dark:text-[#777] tracking-wide">// Building things that matter, one commit at a time.</div>
         </div>
 
         {/* Console Operational State */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.01] select-none">
-          <span 
-            className="w-1.5 h-1.5 rounded-full animate-pulse-custom" 
-            style={{ 
-              backgroundColor: '#3ef07c', 
-              boxShadow: '0 0 8px #3ef07c' 
-            }} 
-          />
-          <span className="font-mono text-[8px] text-[#8895b0] tracking-wider uppercase">
+        <div className="flex items-center gap-2 px-3 py-1.5 border border-[#e8e8e8] dark:border-white/15 select-none">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3ef07c] animate-pulse-custom" />
+          <span className="font-mono text-[8px] text-[#666] dark:text-[#999] tracking-wider uppercase">
             CONSOLE_STATUS: <span className="text-[#3ef07c] font-bold">OPERATIONAL</span>
           </span>
         </div>
 
         {/* Contact Links & Back to Top */}
         <div className="flex flex-col items-center md:items-end gap-2.5">
-          <a 
-            href="mailto:srijankumardeo777@gmail.com" 
-            className="font-mono text-[10px] text-[#8895b0] hover:text-[#00f0ff] transition-colors duration-200"
+          <a
+            href="mailto:srijankumardeo777@gmail.com"
+            className="font-mono text-[10px] text-[#666] dark:text-[#999] hover:text-cyan transition-colors duration-200"
           >
             srijankumardeo777@gmail.com
           </a>
-          
-          <button 
+
+          <button
             onClick={handleScrollTop}
-            className="font-mono text-[9px] text-[#8895b0] hover:text-white transition-colors duration-200 flex items-center gap-1 group cursor-pointer"
+            className="font-mono text-[9px] text-[#666] dark:text-[#999] hover:text-[#0a0a0a] dark:hover:text-[#f2f2f2] transition-colors duration-200 flex items-center gap-1 group cursor-pointer"
           >
             RETURN_TO_TOP <span className="transition-transform duration-300 group-hover:-translate-y-0.5">↑</span>
           </button>
         </div>
-
       </div>
 
       {/* Copyright lines */}
-      <div className="max-w-[1480px] mx-auto px-8 mt-8 pt-6 border-t border-white/[0.04] text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-4 select-none">
-        <div className="font-mono text-[9px] text-[#8895b0]/45">
+      <div className="max-w-[1440px] mx-auto mt-8 pt-6 border-t border-[#e8e8e8] dark:border-white/10 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-4 select-none">
+        <div className="font-mono text-[9px] text-[#999] dark:text-[#777]">
           &copy; {currentYear} &middot; developed with &hearts; &amp; chai &middot; ShaswatHub shell.
         </div>
-        <div className="font-mono text-[8px] text-[#8895b0]/30 tracking-wider">
+        <div className="font-mono text-[8px] text-[#bbb] dark:text-[#555] tracking-wider">
           SYSTEM_VERSION_4.2.0_SECURE
         </div>
       </div>

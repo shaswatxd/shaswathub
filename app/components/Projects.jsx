@@ -87,7 +87,7 @@ const PROJECTS = [
 ];
 
 const GLOW_COLORS = {
-  cyan: "#00f0ff",
+  cyan: "#00c2d1",
   violet: "#8b6bff",
   magenta: "#ff3d9a",
   emerald: "#3ef07c"
@@ -119,9 +119,9 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-6">
-      {/* Backdrop blur overlay */}
-      <motion.div 
-        className="absolute inset-0 bg-[#020204]/85 backdrop-filter backdrop-blur-md"
+      {/* Backdrop overlay */}
+      <motion.div
+        className="absolute inset-0 bg-[#0a0a0a]/50 backdrop-filter backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -129,28 +129,22 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
       />
 
       {/* Modal Container */}
-      <motion.div 
-        className="relative w-full max-w-[620px] rounded-2xl border border-white/[0.08] bg-[#060812]/95 shadow-3xl overflow-hidden z-10"
+      <motion.div
+        className="relative w-full max-w-[620px] border border-[#0a0a0a] dark:border-white/20 bg-white dark:bg-[#111] overflow-hidden z-10"
         initial={{ scale: 0.93, opacity: 0, y: 25 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.93, opacity: 0, y: 25 }}
         transition={{ type: "spring", damping: 25, stiffness: 350 }}
-        style={{
-          boxShadow: `0 30px 60px -15px rgba(0,0,0,0.9), 0 0 40px -10px ${color}1a`
-        }}
       >
-        {/* Glowing border top */}
-        <div className="absolute top-0 inset-x-0 h-[2px]" style={{ background: `linear-gradient(to right, transparent, ${color}, transparent)` }} />
-        
         {/* Terminal Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-white/[0.02]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#0a0a0a] dark:border-white/15">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }} />
-            <span className="font-mono text-[10px] text-[#8895b0]">{project.name.toLowerCase()}-specs.json</span>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+            <span className="font-mono text-[10px] text-[#666] dark:text-[#999]">{project.name.toLowerCase()}-specs.json</span>
           </div>
-          <button 
+          <button
             onClick={onClose}
-            className="w-6 h-6 rounded-lg flex items-center justify-center border border-white/[0.06] hover:border-white/[0.2] bg-white/[0.01] hover:bg-white/[0.04] text-[#8895b0] hover:text-white transition-all duration-200"
+            className="w-6 h-6 flex items-center justify-center border border-[#e8e8e8] dark:border-white/15 hover:border-[#0a0a0a] dark:hover:border-white/40 text-[#666] dark:text-[#999] hover:text-[#0a0a0a] dark:hover:text-[#f2f2f2] transition-all duration-200"
           >
             ✕
           </button>
@@ -159,44 +153,43 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
         {/* Modal content body */}
         <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto scrollbar-thin">
           <div className="flex items-center gap-3.5 mb-5">
-            <div 
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-              style={{ background: `${color}15`, border: `1px solid ${color}33`, color: color }}
+            <div
+              className="w-12 h-12 border border-[#0a0a0a] dark:border-white/25 flex items-center justify-center text-2xl"
             >
               {project.icon}
             </div>
             <div>
-              <h3 className="font-display font-bold text-xl text-[#e8edf8]">{project.name}</h3>
-              <span className="font-mono text-[9px] tracking-widest px-2.5 py-0.5 rounded-full border border-white/[0.08]" style={{ color: color, borderColor: `${color}33` }}>
+              <h3 className="font-semibold text-xl text-[#0a0a0a] dark:text-[#f2f2f2]">{project.name}</h3>
+              <span className="font-mono text-[9px] tracking-widest px-2.5 py-0.5 border" style={{ color: color, borderColor: color }}>
                 {project.badge}
               </span>
             </div>
           </div>
 
-          <p className="text-[#8895b0] text-[12px] leading-relaxed mb-6">
+          <p className="text-[#555] dark:text-[#aaa] text-[13px] leading-relaxed mb-6">
             {project.desc}
           </p>
 
           {/* Architecture breakdown */}
-          <div className="mb-6 p-4 rounded-xl border border-white/[0.05] bg-white/[0.01]">
-            <h4 className="font-mono text-[10px] uppercase text-[#e8edf8] mb-2 tracking-wider flex items-center gap-1.5">
-              <span className="text-[6px]" style={{ color: color }}>◆</span> System Architecture
+          <div className="mb-6 p-4 border border-[#e8e8e8] dark:border-white/15">
+            <h4 className="font-mono text-[10px] uppercase text-[#0a0a0a] dark:text-[#f2f2f2] mb-2 tracking-wider flex items-center gap-1.5">
+              <span style={{ color: color }}>◆</span> System Architecture
             </h4>
-            <p className="text-[#8895b0]/90 text-[11px] leading-relaxed">
+            <p className="text-[#555] dark:text-[#aaa] text-[11px] leading-relaxed">
               {project.details.architecture}
             </p>
           </div>
 
           {/* Key Modules lists */}
           <div className="mb-6">
-            <h4 className="font-mono text-[10px] uppercase text-[#e8edf8] mb-2.5 tracking-wider flex items-center gap-1.5">
-              <span className="text-[6px]" style={{ color: color }}>◆</span> Modules &amp; Subsystems
+            <h4 className="font-mono text-[10px] uppercase text-[#0a0a0a] dark:text-[#f2f2f2] mb-2.5 tracking-wider flex items-center gap-1.5">
+              <span style={{ color: color }}>◆</span> Modules &amp; Subsystems
             </h4>
             <div className="grid grid-cols-2 gap-2">
               {project.details.modules.map((mod, i) => (
-                <div key={i} className="flex items-center gap-2 border border-white/[0.04] bg-[#080c18]/40 px-3 py-2 rounded-lg">
+                <div key={i} className="flex items-center gap-2 border border-[#e8e8e8] dark:border-white/15 px-3 py-2">
                   <span className="w-1 h-1 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="font-mono text-[9.5px] text-[#8895b0]">{mod}</span>
+                  <span className="font-mono text-[9.5px] text-[#555] dark:text-[#aaa]">{mod}</span>
                 </div>
               ))}
             </div>
@@ -204,19 +197,19 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
 
           {/* Command Terminal box */}
           <div>
-            <h4 className="font-mono text-[10px] uppercase text-[#e8edf8] mb-2 tracking-wider flex items-center gap-1.5">
-              <span className="text-[6px]" style={{ color: color }}>◆</span> Local Installation
+            <h4 className="font-mono text-[10px] uppercase text-[#0a0a0a] dark:text-[#f2f2f2] mb-2 tracking-wider flex items-center gap-1.5">
+              <span style={{ color: color }}>◆</span> Local Installation
             </h4>
-            <div 
+            <div
               onClick={copyToClipboard}
-              className="flex items-center justify-between border border-white/[0.08] hover:border-white/[0.18] bg-[#020204] p-3 rounded-lg font-mono text-[11px] text-[#8895b0] cursor-pointer transition-all duration-300 group"
+              className="flex items-center justify-between border border-[#0a0a0a] bg-[#0a0a0a] p-3 font-mono text-[11px] cursor-pointer transition-all duration-300 group"
             >
               <div className="flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
-                <span className="text-[#00f0ff]">$</span>
-                <span className="text-[#e8edf8]">{project.details.command}</span>
+                <span className="text-cyan">$</span>
+                <span className="text-white">{project.details.command}</span>
               </div>
-              <button 
-                className="ml-3 font-mono text-[8px] tracking-wider uppercase font-bold px-2 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-white transition-all duration-200"
+              <button
+                className="ml-3 font-mono text-[8px] tracking-wider uppercase font-bold px-2 py-1 border border-white/20 text-white transition-all duration-200"
                 style={{ color: copied ? '#3ef07c' : '#ffffff' }}
               >
                 {copied ? "COPIED" : "COPY"}
@@ -226,15 +219,12 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
         </div>
 
         {/* Links Footer */}
-        <div className="border-t border-white/[0.08] bg-white/[0.02]">
+        <div className="border-t border-[#0a0a0a] dark:border-white/15">
           <a
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="block py-4 text-center font-mono text-[11px] tracking-widest uppercase font-bold text-[#020204] hover:scale-[1.01] transition-all duration-200"
-            style={{
-              background: `linear-gradient(135deg, ${color}, #8b6bff)`,
-            }}
+            className="btn-primary block py-4 text-center font-mono text-[11px] tracking-widest uppercase font-bold text-white transition-all duration-200"
           >
             Launch Console ↗
           </a>
@@ -245,7 +235,7 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
 });
 
 // Card Component
-const Card = memo(function Card({ project, idx, onOpenDetails }) {
+const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) {
   const col = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
   const cardRef = useRef(null);
 
@@ -265,66 +255,48 @@ const Card = memo(function Card({ project, idx, onOpenDetails }) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onClick={() => onOpenDetails(project)}
-      className="relative glass-card spotlight-card p-6 rounded-2xl overflow-hidden hover:scale-[1.015] hover:-translate-y-1.5 group cursor-pointer transition-all duration-300"
+      className={`card spotlight-card p-8 flex flex-col cursor-pointer group ${borderClasses}`}
       initial={{ opacity: 0, y: 35 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ type: "spring", stiffness: 75, damping: 14, delay: idx * 0.06 }}
-      style={{
-        '--wib-accent': col,
-      }}
     >
-      <div className="relative z-10 flex items-center justify-between mb-5">
-        <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
-          style={{ background: `${col}15`, border: `1px solid ${col}33`, color: col }}
-        >
+      <div className="relative z-10 flex items-center justify-between mb-8">
+        <div className="w-10 h-10 border border-[#0a0a0a] dark:border-white/25 flex items-center justify-center text-lg">
           {project.icon}
         </div>
-        <div className="flex gap-2">
-          {project.liveUrl && project.liveUrl !== '#' && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="launch-btn group/launch relative overflow-hidden flex items-center gap-2 font-mono text-[10px] font-bold text-[#00f0ff] px-4 py-1.5 rounded-lg transition-all duration-300 hover:scale-105 cursor-pointer border border-[#00f0ff]/30 hover:border-[#00f0ff]/70"
-              style={{
-                background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.03))',
-                boxShadow: '0 0 15px rgba(0, 240, 255, 0.25), inset 0 1px 0 rgba(0, 240, 255, 0.15)',
-                textShadow: '0 0 10px rgba(0, 240, 255, 0.5)',
-              }}
-            >
-              <span className="launch-shimmer relative z-10">Launch</span>
-            </a>
-          )}
-        </div>
+        <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-[#666] dark:text-[#999]">
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col }} /> {project.badge}
+        </span>
       </div>
 
-      <h3 className="relative z-10 font-display font-bold text-base mb-2 text-[#e8edf8] group-hover:text-white transition-colors duration-300">{project.name}</h3>
-      <p className="relative z-10 text-[#8895b0] text-[11px] leading-relaxed mb-4.5 min-h-[3.6rem]">{project.desc}</p>
+      <h3 className="relative z-10 font-semibold text-lg mb-2 text-[#0a0a0a] dark:text-[#f2f2f2]">{project.name}</h3>
+      <p className="relative z-10 text-sm text-[#555] dark:text-[#aaa] leading-relaxed mb-6 flex-1">{project.desc}</p>
 
       {project.features && (
-        <ul className="relative z-10 border-t border-white/[0.04] pt-3.5 flex flex-col gap-1.5 mb-4">
+        <ul className="relative z-10 flex flex-col gap-1.5 mb-6">
           {project.features.map((feat, fIdx) => (
-            <li key={fIdx} className="text-[10px] text-[#8895b0] flex items-center gap-2 hover:text-[#e8edf8] transition-colors duration-300">
+            <li key={fIdx} className="text-[11px] text-[#666] dark:text-[#999]">
               {feat}
             </li>
           ))}
         </ul>
       )}
 
-      <div className="flex items-center justify-between pt-1 select-none">
-        <span 
-          className="relative z-10 inline-flex items-center gap-1.5 font-mono text-[8px] tracking-wider uppercase border px-2.5 py-0.5 rounded-full" 
-          style={{ color: col, borderColor: `${col}22`, backgroundColor: `${col}05` }}
-        >
-          <span className="w-1 h-1 rounded-full animate-pulse-custom" style={{ backgroundColor: col, boxShadow: `0 0 6px ${col}` }} />
-          {project.badge}
-        </span>
-        
-        <span className="font-mono text-[8px] tracking-widest text-[#8895b0]/40 group-hover:text-white/60 transition-colors duration-300">
-          READ SPECS &rarr;
+      <div className="relative z-10 flex items-center justify-between pt-1 select-none">
+        {project.liveUrl && project.liveUrl !== '#' && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan"
+          >
+            Launch ↗
+          </a>
+        )}
+        <span className="font-mono text-[10px] tracking-widest text-[#999] dark:text-[#777] group-hover:text-[#0a0a0a] dark:group-hover:text-[#f2f2f2] transition-colors duration-300 ml-auto">
+          Specs →
         </span>
       </div>
     </motion.div>
@@ -333,32 +305,34 @@ const Card = memo(function Card({ project, idx, onOpenDetails }) {
 
 export default memo(function Projects() {
   const [activeProject, setActiveProject] = useState(null);
+  const cols = 3; // md:grid-cols-3
 
   return (
     <>
-      <div id="projects" className="max-w-[1480px] mx-auto px-8 flex items-baseline justify-between border-b border-white/[0.08] pb-4 mb-8 animate-section">
-        <h2 className="font-display font-bold text-xl" style={{ backgroundImage: 'linear-gradient(to right, #e8edf8, #00f0ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Projects &amp; Links</h2>
-        <div className="font-mono text-[10px] text-[#8895b0] select-none">// Live consoles &amp; open systems</div>
+      <div id="projects" className="max-w-[1440px] mx-auto px-6 lg:px-16 pt-20 pb-10 animate-section">
+        <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-cyan mb-4 inline-block">Selected Work</span>
+        <h2 className="font-semibold text-4xl lg:text-5xl tracking-tight text-[#0a0a0a] dark:text-[#f2f2f2]">Live Project Index</h2>
       </div>
 
-      <div className="max-w-[1480px] mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 border-t border-l border-[#e8e8e8] dark:border-white/15 mb-4">
         {PROJECTS.map((project, idx) => (
-          <Card 
-            key={idx} 
-            project={project} 
-            idx={idx} 
+          <Card
+            key={idx}
+            project={project}
+            idx={idx}
             onOpenDetails={setActiveProject}
+            borderClasses={`border-r border-b border-[#e8e8e8] dark:border-white/15 ${(idx + 1) % cols === 0 ? '' : ''}`}
           />
         ))}
-        
+
         {/* Placeholder Coming Soon Box */}
-        <div className="flex flex-col items-center justify-center border border-dashed border-white/[0.08] hover:border-violet/40 hover:bg-violet/[0.01] text-[#8895b0] hover:text-violet rounded-2xl min-h-[260px] text-center gap-4 transition-all duration-300 select-none group">
-          <div className="w-[52px] h-[52px] rounded-full border border-dashed border-white/[0.12] flex items-center justify-center text-lg transition-all duration-500 group-hover:rotate-90 group-hover:scale-105 group-hover:border-violet/50 group-hover:bg-violet/[0.04]">
+        <div className="card flex flex-col items-center justify-center border-r border-b border-[#e8e8e8] dark:border-white/15 text-[#666] dark:text-[#999] hover:text-cyan min-h-[300px] text-center gap-4 select-none group">
+          <div className="w-12 h-12 border border-dashed border-[#999] dark:border-white/30 flex items-center justify-center text-lg transition-transform duration-500 group-hover:rotate-90">
             <span>⚡</span>
           </div>
           <div className="text-xs font-medium">
             More Systems<br />
-            <span className="font-mono text-[9px] text-[#8895b0]/50">INDEX_INITIALIZING</span>
+            <span className="font-mono text-[9px] text-[#999] dark:text-[#777]">INDEX_INITIALIZING</span>
           </div>
         </div>
       </div>
@@ -366,9 +340,9 @@ export default memo(function Projects() {
       {/* Details Modal overlay */}
       <AnimatePresence>
         {activeProject && (
-          <ProjectModal 
-            project={activeProject} 
-            onClose={() => setActiveProject(null)} 
+          <ProjectModal
+            project={activeProject}
+            onClose={() => setActiveProject(null)}
           />
         )}
       </AnimatePresence>

@@ -1,5 +1,4 @@
-:HL["/_next/static/chunks/1w8h6nr1whnvk.css","style"]
+:HL["/_next/static/chunks/0sfllyo9el25y.css","style"]
 :HL["/_next/static/media/051742360c26797e-s.p.1bkzbscqrt8rl.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/0c89a48fa5027cee-s.p.2cyn07wtgehh0.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"BYQJ38WOq_ukAIvZjy2k8"}
+:HL["https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"92RriQ7_5VxfCNcW1rexW"}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from './ThemeToggle';
 
 const LINKS = [
   { href: '#builds', label: 'Builds' },
@@ -33,18 +34,18 @@ const Navigation = React.memo(function Navigation() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-    
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setScrolled(currentScrollY > 20);
-      
+
       // Hide on scroll down, show on scroll up
       if (currentScrollY > lastScrollY && currentScrollY > 90) {
         setVisible(false);
       } else {
         setVisible(true);
       }
-      
+
       lastScrollY = currentScrollY;
     };
 
@@ -91,112 +92,76 @@ const Navigation = React.memo(function Navigation() {
 
   return (
     <motion.nav
-      className="fixed top-0 inset-x-0 z-[100] flex items-center justify-between px-6 md:px-12 py-3.5 transition-all duration-300 border-b glass-panel"
-      style={{
-        backgroundColor: scrolled ? 'rgba(5, 7, 15, 0.75)' : 'rgba(5, 7, 15, 0.15)',
-        borderColor: scrolled ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.03)',
-        boxShadow: scrolled ? '0 15px 30px -15px rgba(0, 0, 0, 0.5)' : 'none',
-      }}
+      className="sticky top-0 z-[100] bg-white dark:bg-[#0a0a0a] border-b border-[#0a0a0a] dark:border-white/15 transition-colors duration-300"
+      style={{ boxShadow: scrolled ? '0 8px 24px -18px rgba(0,0,0,0.35)' : 'none' }}
       initial={{ opacity: 0, y: -30 }}
       animate={{ y: visible ? 0 : -90, opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Logo */}
-      <a 
-        href="#" 
-        className="flex items-center gap-2.5 font-display font-bold text-sm tracking-widest text-[#e8edf8] uppercase select-none group"
-      >
-        <span
-          className="w-2 h-2 rounded-full nav-active-glow transition-all duration-300 group-hover:scale-125"
-          style={{
-            backgroundColor: '#00f0ff',
-          }}
-        />
-        <span>
-          SHASWAT
-          <span style={{ backgroundImage: 'linear-gradient(to right, #00f0ff, #8b6bff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            HUB
-          </span>
-        </span>
-      </a>
-
-      {/* Center Links (Sliding Pill Highlight) */}
-      <div className="hidden md:flex items-center gap-2">
-        {LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            className="relative font-mono text-[10px] tracking-wider uppercase px-4 py-2 rounded-lg transition-all duration-300"
-          >
-            <span className={`relative z-10 transition-colors duration-300 ${activeSection === link.href ? 'text-[#00f0ff] font-bold glow-cyan' : 'text-[#8895b0] hover:text-[#e8edf8]'}`}>
-              {link.label}
-            </span>
-            {activeSection === link.href && (
-              <motion.span
-                layoutId="activeNavIndicator"
-                className="absolute inset-0 bg-white/[0.03] border border-white/[0.08] rounded-lg z-0"
-                transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-              />
-            )}
-          </a>
-        ))}
-      </div>
-
-      {/* Profile + Mobile Menu Toggle */}
-      <div className="flex items-center gap-3">
-        <a
-          href="https://github.com/shaswatxd"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center rounded-full border overflow-hidden w-[36px] h-[36px] transition-all duration-300 hover:scale-105 hover:rotate-6"
-          style={{ borderColor: 'rgba(255,255,255,0.08)' }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = '#00f0ff';
-            e.currentTarget.style.boxShadow = '0 0 15px rgba(0,240,255,0.35)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-          title="GitHub Profile"
-        >
-          <Image
-            src="/avatar.png"
-            alt="GitHub Profile"
-            width={36}
-            height={36}
-            className="w-full h-full object-cover"
-            priority
-          />
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-16 h-20 flex items-center justify-between">
+        {/* Logo */}
+        <a href="#" className="flex items-center gap-2.5 select-none group">
+          <span className="w-2 h-2 bg-cyan rounded-full transition-transform duration-300 group-hover:scale-125" />
+          <span className="font-semibold tracking-tight text-base text-[#0a0a0a] dark:text-[#f2f2f2]">SHASWATHUB</span>
         </a>
 
-        {/* Hamburger — mobile only */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav-panel"
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="md:hidden relative flex items-center justify-center w-9 h-9 rounded-lg border border-white/[0.08] bg-white/[0.02] text-[#e8edf8] transition-colors duration-300 hover:border-[#00f0ff]/50"
-        >
-          <span className="relative w-4 h-3 flex flex-col justify-between">
-            <motion.span
-              className="block h-[1.5px] w-full bg-current rounded-full"
-              animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 5.5 : 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-            />
-            <motion.span
-              className="block h-[1.5px] w-full bg-current rounded-full"
-              animate={{ opacity: menuOpen ? 0 : 1 }}
-              transition={{ duration: 0.2 }}
-            />
-            <motion.span
-              className="block h-[1.5px] w-full bg-current rounded-full"
-              animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -5.5 : 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-            />
-          </span>
-        </button>
+        {/* Center Links (underline hover) */}
+        <div className="hidden md:flex items-center gap-12 font-mono text-[11px] tracking-[0.12em] uppercase text-[#0a0a0a] dark:text-[#f2f2f2]">
+          {LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              data-active={activeSection === link.href}
+              className={`nav-link ${activeSection === link.href ? 'text-cyan font-semibold' : ''}`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+
+        {/* GitHub + Theme Toggle + Mobile Menu Toggle */}
+        <div className="flex items-center gap-3">
+          <a
+            href="https://github.com/shaswatxd"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 btn-outline text-xs font-medium"
+            title="GitHub Profile"
+          >
+            <Image src="/avatar.png" alt="" width={16} height={16} className="w-4 h-4 rounded-full object-cover" priority />
+            GitHub
+          </a>
+
+          <ThemeToggle />
+
+          {/* Hamburger — mobile only */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav-panel"
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            className="md:hidden relative flex items-center justify-center w-9 h-9 border border-[#0a0a0a] dark:border-white/20 text-[#0a0a0a] dark:text-[#f2f2f2]"
+          >
+            <span className="relative w-4 h-3 flex flex-col justify-between">
+              <motion.span
+                className="block h-[1.5px] w-full bg-current"
+                animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 5.5 : 0 }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+              />
+              <motion.span
+                className="block h-[1.5px] w-full bg-current"
+                animate={{ opacity: menuOpen ? 0 : 1 }}
+                transition={{ duration: 0.2 }}
+              />
+              <motion.span
+                className="block h-[1.5px] w-full bg-current"
+                animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -5.5 : 0 }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+              />
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Nav Panel */}
@@ -204,19 +169,19 @@ const Navigation = React.memo(function Navigation() {
         {menuOpen && (
           <motion.div
             id="mobile-nav-panel"
-            className="md:hidden absolute top-full inset-x-0 mt-2 mx-4 rounded-2xl border border-white/[0.08] glass-panel overflow-hidden"
-            initial={{ opacity: 0, y: -12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.98 }}
+            className="md:hidden border-t border-[#e8e8e8] dark:border-white/10 bg-white dark:bg-[#0a0a0a] overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="flex flex-col p-2">
+            <div className="flex flex-col px-6">
               {LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`font-mono text-xs tracking-wider uppercase px-4 py-3.5 rounded-xl transition-colors duration-200 ${activeSection === link.href ? 'text-[#00f0ff] bg-white/[0.04]' : 'text-[#8895b0] hover:text-[#e8edf8] hover:bg-white/[0.02]'}`}
+                  className={`font-mono text-xs tracking-wider uppercase py-4 border-b border-[#f0f0f0] dark:border-white/10 last:border-b-0 transition-colors duration-200 ${activeSection === link.href ? 'text-cyan font-semibold' : 'text-[#0a0a0a] dark:text-[#f2f2f2] hover:text-cyan'}`}
                 >
                   {link.label}
                 </a>

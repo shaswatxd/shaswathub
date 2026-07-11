@@ -1,20 +1,7 @@
-import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-body',
-  weight: ['400', '500', '600'],
-  display: 'swap',
-});
-
+// General Sans isn't on Google Fonts — loaded via Fontshare's CDN <link> below.
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
@@ -57,7 +44,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: '#030303',
+  themeColor: '#ffffff',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -78,18 +65,37 @@ const jsonLd = {
   },
 };
 
+// Runs before paint (blocking, inline) so the correct theme applies before first render —
+// prevents a flash of the wrong theme on load. Reads localStorage first, falls back to OS preference.
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem('theme');
+    var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.png" sizes="any" />
-        <meta name="theme-color" content="#030303" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
+          rel="stylesheet"
+        />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="font-body bg-[#030303] text-[#e8edf8] selection:bg-[#00f0ff]/20 selection:text-[#e8edf8] antialiased">
+      <body className="font-body bg-white dark:bg-[#0a0a0a] text-[#0a0a0a] dark:text-[#f2f2f2] selection:bg-cyan-100 dark:selection:bg-cyan-900 selection:text-[#0a0a0a] dark:selection:text-[#f2f2f2] antialiased transition-colors duration-300">
         {children}
       </body>
     </html>
