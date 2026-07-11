@@ -10,7 +10,7 @@
     }
     .s-path {
       stroke-dasharray: 60;
-      stroke-dashoffset: 60;
+      stroke-dashoffset: 0;
       animation: draw 2.2s ease-in-out infinite alternate;
     }
   </style>
