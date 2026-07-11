@@ -182,8 +182,10 @@ const Navigation = React.memo(function Navigation() {
           ))}
         </div>
 
-        {/* GitHub + Theme Toggle + Mobile Menu Toggle */}
+        {/* Theme Toggle + GitHub + Mobile Menu Toggle */}
         <div className="flex items-center gap-3">
+          <ThemeToggle />
+
           <a
             href="https://github.com/shaswatxd"
             target="_blank"
@@ -193,8 +195,6 @@ const Navigation = React.memo(function Navigation() {
           >
             <Image src="/avatar.png" alt="GitHub" width={36} height={36} className="github-avatar-img" priority />
           </a>
-
-          <ThemeToggle />
 
           {/* Hamburger — mobile only */}
           <button
