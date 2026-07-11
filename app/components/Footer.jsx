@@ -35,13 +35,13 @@ const Footer = React.memo(function Footer() {
             {/* Animated S Logo Icon */}
             <div className="relative w-7 h-7 bg-[#0a0a0a] dark:bg-white/10 rounded-[6px] flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:-rotate-3">
               <motion.svg
-                viewBox="0 0 24 24"
+                viewBox="0 0 32 32"
                 className="w-4 h-4"
               >
                 <motion.path
-                  d="M18 8.5C18 6.5 15.5 5 12 5C8.5 5 6 6.5 6 8.5C6 11 9 11.5 12 12C15 12.5 18 13 18 15.5C18 17.5 15.5 19 12 19C8.5 19 6 17.5 6 15.5"
+                  d="M22 11.5C22 8.5 19.5 7 16 7C12.5 7 10 8.5 10 11.5C10 14.5 13 15.2 16 16C19 16.8 22 17.5 22 20.5C22 23 19.5 25 16 25C12.5 25 10 23 10 20.5"
                   fill="none"
-                  strokeWidth="3.5"
+                  strokeWidth="3"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   variants={{
@@ -66,13 +66,7 @@ const Footer = React.memo(function Footer() {
           <div className="font-mono text-[9px] text-[#999] dark:text-[#777] tracking-wide">// Building things that matter, one commit at a time.</div>
         </div>
 
-        {/* Console Operational State */}
-        <div className="flex items-center gap-2 px-3 py-1.5 border border-[#e8e8e8] dark:border-white/15 select-none">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#3ef07c] animate-pulse-custom" />
-          <span className="font-mono text-[8px] text-[#666] dark:text-[#999] tracking-wider uppercase">
-            CONSOLE_STATUS: <span className="text-[#3ef07c] font-bold">OPERATIONAL</span>
-          </span>
-        </div>
+
 
         {/* Contact Links & Back to Top */}
         <div className="flex flex-col items-center md:items-end gap-2.5">

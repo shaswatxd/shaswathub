@@ -9,7 +9,7 @@ const PROJECTS = [
     desc: "Crystal-clear real-time voice chat powered by WebRTC peer-to-peer connections. No accounts, no downloads required — just click and talk.",
     icon: "🎙️",
     glow: "cyan",
-    badge: "LIVE APP",
+    badge: "WEB/APP",
     githubUrl: "https://github.com/shaswatxd/voicewave",
     liveUrl: "https://voicewave-7ozn.onrender.com",
     features: [
@@ -29,7 +29,7 @@ const PROJECTS = [
     desc: "Premium glassmorphic desktop music player with integrated YouTube downloader, visualizer, local LAN share, and automatic ID3 metadata fetching.",
     icon: "🎵",
     glow: "emerald",
-    badge: "LIVE APP",
+    badge: "APP",
     githubUrl: "https://github.com/shaswatxd/we-plays",
     liveUrl: "https://weplays.vercel.app",
     features: [
@@ -50,7 +50,7 @@ const PROJECTS = [
     desc: "Browser-based client-side PDF utility toolkit to merge, split, compress, watermark, protect, and annotate documents locally.",
     icon: "📄",
     glow: "violet",
-    badge: "WEBSITE",
+    badge: "SITE",
     githubUrl: "https://github.com/shaswatxd/justpdfcraft",
     liveUrl: "https://justpdfcraft.xyz/",
     features: [
@@ -70,7 +70,7 @@ const PROJECTS = [
     desc: "Desktop media downloader shell utilizing yt-dlp & FFmpeg. Features concurrent playlist downloads, local file playback, and background engine auto-updates.",
     icon: "⬇️",
     glow: "magenta",
-    badge: "LIVE APP",
+    badge: "APP",
     githubUrl: "https://github.com/shaswatxd/snapgrab-downloader",
     liveUrl: "https://snapgrab-eight.vercel.app/",
     features: [
@@ -225,9 +225,9 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary block py-4 text-center font-mono text-[11px] tracking-widest uppercase font-bold text-white transition-all duration-200"
+            className="btn-primary flex items-center justify-center py-4 text-center font-mono text-[11px] tracking-widest uppercase font-bold text-white transition-all duration-200"
           >
-            Launch Console ↗
+            <span>Launch Console</span>
           </a>
         </div>
       </motion.div>
@@ -291,9 +291,9 @@ const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) 
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan"
+            className="inline-flex items-center px-6 py-1.5 rounded-full text-xs font-semibold bg-[#0a0a0a] text-white border border-[#0a0a0a] dark:bg-white dark:text-[#0a0a0a] dark:border-white hover:bg-transparent hover:text-[#0a0a0a] dark:hover:bg-transparent dark:hover:text-white transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_rgba(255,255,255,0.08)]"
           >
-            Launch ↗
+            <span>Launch</span>
           </a>
         )}
         <span className="font-mono text-[10px] tracking-widest text-[#999] dark:text-[#777] group-hover:text-[#0a0a0a] dark:group-hover:text-[#f2f2f2] transition-colors duration-300 ml-auto">
@@ -332,7 +332,7 @@ export default memo(function Projects() {
             <span>⚡</span>
           </div>
           <div className="text-xs font-medium">
-            More Systems<br />
+            Coming Soon<br />
             <span className="font-mono text-[9px] text-[#999] dark:text-[#777]">INDEX_INITIALIZING</span>
           </div>
         </div>

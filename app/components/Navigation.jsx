@@ -119,13 +119,13 @@ const Navigation = React.memo(function Navigation() {
           {/* Animated S Logo Icon */}
           <div className="relative w-7 h-7 bg-[#0a0a0a] dark:bg-white/10 rounded-[6px] flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:-rotate-3">
             <motion.svg
-              viewBox="0 0 24 24"
+              viewBox="0 0 32 32"
               className="w-4 h-4"
             >
               <motion.path
-                d="M18 8.5C18 6.5 15.5 5 12 5C8.5 5 6 6.5 6 8.5C6 11 9 11.5 12 12C15 12.5 18 13 18 15.5C18 17.5 15.5 19 12 19C8.5 19 6 17.5 6 15.5"
+                d="M22 11.5C22 8.5 19.5 7 16 7C12.5 7 10 8.5 10 11.5C10 14.5 13 15.2 16 16C19 16.8 22 17.5 22 20.5C22 23 19.5 25 16 25C12.5 25 10 23 10 20.5"
                 fill="none"
-                strokeWidth="3.5"
+                strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 variants={{
@@ -192,34 +192,6 @@ const Navigation = React.memo(function Navigation() {
           >
             <Image src="/avatar.png" alt="GitHub" width={46} height={46} className="github-avatar-img" priority />
           </a>
-
-          {/* Hamburger — mobile only */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-nav-panel"
-            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-            className="md:hidden relative flex items-center justify-center w-9 h-9 border border-[#0a0a0a] dark:border-white/20 text-[#0a0a0a] dark:text-[#f2f2f2]"
-          >
-            <span className="relative w-4 h-3 flex flex-col justify-between">
-              <motion.span
-                className="block h-[1.5px] w-full bg-current"
-                animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 5.5 : 0 }}
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
-              />
-              <motion.span
-                className="block h-[1.5px] w-full bg-current"
-                animate={{ opacity: menuOpen ? 0 : 1 }}
-                transition={{ duration: 0.2 }}
-              />
-              <motion.span
-                className="block h-[1.5px] w-full bg-current"
-                animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -5.5 : 0 }}
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
-              />
-            </span>
-          </button>
         </div>
       </div>
 

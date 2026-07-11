@@ -30,9 +30,7 @@ const SectionDivider = React.memo(function SectionDivider() {
       <div className="h-px w-full bg-[#e8e8e8] dark:bg-white/15" />
     </div>
   );
-});
-
-// Minimal boot screen — ultra-fast brand flash, no delays
+});// Minimal boot screen — ultra-fast brand flash, no delays
 function Preloader({ onComplete }) {
   const raw = useMotionValue(0);
   const smooth = useSpring(raw, { damping: 30, stiffness: 200, mass: 0.4 });
@@ -40,15 +38,27 @@ function Preloader({ onComplete }) {
 
   useEffect(() => {
     let timer;
-    let val = 0;
+    const startTime = Date.now();
+    const duration = 2100; // 2.1 seconds loading animation time
+
     const tick = () => {
-      val = Math.min(val + Math.random() * 25 + 20, 100);
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Organic easing: starts quick, slows down near 85%, then fills at the end
+      const easedProgress = progress < 0.85
+        ? Math.pow(progress / 0.85, 0.75) * 0.88
+        : 0.88 + (progress - 0.85) * 0.8;
+      
+      const val = Math.min(100, Math.round(easedProgress * 100));
+      
       raw.set(val);
-      if (val >= 100) {
-        timer = setTimeout(onComplete, 80);
-        return;
+
+      if (progress < 1) {
+        timer = setTimeout(tick, 16);
+      } else {
+        timer = setTimeout(onComplete, 250); // 250ms pause at 100% for visual feedback
       }
-      timer = setTimeout(tick, 16);
     };
     timer = setTimeout(tick, 16);
     return () => clearTimeout(timer);
@@ -58,48 +68,90 @@ function Preloader({ onComplete }) {
     <motion.div
       className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-white dark:bg-[#0a0a0a] overflow-hidden select-none"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25, ease: [0.76, 0, 0.24, 1] }}
+      exit={{ 
+        opacity: 0,
+        y: -30,
+        transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] } 
+      }}
     >
-      <div className="relative flex flex-col items-center gap-6 px-6">
+      {/* Dynamic Background Glow Aura */}
+      <div className="absolute w-[400px] h-[400px] bg-cyan/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <motion.div 
+        className="relative flex flex-col items-center gap-6 px-6"
+        exit={{ scale: 0.95, opacity: 0, transition: { duration: 0.45, ease: "easeIn" } }}
+      >
         <motion.div
-          className="flex items-center gap-3"
-          initial={{ opacity: 0, y: 8 }}
+          className="flex flex-col items-center gap-4 sm:gap-5"
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           {/* Animated S Logo Icon */}
-          <div className="relative w-8 h-8 bg-[#0a0a0a] dark:bg-white/10 rounded-[6px] flex items-center justify-center overflow-hidden">
+          <motion.div 
+            className="relative w-14 h-14 sm:w-16 sm:h-16 bg-[#0a0a0a] dark:bg-white/10 rounded-[12px] flex items-center justify-center overflow-hidden border border-white/10 dark:border-white/20 shadow-[0_6px_24px_-8px_rgba(0,0,0,0.4)]"
+            initial={{ scale: 0.8, rotate: -15 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            {/* Pulsing overlay glow inside box */}
+            <motion.div
+              className="absolute inset-0 bg-cyan/15 blur-sm"
+              animate={{ opacity: [0.2, 0.6, 0.2] }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+            />
+            
             <svg
-              viewBox="0 0 24 24"
-              className="w-4 h-4"
+              viewBox="0 0 32 32"
+              className="w-7 h-7 sm:w-8 sm:h-8 z-10 relative"
             >
               <motion.path
-                d="M18 8.5C18 6.5 15.5 5 12 5C8.5 5 6 6.5 6 8.5C6 11 9 11.5 12 12C15 12.5 18 13 18 15.5C18 17.5 15.5 19 12 19C8.5 19 6 17.5 6 15.5"
+                d="M22 11.5C22 8.5 19.5 7 16 7C12.5 7 10 8.5 10 11.5C10 14.5 13 15.2 16 16C19 16.8 22 17.5 22 20.5C22 23 19.5 25 16 25C12.5 25 10 23 10 20.5"
                 fill="none"
-                strokeWidth="3.5"
+                strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 initial={{ pathLength: 0, stroke: "#00c2d1" }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
+                transition={{ duration: 2.1, ease: "easeInOut" }}
               />
             </svg>
-          </div>
-          <div className="font-semibold tracking-tight text-xl sm:text-2xl text-[#0a0a0a] dark:text-[#f2f2f2]">
-            ShaswatHub
+          </motion.div>
+
+          {/* Staggered Letter Text Reveal */}
+          <div className="font-semibold tracking-tight text-2xl sm:text-4xl text-[#0a0a0a] dark:text-[#f2f2f2] flex items-center overflow-hidden select-none">
+            {"ShaswatHub".split("").map((char, index) => (
+              <motion.span
+                key={index}
+                initial={{ y: "110%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                  delay: 0.12 + index * 0.03,
+                  duration: 0.5,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+              >
+                {char}
+              </motion.span>
+            ))}
           </div>
         </motion.div>
 
-        <motion.div
-          className="w-[180px] sm:w-[240px] h-px bg-[#e8e8e8] dark:bg-white/15 overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.2 }}
-        >
-          <motion.div className="h-full bg-cyan" style={{ width }} />
-        </motion.div>
-      </div>
+        {/* Loading Progress Section */}
+        <div className="flex flex-col items-center gap-3 w-[160px] sm:w-[280px] mt-4">
+          <motion.div
+            className="w-full h-[2px] bg-[#e8e8e8] dark:bg-white/10 rounded-full overflow-hidden relative"
+            initial={{ opacity: 0, scaleX: 0.6 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
+          >
+            <motion.div 
+              className="h-full bg-cyan shadow-[0_0_8px_#00c2d1]" 
+              style={{ width }} 
+            />
+          </motion.div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -107,15 +159,7 @@ function Preloader({ onComplete }) {
 const PageClient = React.memo(function PageClient() {
   const [loading, setLoading] = useState(true);
 
-  // Skip the boot preloader if it already played this session (instant load on repeat visits)
-  useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem("booted") === "1") {
-      setLoading(false);
-    }
-  }, []);
-
   const finishBoot = React.useCallback(() => {
-    if (typeof window !== "undefined") sessionStorage.setItem("booted", "1");
     setLoading(false);
   }, []);
 
