@@ -6,27 +6,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 const PROJECTS = [
   {
     name: "VoiceWave",
-    desc: "Crystal-clear real-time voice chat powered by WebRTC peer-to-peer connections. No accounts, no downloads required — just click and talk.",
+    desc: "Real-time voice chat app that works directly in your browser. No account needed, no downloads — just share a room link and start talking instantly.",
     icon: "🎙️",
     glow: "cyan",
     badge: "WEB/APP",
     githubUrl: "https://github.com/shaswatxd/voicewave",
     liveUrl: "https://voicewave-7ozn.onrender.com",
     features: [
-      "🔗 WebRTC Peer-to-Peer Voice",
+      "🎙️ Crystal-Clear Voice Calls",
       "🔒 Password Protected Rooms",
       "💬 Built-in Text Chat & Emoji",
       "🎵 Soundboard with 10+ Sounds"
     ],
     details: {
-      architecture: "In-browser client WebRTC voice loop operating directly. Links peers via signaling servers and routes audio streams locally.",
+      architecture: "Runs entirely in the browser — no installs needed. Audio is transmitted in real-time between users with low latency.",
       modules: ["PeerJS connection engine", "Web Audio API nodes", "Secure signaling sockets", "Offline cache database"],
       command: "git clone https://github.com/shaswatxd/voicewave.git"
     }
   },
   {
     name: "We Plays",
-    desc: "Premium glassmorphic desktop music player with integrated YouTube downloader, visualizer, local LAN share, and automatic ID3 metadata fetching.",
+    desc: "Premium glassmorphic desktop music player with a built-in visualizer, synchronized lyrics, audiobook support, and automatic ID3 metadata fetching.",
     icon: "🎵",
     glow: "emerald",
     badge: "APP",
@@ -34,14 +34,13 @@ const PROJECTS = [
     liveUrl: "https://weplays.vercel.app",
     features: [
       "🎨 Dynamic Album Art Theme Engine",
-      "🚀 In-App yt-dlp YouTube Downloader",
-      "📶 LAN Offline Media Sharing",
       "🎤 Synchronized Lyrics & Insights",
-      "📚 Audiobook Playback & Library"
+      "📚 Audiobook Playback & Library",
+      "🏷️ Automatic ID3 Metadata Fetching"
     ],
     details: {
-      architecture: "Desktop system orchestrating Electron IPC frames, local LAN streaming servers, and yt-dlp bindings.",
-      modules: ["Electron IPC broker", "yt-dlp child nodes", "LAN discovery server", "Lyric scraper engine"],
+      architecture: "Desktop app built on Electron with a rich audio engine, real-time lyrics sync, and automatic metadata tagging.",
+      modules: ["Electron IPC broker", "Web Audio visualizer", "Lyric scraper engine", "ID3 metadata tagger"],
       command: "git clone https://github.com/shaswatxd/we-plays.git"
     }
   },
@@ -54,20 +53,19 @@ const PROJECTS = [
     githubUrl: "https://github.com/shaswatxd/justpdfcraft",
     liveUrl: "https://justpdfcraft.xyz/",
     features: [
-      "📄 30+ Free PDF & Student Tools",
+      "📄 Free PDF & Student Tools",
       "🔒 100% Secure Client-Side Processing",
-      "🛠️ Merge, Split & Compress Functionality",
-      "🔍 Built-in OCR Text Extraction"
+      "🛠️ Merge, Split & Compress Functionality"
     ],
     details: {
       architecture: "100% Client-side sandbox. Intercepts files and updates buffer maps in WASM, keeping data completely local.",
-      modules: ["pdf-lib compiler", "PDF.js parser", "Tesseract.js WASM engine", "Local browser memory stream"],
+      modules: ["pdf-lib compiler", "PDF.js parser", "Local browser memory stream"],
       command: "git clone https://github.com/shaswatxd/justpdfcraft.git"
     }
   },
   {
     name: "SnapGrab",
-    desc: "Desktop media downloader shell utilizing yt-dlp & FFmpeg. Features concurrent playlist downloads, local file playback, and background engine auto-updates.",
+    desc: "Desktop media downloader app that lets you download videos and audio from 1,000+ platforms. Supports playlist downloads, built-in playback, and stays up to date automatically.",
     icon: "⬇️",
     glow: "magenta",
     badge: "APP",
@@ -75,13 +73,13 @@ const PROJECTS = [
     liveUrl: "https://snapgrab-eight.vercel.app/",
     features: [
       "⬇️ Downloader for 1,000+ Platforms",
-      "🎬 Automated FFmpeg Muxing & Quality Merge",
+      "📂 Playlist & Batch Downloads",
       "⚡ Background Component Auto-Updates",
       "📻 Built-in Media Playback Shell"
     ],
     details: {
-      architecture: "Concurrent download manager queuing sub-tasks. Auto-updates dependencies on system startups.",
-      modules: ["Task queue dispatcher", "FFmpeg codec merger", "yt-dlp updater core", "Node playback stream"],
+      architecture: "Concurrent download manager with a built-in task queue. Auto-updates itself in the background on startup.",
+      modules: ["Task queue dispatcher", "Concurrent download engine", "Auto-update scheduler", "Node playback stream"],
       command: "git clone https://github.com/shaswatxd/snapgrab-downloader.git"
     }
   }
