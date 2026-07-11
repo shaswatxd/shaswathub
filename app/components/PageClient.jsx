@@ -173,7 +173,8 @@ const PageClient = React.memo(function PageClient() {
   // Mouse coordinates using MotionValues for GPU accelerated mouse glow
   const mouseX = useMotionValue(-200);
   const mouseY = useMotionValue(-200);
-  
+  const [cursorHover, setCursorHover] = useState(false);
+
   // Custom spring configurations for smooth mouse-follow glow
   const springConfig = { damping: 45, stiffness: 350, mass: 0.45 };
   const cursorX = useSpring(mouseX, springConfig);
@@ -193,6 +194,16 @@ const PageClient = React.memo(function PageClient() {
       mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+    // Grow the glow when hovering any interactive element
+    const handleOver = (e) => {
+      if (e.target.closest('a, button, [role="button"], input, textarea')) setCursorHover(true);
+    };
+    const handleOut = (e) => {
+      if (e.target.closest('a, button, [role="button"], input, textarea')) setCursorHover(false);
+    };
+    window.addEventListener('mouseover', handleOver, { passive: true });
+    window.addEventListener('mouseout', handleOut, { passive: true });
 
     let lenis;
     let rafId;
@@ -226,6 +237,8 @@ const PageClient = React.memo(function PageClient() {
     return () => {
       mq.removeEventListener("change", handleMQ);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseover', handleOver);
+      window.removeEventListener('mouseout', handleOut);
       if (lenis) {
         lenis.destroy();
         gsap.ticker.remove(lenis.raf);
@@ -273,10 +286,12 @@ const PageClient = React.memo(function PageClient() {
       {/* Lightweight animated cyber background */}
       <CyberBackground prefersReduced={prefersReduced} />
 
-      {/* Mouse cursor glow background asset */}
+      {/* Mouse cursor glow background asset — grows on hover of interactive elements */}
       {!prefersReduced && (
         <motion.div
           className="cursor-follower hidden md:block"
+          animate={{ scale: cursorHover ? 1.6 : 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
           style={{
             x: cursorX,
             y: cursorY,
@@ -286,8 +301,10 @@ const PageClient = React.memo(function PageClient() {
         />
       )}
 
+      <a href="#main-content" className="skip-link">Skip to content</a>
+
       {/* Content wrapper */}
-      <div className="relative z-10 w-full max-w-[100vw] overflow-x-clip">
+      <div id="main-content" className="relative z-10 w-full max-w-[100vw] overflow-x-clip">
         <Navigation />
         <Hero />
         <StatsStrip />

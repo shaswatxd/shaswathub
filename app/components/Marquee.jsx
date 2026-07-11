@@ -16,7 +16,7 @@ const Marquee = React.memo(function Marquee() {
     </span>
   ));
   return (
-    <div className="relative overflow-hidden py-8 my-4 pointer-events-none">
+    <div className="relative overflow-hidden py-8 my-4 pointer-events-none" aria-hidden="true">
       <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-bg to-transparent z-10" />
       <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-bg to-transparent z-10" />
       <div className="flex w-max mb-4">

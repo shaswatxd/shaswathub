@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const LINKS = [
   { href: '#builds', label: 'Builds' },
@@ -15,6 +15,21 @@ const Navigation = React.memo(function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close mobile menu on route-internal navigation or resize past mobile breakpoint
+  useEffect(() => {
+    if (!menuOpen) return;
+    document.body.style.overflow = 'hidden';
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setMenuOpen(false);
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -127,7 +142,7 @@ const Navigation = React.memo(function Navigation() {
         ))}
       </div>
 
-      {/* Profile */}
+      {/* Profile + Mobile Menu Toggle */}
       <div className="flex items-center gap-3">
         <a
           href="https://github.com/shaswatxd"
@@ -154,7 +169,62 @@ const Navigation = React.memo(function Navigation() {
             priority
           />
         </a>
+
+        {/* Hamburger — mobile only */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-panel"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          className="md:hidden relative flex items-center justify-center w-9 h-9 rounded-lg border border-white/[0.08] bg-white/[0.02] text-[#e8edf8] transition-colors duration-300 hover:border-[#00f0ff]/50"
+        >
+          <span className="relative w-4 h-3 flex flex-col justify-between">
+            <motion.span
+              className="block h-[1.5px] w-full bg-current rounded-full"
+              animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 5.5 : 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+            />
+            <motion.span
+              className="block h-[1.5px] w-full bg-current rounded-full"
+              animate={{ opacity: menuOpen ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+            />
+            <motion.span
+              className="block h-[1.5px] w-full bg-current rounded-full"
+              animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -5.5 : 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+            />
+          </span>
+        </button>
       </div>
+
+      {/* Mobile Nav Panel */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="mobile-nav-panel"
+            className="md:hidden absolute top-full inset-x-0 mt-2 mx-4 rounded-2xl border border-white/[0.08] glass-panel overflow-hidden"
+            initial={{ opacity: 0, y: -12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.98 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="flex flex-col p-2">
+              {LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`font-mono text-xs tracking-wider uppercase px-4 py-3.5 rounded-xl transition-colors duration-200 ${activeSection === link.href ? 'text-[#00f0ff] bg-white/[0.04]' : 'text-[#8895b0] hover:text-[#e8edf8] hover:bg-white/[0.02]'}`}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 });

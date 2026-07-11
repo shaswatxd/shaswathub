@@ -85,6 +85,35 @@
   a, button {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Keyboard focus ring — only shows for keyboard nav, matches neon theme */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid #00f0ff;
+    outline-offset: 3px;
+    border-radius: 4px;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+  }
+
+  .skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    z-index: 100000;
+    background: #00f0ff;
+    color: #020204;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: top 0.2s ease;
+  }
+  .skip-link:focus {
+    top: 16px;
+  }
 }
 
 /* Custom Animation Keyframes */
