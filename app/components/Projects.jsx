@@ -31,12 +31,13 @@ const PROJECTS = [
     glow: "emerald",
     badge: "LIVE APP",
     githubUrl: "https://github.com/shaswatxd/we-plays",
-    liveUrl: "https://website-nine-tau-67.vercel.app",
+    liveUrl: "https://weplays.vercel.app",
     features: [
       "🎨 Dynamic Album Art Theme Engine",
       "🚀 In-App yt-dlp YouTube Downloader",
       "📶 LAN Offline Media Sharing",
-      "🎤 Synchronized Lyrics & Insights"
+      "🎤 Synchronized Lyrics & Insights",
+      "📚 Audiobook Playback & Library"
     ],
     details: {
       architecture: "Desktop system orchestrating Electron IPC frames, local LAN streaming servers, and yt-dlp bindings.",
