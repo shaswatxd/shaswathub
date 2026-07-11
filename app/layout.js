@@ -82,7 +82,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml" />
         <meta name="theme-color" content="#ffffff" />
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link
