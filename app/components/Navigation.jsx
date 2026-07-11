@@ -193,7 +193,7 @@ const Navigation = React.memo(function Navigation() {
             className="github-avatar-link"
             title="GitHub Profile"
           >
-            <Image src="/avatar.png" alt="GitHub" width={36} height={36} className="github-avatar-img" priority />
+            <Image src="/avatar.png" alt="GitHub" width={42} height={42} className="github-avatar-img" priority />
           </a>
 
           {/* Hamburger — mobile only */}
