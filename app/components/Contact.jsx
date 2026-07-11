@@ -57,7 +57,7 @@ export default function Contact() {
     setSubmitting(true);
 
     try {
-      const res = await fetch("https://formsubmit.co/ajax/srijankumardeo777@gmail.com", {
+      const res = await fetch(process.env.NEXT_PUBLIC_FORM_ENDPOINT || "", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
@@ -74,7 +74,7 @@ export default function Contact() {
       setForm({ name: "", email: "", message: "" });
       setErrors({});
     } catch {
-      setToast({ message: "Transmission failed. Try again or email directly.", type: "error" });
+      setToast({ message: "Transmission failed. Please try again later.", type: "error" });
     } finally {
       setSubmitting(false);
     }
@@ -156,7 +156,7 @@ export default function Contact() {
             <label
               className={`absolute left-4 pointer-events-none transition-all duration-300 select-none ${focused.email || form.email ? 'top-1.5 text-[8.5px] text-cyan font-bold' : 'top-4 text-xs text-[#666] dark:text-[#999]'}`}
             >
-              EMAIL_ADDRESS
+              YOUR_EMAIL_ADDRESS
             </label>
             {errors.email && (
               <div className="text-[#ff3d9a] font-mono text-[8.5px] mt-1 pl-1">{errors.email}</div>
@@ -177,7 +177,7 @@ export default function Contact() {
           <label
             className={`absolute left-4 pointer-events-none transition-all duration-300 select-none ${focused.message || form.message ? 'top-2 text-[8.5px] text-cyan font-bold' : 'top-4 text-xs text-[#666] dark:text-[#999]'}`}
           >
-            PAYLOAD_BODY
+            SEND_MESSAGE_TO_SHASWAT
           </label>
           {errors.message && (
             <div className="text-[#ff3d9a] font-mono text-[8.5px] mt-1 pl-1">{errors.message}</div>
