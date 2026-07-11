@@ -8,7 +8,11 @@ const Footer = React.memo(function Footer() {
 
   const handleScrollTop = (e) => {
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined' && window.__lenis) {
+      window.__lenis.scrollTo(0, { duration: 1.1 });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (

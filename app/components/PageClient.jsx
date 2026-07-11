@@ -207,6 +207,7 @@ const PageClient = React.memo(function PageClient() {
 
     let lenis;
     let rafId;
+    let handleAnchorClick;
 
     if (!mq.matches) {
       // Initialize Lenis smooth scroll
@@ -220,7 +221,7 @@ const PageClient = React.memo(function PageClient() {
 
       // Synchronize Lenis scroll positions with GSAP ScrollTrigger
       lenis.on('scroll', ScrollTrigger.update);
-      
+
       const raf = (time) => {
         lenis.raf(time);
         rafId = requestAnimationFrame(raf);
@@ -232,6 +233,23 @@ const PageClient = React.memo(function PageClient() {
         lenis.raf(time * 1000);
       });
       gsap.ticker.lagSmoothing(0);
+
+      // Route in-page anchor links (#projects, #contact, etc.) through Lenis so
+      // clicking a link doesn't kick off a second, competing native smooth-scroll.
+      handleAnchorClick = (e) => {
+        const anchor = e.target.closest('a[href^="#"]');
+        if (!anchor) return;
+        const id = anchor.getAttribute('href').slice(1);
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        lenis.scrollTo(target, { offset: -90, duration: 1.1 });
+      };
+      document.addEventListener('click', handleAnchorClick);
+
+      // Expose for components outside this effect's scope (e.g. Footer's "back to top")
+      window.__lenis = lenis;
     }
 
     return () => {
@@ -239,9 +257,11 @@ const PageClient = React.memo(function PageClient() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseover', handleOver);
       window.removeEventListener('mouseout', handleOut);
+      if (handleAnchorClick) document.removeEventListener('click', handleAnchorClick);
       if (lenis) {
         lenis.destroy();
         gsap.ticker.remove(lenis.raf);
+        if (window.__lenis === lenis) window.__lenis = null;
       }
       if (rafId) cancelAnimationFrame(rafId);
     };

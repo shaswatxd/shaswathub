@@ -47,7 +47,7 @@ export default function Contact() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) {
       setToast({ message: "Transmission failed. Check parameters.", type: "error" });
@@ -56,13 +56,28 @@ export default function Contact() {
 
     setSubmitting(true);
 
-    // Simulate network transmission delay
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/srijankumardeo777@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `ShaswatHub · New message from ${form.name}`,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Delivery failed");
+
       setToast({ message: "Message encrypted and transmitted successfully!", type: "success" });
       setForm({ name: "", email: "", message: "" });
       setErrors({});
-    }, 1500);
+    } catch {
+      setToast({ message: "Transmission failed. Try again or email directly.", type: "error" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Auto-close toast
