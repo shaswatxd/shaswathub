@@ -188,11 +188,10 @@ const Navigation = React.memo(function Navigation() {
             href="https://github.com/shaswatxd"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 btn-outline text-xs font-medium"
+            className="github-avatar-link"
             title="GitHub Profile"
           >
-            <Image src="/avatar.png" alt="" width={16} height={16} className="w-4 h-4 rounded-full object-cover" priority />
-            GitHub
+            <Image src="/avatar.png" alt="GitHub" width={36} height={36} className="github-avatar-img" priority />
           </a>
 
           <ThemeToggle />
@@ -249,6 +248,16 @@ const Navigation = React.memo(function Navigation() {
                   {link.label}
                 </a>
               ))}
+              <a
+                href="https://github.com/shaswatxd"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 font-mono text-xs tracking-wider uppercase py-4 border-b border-[#f0f0f0] dark:border-white/10 last:border-b-0 text-[#0a0a0a] dark:text-[#f2f2f2] hover:text-cyan transition-colors duration-200"
+              >
+                <Image src="/avatar.png" alt="" width={20} height={20} className="w-5 h-5 rounded-full object-cover" />
+                GitHub
+              </a>
             </div>
           </motion.div>
         )}

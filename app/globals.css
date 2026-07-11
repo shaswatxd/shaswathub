@@ -293,6 +293,61 @@
   will-change: transform;
 }
 
+/* GitHub Avatar — Circular with animated ring */
+.github-avatar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e8e8e8;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.github-avatar-link:hover {
+  border-color: #00c2d1;
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(0, 194, 209, 0.4);
+}
+.dark .github-avatar-link {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.dark .github-avatar-link:hover {
+  border-color: #00c2d1;
+  box-shadow: 0 0 16px rgba(0, 194, 209, 0.5);
+}
+
+/* Rotating ring animation on hover */
+.github-avatar-link::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #00c2d1;
+  border-right-color: #00c2d1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: avatar-spin 1.2s linear infinite;
+}
+.github-avatar-link:hover::before {
+  opacity: 1;
+}
+
+@keyframes avatar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.github-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* Reduced Motion overrides */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
