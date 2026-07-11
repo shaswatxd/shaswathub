@@ -117,49 +117,6 @@ const Hero = React.memo(function Hero() {
       animate="visible"
     >
 
-      {/* Animated S Logo — large decorative hero badge */}
-      <motion.div
-        className="mb-10 inline-flex"
-        variants={itemVariants}
-      >
-        <motion.div
-          className="relative w-14 h-14 bg-[#0a0a0a] dark:bg-white/8 rounded-[14px] flex items-center justify-center overflow-visible"
-          whileHover={{ scale: 1.08, rotate: -4, transition: { type: 'spring', stiffness: 300, damping: 14 } }}
-        >
-          {/* Pulsing glow ring behind icon */}
-          <motion.div
-            className="absolute inset-0 rounded-[14px] bg-cyan/20 dark:bg-cyan/10 blur-xl"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0.15, 0.4] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.svg
-            viewBox="0 0 24 24"
-            className="w-7 h-7 relative z-10"
-            initial="initial"
-            animate="animate"
-            whileHover="hover"
-          >
-            <motion.path
-              d="M18 8.5C18 6.5 15.5 5 12 5C8.5 5 6 6.5 6 8.5C6 11 9 11.5 12 12C15 12.5 18 13 18 15.5C18 17.5 15.5 19 12 19C8.5 19 6 17.5 6 15.5"
-              fill="none"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              variants={{
-                initial: { pathLength: 0, stroke: '#00c2d1' },
-                animate: { pathLength: 1, stroke: '#00c2d1', transition: { duration: 1.4, ease: 'easeInOut', delay: 0.2 } },
-                hover: {
-                  pathLength: [0, 1],
-                  stroke: '#00f0ff',
-                  filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.9))',
-                  transition: { pathLength: { duration: 0.55, ease: 'easeInOut' }, stroke: { duration: 0.15 }, filter: { duration: 0.15 } }
-                }
-              }}
-            />
-          </motion.svg>
-        </motion.div>
-      </motion.div>
-
       {/* Main Heading with Word-Safe Letter-by-Letter Animation & Hover Bounce */}
       <h1 className="font-semibold tracking-tight leading-[1.02] text-6xl sm:text-7xl lg:text-[96px] max-w-6xl text-[#0a0a0a] dark:text-[#f2f2f2] select-none">
         <div className="flex flex-wrap py-1">
