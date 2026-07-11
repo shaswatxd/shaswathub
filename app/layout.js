@@ -41,6 +41,9 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
+  icons: {
+    icon: [{ url: '/favicon.svg?v=4', type: 'image/svg+xml' }],
+  },
 };
 
 export const viewport = {
@@ -82,7 +85,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml" />
         <meta name="theme-color" content="#ffffff" />
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link
