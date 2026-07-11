@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -19,9 +19,23 @@ import Accordions from './Accordions';
 import Contact from './Contact';
 import Footer from './Footer';
 
-// Lightweight CSS background (no WebGL) + deferred favicon animation
+// Lightweight CSS background (no WebGL) — used as fallback when WebGL is unavailable
+// or the user prefers reduced motion. Deferred favicon animation loads the same way.
 const CyberBackground = dynamic(() => import('./CyberBackground'), { ssr: false });
+// Premium WebGL background — heavy (three.js + postprocessing), so it's code-split
+// and only ever mounted client-side after a capability check.
+const Scene3D = dynamic(() => import('./Scene3D'), { ssr: false });
 const AnimatedFavicon = dynamic(() => import('./AnimatedFavicon'), { ssr: false });
+
+// One-time, cheap WebGL support probe (mirrors the standard Modernizr-style check)
+function detectWebGL() {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+  } catch {
+    return false;
+  }
+}
 
 // Register GSAP ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -157,6 +171,15 @@ function Preloader({ onComplete }) {
 const PageClient = React.memo(function PageClient() {
   const [loading, setLoading] = useState(true);
   const [prefersReduced, setPrefersReduced] = useState(false);
+  const [webglOk, setWebglOk] = useState(false);
+  // Normalized pointer position for the 3D scene's camera parallax. Kept in a ref (not
+  // state) so mousemove never triggers a React re-render — the R3F scene reads it
+  // directly inside its own useFrame loop.
+  const scenePointerRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setWebglOk(detectWebGL());
+  }, []);
 
   // Skip the boot preloader if it already played this session (instant load on repeat visits)
   useEffect(() => {
@@ -192,6 +215,9 @@ const PageClient = React.memo(function PageClient() {
       if (mq.matches) return;
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
+      // Normalize to [-1, 1] for the 3D scene's camera parallax
+      scenePointerRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      scenePointerRef.current.y = -((e.clientY / window.innerHeight) * 2 - 1);
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
@@ -302,9 +328,14 @@ const PageClient = React.memo(function PageClient() {
       </AnimatePresence>
 
       <AnimatedFavicon prefersReduced={prefersReduced} />
-      
-      {/* Lightweight animated cyber background */}
-      <CyberBackground prefersReduced={prefersReduced} />
+
+      {/* Premium WebGL background when supported + motion is welcome; otherwise the
+          proven lightweight CSS background carries it (no WebGL, no reduced-motion violations) */}
+      {webglOk && !prefersReduced ? (
+        <Scene3D pointerRef={scenePointerRef} />
+      ) : (
+        <CyberBackground prefersReduced={prefersReduced} />
+      )}
 
       {/* Mouse cursor glow background asset — grows on hover of interactive elements */}
       {!prefersReduced && (
