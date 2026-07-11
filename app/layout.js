@@ -42,7 +42,7 @@ export const metadata = {
     },
   },
   icons: {
-    icon: [{ url: '/favicon.svg?v=4', type: 'image/svg+xml' }],
+    icon: [{ url: '/favicon.svg?v=5', type: 'image/svg+xml' }],
   },
 };
 
