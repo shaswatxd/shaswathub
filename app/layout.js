@@ -47,7 +47,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: '#ffffff',
+  themeColor: '#0a0a0a',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -73,10 +73,8 @@ const jsonLd = {
 const themeInitScript = `
 (function () {
   try {
-    var stored = localStorage.getItem('theme');
-    var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    if (theme === 'dark') document.documentElement.classList.add('dark');
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
   } catch (e) {}
 })();
 `;
@@ -97,7 +95,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="font-body bg-white dark:bg-[#0a0a0a] text-[#0a0a0a] dark:text-[#f2f2f2] selection:bg-cyan-100 dark:selection:bg-cyan-900 selection:text-[#0a0a0a] dark:selection:text-[#f2f2f2] antialiased transition-colors duration-300">
+      <body className="font-body bg-[#0a0a0a] text-[#f2f2f2] selection:bg-cyan-900 selection:text-[#f2f2f2] antialiased transition-colors duration-300">
         {children}
       </body>
     </html>

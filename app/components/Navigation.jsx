@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import ThemeToggle from './ThemeToggle';
 
 const LINKS = [
   { href: '#builds', label: 'Builds' },
@@ -182,7 +181,7 @@ const Navigation = React.memo(function Navigation() {
           ))}
         </div>
 
-        {/* GitHub + Theme Toggle + Mobile Menu Toggle */}
+        {/* GitHub + Mobile Menu Toggle */}
         <div className="flex items-center gap-3">
           <a
             href="https://github.com/shaswatxd"
@@ -191,10 +190,8 @@ const Navigation = React.memo(function Navigation() {
             className="github-avatar-link"
             title="GitHub Profile"
           >
-            <Image src="/avatar.png" alt="GitHub" width={42} height={42} className="github-avatar-img" priority />
+            <Image src="/avatar.png" alt="GitHub" width={46} height={46} className="github-avatar-img" priority />
           </a>
-
-          <ThemeToggle />
 
           {/* Hamburger — mobile only */}
           <button
