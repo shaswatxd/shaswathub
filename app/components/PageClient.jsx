@@ -172,6 +172,12 @@ const PageClient = React.memo(function PageClient() {
   const [loading, setLoading] = useState(true);
   const [prefersReduced, setPrefersReduced] = useState(false);
   const [webglOk, setWebglOk] = useState(false);
+  // Scene3D's WebGL init (shader compilation for the glass material + bloom pass) is
+  // heavy enough to steal main-thread frames from Hero's word-stagger entrance if they
+  // run at the same moment — the text would visibly snap in instead of animating.
+  // Mounting the 3D canvas only once Hero's own reveal has had time to finish keeps
+  // the two from competing for the same frames.
+  const [show3D, setShow3D] = useState(false);
   // Normalized pointer position for the 3D scene's camera parallax. Kept in a ref (not
   // state) so mousemove never triggers a React re-render — the R3F scene reads it
   // directly inside its own useFrame loop.
@@ -192,6 +198,14 @@ const PageClient = React.memo(function PageClient() {
     if (typeof window !== "undefined") sessionStorage.setItem("booted", "1");
     setLoading(false);
   }, []);
+
+  // Wait out Hero's entrance animation (delayChildren 0.4s + staggered word reveals,
+  // finishes well under 1.2s) before compiling the 3D scene's shaders.
+  useEffect(() => {
+    if (loading) return;
+    const t = setTimeout(() => setShow3D(true), 1200);
+    return () => clearTimeout(t);
+  }, [loading]);
 
   // Mouse coordinates using MotionValues for GPU accelerated mouse glow
   const mouseX = useMotionValue(-200);
@@ -329,9 +343,9 @@ const PageClient = React.memo(function PageClient() {
 
       <AnimatedFavicon prefersReduced={prefersReduced} />
 
-      {/* Premium WebGL background when supported + motion is welcome; otherwise the
-          proven lightweight CSS background carries it (no WebGL, no reduced-motion violations) */}
-      {webglOk && !prefersReduced ? (
+      {/* Premium WebGL background when supported + motion is welcome; otherwise (or while
+          waiting for Hero's entrance animation to clear) the lightweight CSS background carries it */}
+      {webglOk && !prefersReduced && show3D ? (
         <Scene3D pointerRef={scenePointerRef} />
       ) : (
         <CyberBackground prefersReduced={prefersReduced} />
