@@ -330,8 +330,8 @@ export default memo(function Projects() {
             <span>⚡</span>
           </div>
           <div className="text-xs font-medium">
-            Coming Soon<br />
-            <span className="font-mono text-[9px] text-[#999] dark:text-[#777]">INDEX_INITIALIZING</span>
+            In Development<br />
+            <span className="font-mono text-[9px] text-[#999] dark:text-[#777]">NEXT_BUILD_QUEUED</span>
           </div>
         </div>
       </div>
