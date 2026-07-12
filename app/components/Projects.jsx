@@ -82,6 +82,26 @@ const PROJECTS = [
       modules: ["Task queue dispatcher", "Concurrent download engine", "Auto-update scheduler", "Node playback stream"],
       command: "git clone https://github.com/shaswatxd/snapgrab-downloader.git"
     }
+  },
+  {
+    name: "ResumeAI",
+    desc: "AI-powered resume builder that creates professional resumes from a simple text description. Choose from 30 templates and export as PDF instantly.",
+    icon: "📝",
+    glow: "cyan",
+    badge: "SITE",
+    githubUrl: "https://github.com/shaswatxd/resumeai",
+    liveUrl: "https://resumeaihai.vercel.app/",
+    features: [
+      "🤖 3 AI Models (Gemini, Groq, Cerebras)",
+      "📄 30 Professional Templates",
+      "💾 Save Draft & Download PDF",
+      "🔒 100% Client-Side API Key Storage"
+    ],
+    details: {
+      architecture: "Next.js app with client-side AI integration. API keys stored in localStorage, resumes generated entirely in the browser.",
+      modules: ["AI prompt engine", "Template renderer", "PDF export module", "Draft autosave system"],
+      command: "git clone https://github.com/shaswatxd/resumeai.git"
+    }
   }
 ];
 
