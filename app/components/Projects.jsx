@@ -26,7 +26,7 @@ const PROJECTS = [
   },
   {
     name: "We Plays",
-    desc: "Premium glassmorphic desktop music player with a built-in visualizer, synchronized lyrics, audiobook support, and automatic ID3 metadata fetching.",
+    desc: "Premium glassmorphic desktop music player with a built-in visualizer, synchronized lyrics, custom playlist management, and automatic ID3 metadata fetching.",
     icon: "🎵",
     glow: "emerald",
     badge: "APP",
@@ -35,7 +35,7 @@ const PROJECTS = [
     features: [
       "🎨 Dynamic Album Art Theme Engine",
       "🎤 Synchronized Lyrics & Insights",
-      "📚 Audiobook Playback & Library",
+      "🎛️ Custom Playlist & Queue Manager",
       "🏷️ Automatic ID3 Metadata Fetching"
     ],
     details: {
