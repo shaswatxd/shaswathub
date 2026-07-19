@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef, useState, useEffect, memo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useState, useEffect, memo, useCallback } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
+// ─── Projects Data ──────────────────────────────────────────────────────────
 const PROJECTS = [
   {
     name: "AIOforge",
@@ -30,6 +31,7 @@ const PROJECTS = [
     icon: "📥",
     glow: "violet",
     badge: "APP",
+    featured: true, // Special tag for premium grid card styling
     githubUrl: "https://github.com/shaswatxd/novadl",
     liveUrl: "https://novadl.vercel.app",
     features: [
@@ -315,7 +317,7 @@ const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) 
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onClick={() => onOpenDetails(project)}
-      className={`card spotlight-card p-8 flex flex-col cursor-pointer group ${borderClasses}`}
+      className={`card spotlight-card p-8 flex flex-col cursor-pointer group ${project.featured ? 'card-featured' : ''} ${borderClasses}`}
       initial={{ opacity: 0, y: 35 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
@@ -326,7 +328,9 @@ const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) 
           {project.icon}
         </div>
         <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-[#666] dark:text-[#999]">
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col }} /> {project.badge}
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col }} />
+          {project.featured && <span className="premium-badge-text font-bold">PREMIUM APP</span>}
+          {!project.featured && project.badge}
         </span>
       </div>
 
@@ -374,6 +378,7 @@ export default memo(function Projects() {
         <h2 className="font-semibold text-4xl lg:text-5xl tracking-tight text-[#0a0a0a] dark:text-[#f2f2f2]">Live Project Index</h2>
       </div>
 
+      {/* ── Project Grid ── */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 border-t border-l border-[#e8e8e8] dark:border-white/15 mb-4">
         {PROJECTS.map((project, idx) => (
           <Card
@@ -381,7 +386,7 @@ export default memo(function Projects() {
             project={project}
             idx={idx}
             onOpenDetails={setActiveProject}
-            borderClasses={`border-r border-b border-[#e8e8e8] dark:border-white/15 ${(idx + 1) % cols === 0 ? '' : ''}`}
+            borderClasses={`border-r border-b border-[#e8e8e8] dark:border-white/15`}
           />
         ))}
 
