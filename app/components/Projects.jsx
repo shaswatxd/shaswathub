@@ -25,6 +25,26 @@ const PROJECTS = [
     }
   },
   {
+    name: "NovaDL",
+    desc: "A modern, multi-threaded, private, open-source download manager for Windows. Features HLS video download quality selection, crash-safe segment resume, and a premium dark-themed dashboard.",
+    icon: "📥",
+    glow: "violet",
+    badge: "APP",
+    githubUrl: "https://github.com/shaswatxd/novadl",
+    liveUrl: "https://novadl.vercel.app",
+    features: [
+      "⚡ Multi-Threaded HTTP & HLS Speed Acceleration",
+      "🎥 Stream sniffer with dynamic quality selection",
+      "📅 Smart Scheduler & Automatic File Sorting",
+      "🔒 Sandboxed Secure Renderer & Auto-Updates"
+    ],
+    details: {
+      architecture: "High-performance segmented downloader utilizing dynamic thread allocation, HLS parser/segment assembler, and Chromium/Node sandboxed context isolation.",
+      modules: ["Multi-thread segment engine", "HLS parser & stream assembler", "Browser companion extension", "Secure sandbox controller"],
+      command: "git clone https://github.com/shaswatxd/novadl.git"
+    }
+  },
+  {
     name: "VoiceWave",
     desc: "Real-time voice chat app that works directly in your browser. No account needed, no downloads — just share a room link and start talking instantly.",
     icon: "🎙️",
