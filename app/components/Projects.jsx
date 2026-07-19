@@ -5,6 +5,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const PROJECTS = [
   {
+    name: "AIOforge",
+    desc: "A beautiful, premium PC setup and software deployment manager for Windows. Select, batch install, and auto-update dozens of applications simultaneously using Winget and Chocolatey engines.",
+    icon: "⚙️",
+    glow: "orange",
+    badge: "APP",
+    githubUrl: "https://github.com/shaswatxd/AIOforge",
+    liveUrl: "https://aioforge.vercel.app",
+    features: [
+      "⚡ High-Speed Asynchronous Parallel Installers",
+      "📦 Preset Stacks & Portable Setup Profiles",
+      "🎨 Interactive Dashboard with Speed & Progress Tracking",
+      "⚙️ Seamless Winget & Chocolatey Wrappers"
+    ],
+    details: {
+      architecture: "Native desktop utility built for Windows that bridges Winget and Chocolatey package managers into a unified, asynchronous parallel queue interface.",
+      modules: ["Winget queue worker", "Chocolatey agent wrapper", "Asynchronous parallel downloader", "Profile package builder"],
+      command: "git clone https://github.com/shaswatxd/AIOforge.git"
+    }
+  },
+  {
     name: "VoiceWave",
     desc: "Real-time voice chat app that works directly in your browser. No account needed, no downloads — just share a room link and start talking instantly.",
     icon: "🎙️",
@@ -109,7 +129,8 @@ const GLOW_COLORS = {
   cyan: "#00c2d1",
   violet: "#8b6bff",
   magenta: "#ff3d9a",
-  emerald: "#3ef07c"
+  emerald: "#3ef07c",
+  orange: "#e08a4a"
 };
 
 // Details Modal Component
