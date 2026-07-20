@@ -162,6 +162,9 @@ const PageClient = React.memo(function PageClient() {
 
   const finishBoot = React.useCallback(() => {
     setLoading(false);
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
   }, []);
 
   useEffect(() => {

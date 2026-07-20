@@ -57,8 +57,14 @@ export default memo(function Terminal() {
   const inputRef = useRef(null);
   const terminalEndRef = useRef(null);
 
-  // Auto scroll to bottom on new output
+  const isFirstRender = useRef(true);
+
+  // Auto scroll to bottom on new output (skipping initial page mount)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [history, isMatrix]);
 
@@ -194,7 +200,6 @@ export default memo(function Terminal() {
               onChange={(e) => setInputVal(e.target.value)}
               onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent text-white border-none outline-none focus:ring-0 p-0 font-mono text-[12px] caret-cyan"
-              autoFocus
               spellCheck="false"
               autoComplete="off"
             />
