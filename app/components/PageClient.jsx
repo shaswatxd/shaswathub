@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
+import BackgroundGrid from './BackgroundGrid';
 import Navigation from './Navigation';
 import Hero from './Hero';
 import StatsStrip from './StatsStrip';
@@ -266,6 +267,7 @@ const PageClient = React.memo(function PageClient() {
 
       {/* Content wrapper */}
       <div id="main-content" className="relative w-full max-w-[100vw] overflow-x-clip bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+        <BackgroundGrid />
         <Navigation />
         <Hero />
         <StatsStrip />

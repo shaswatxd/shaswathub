@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from './ThemeToggle';
 
 const LINKS = [
   { href: '#builds', label: 'Builds' },
@@ -181,8 +182,9 @@ const Navigation = React.memo(function Navigation() {
           ))}
         </div>
 
-        {/* GitHub + Mobile Menu Toggle */}
-        <div className="flex items-center gap-3">
+        {/* Theme Toggle + GitHub Profile */}
+        <div className="flex items-center gap-3.5">
+          <ThemeToggle className="rounded-full w-10 h-10 border border-[#0a0a0a]/20 dark:border-white/25 hover:border-cyan hover:text-cyan transition-all duration-200 shadow-sm" />
           <a
             href="https://github.com/shaswatxd"
             target="_blank"

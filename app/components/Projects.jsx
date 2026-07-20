@@ -27,7 +27,7 @@ const PROJECTS = [
   },
   {
     name: "NovaDL",
-    desc: "A modern, multi-threaded, private, open-source download manager for Windows. Features HLS video download quality selection, crash-safe segment resume, and a premium dark-themed dashboard.",
+    desc: "A modern, high-performance multi-threaded download manager for Windows built with Electron, React, and WASM. Features worker-thread chunk splitting, real HLS video stream downloading, crash-safe SQLite state persistence, and browser extension integration.",
     icon: "📥",
     glow: "violet",
     badge: "APP",
@@ -35,14 +35,16 @@ const PROJECTS = [
     githubUrl: "https://github.com/shaswatxd/novadl",
     liveUrl: "https://novadl.vercel.app",
     features: [
-      "⚡ Multi-Threaded HTTP & HLS Speed Acceleration",
-      "🎥 Stream sniffer with dynamic quality selection",
-      "📅 Smart Scheduler & Automatic File Sorting",
-      "🔒 Sandboxed Secure Renderer & Auto-Updates"
+      "⚡ Multi-Threaded Acceleration with Work-Stealing Workers",
+      "🎥 Real HLS Video Downloader & Quality Stream Selection",
+      "💾 Crash-Safe Resumable Engine (WASM SQLite Persistence)",
+      "🧩 Browser Extension Integration (Chrome, Edge & Firefox)",
+      "📅 Night Mode Scheduler, Speed Limiter & Auto-Shutdown",
+      "🔒 Sandboxed IPC Architecture & Zero Telemetry Privacy"
     ],
     details: {
-      architecture: "High-performance segmented downloader utilizing dynamic thread allocation, HLS parser/segment assembler, and Chromium/Node sandboxed context isolation.",
-      modules: ["Multi-thread segment engine", "HLS parser & stream assembler", "Browser companion extension", "Secure sandbox controller"],
+      architecture: "Built on Electron, React & TypeScript with worker-thread byte-range splitting, WASM SQLite chunk state persistence, FFmpeg stream assembly, and Manifest V3 extension bridge.",
+      modules: ["Worker-Thread Download Engine", "HLS Stream Parser & Assembler", "WASM SQLite Persistence Layer", "Manifest V3 Extension Bridge", "Task Scheduler & Speed Limiter"],
       command: "git clone https://github.com/shaswatxd/novadl.git"
     }
   },
@@ -369,37 +371,137 @@ const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) 
 
 export default memo(function Projects() {
   const [activeProject, setActiveProject] = useState(null);
-  const cols = 3; // md:grid-cols-3
+  const [activeFilter, setActiveFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filters = [
+    { id: "ALL", label: "All Projects" },
+    { id: "APP", label: "Desktop Apps" },
+    { id: "WEB", label: "Web Apps & Tools" },
+  ];
+
+  const filteredProjects = PROJECTS.filter((proj) => {
+    let matchesCategory = true;
+    if (activeFilter === "APP") {
+      matchesCategory = proj.badge === "APP";
+    } else if (activeFilter === "WEB") {
+      matchesCategory = proj.badge === "SITE" || proj.badge === "WEB/APP";
+    }
+
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return matchesCategory;
+
+    const matchesSearch =
+      proj.name.toLowerCase().includes(q) ||
+      proj.desc.toLowerCase().includes(q) ||
+      proj.features.some((f) => f.toLowerCase().includes(q)) ||
+      proj.details.modules.some((m) => m.toLowerCase().includes(q)) ||
+      proj.details.architecture.toLowerCase().includes(q);
+
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <>
-      <div id="projects" className="max-w-[1440px] mx-auto px-6 lg:px-16 pt-20 pb-10 animate-section">
-        <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-cyan mb-4 inline-block">Selected Work</span>
-        <h2 className="font-semibold text-4xl lg:text-5xl tracking-tight text-[#0a0a0a] dark:text-[#f2f2f2]">Live Project Index</h2>
+      <div id="projects" className="max-w-[1440px] mx-auto px-6 lg:px-16 pt-20 pb-8 animate-section flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-cyan mb-3 inline-block">Selected Work</span>
+          <h2 className="font-semibold text-4xl lg:text-5xl tracking-tight text-[#0a0a0a] dark:text-[#f2f2f2]">Live Project Index</h2>
+        </div>
+
+        <div className="font-mono text-xs text-[#888] tracking-widest">
+          SHOWING [{filteredProjects.length}/{PROJECTS.length}] BUILDS
+        </div>
+      </div>
+
+      {/* ── Filter Tabs & Search Control ── */}
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-16 pb-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        {/* Category Pill Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+          {filters.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveFilter(tab.id)}
+              className={`px-4 py-2 text-xs font-mono tracking-wider uppercase border transition-all duration-200 whitespace-nowrap ${
+                activeFilter === tab.id
+                  ? 'border-cyan bg-cyan/10 text-cyan font-bold shadow-[0_0_12px_rgba(0,194,209,0.2)]'
+                  : 'border-[#e8e8e8] dark:border-white/15 text-[#666] dark:text-[#999] hover:border-[#0a0a0a] dark:hover:border-white/40 hover:text-[#0a0a0a] dark:hover:text-[#f2f2f2]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Live Search Input */}
+        <div className="relative w-full sm:w-72">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search tech, name, stack..."
+            className="w-full bg-white dark:bg-[#111] border border-[#e8e8e8] dark:border-white/15 px-3.5 py-2 pl-9 text-xs text-[#0a0a0a] dark:text-[#f2f2f2] placeholder-[#999] focus:outline-none focus:border-cyan transition-colors duration-200"
+          />
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#999]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#999] hover:text-cyan"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       {/* ── Project Grid ── */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 border-t border-l border-[#e8e8e8] dark:border-white/15 mb-4">
-        {PROJECTS.map((project, idx) => (
-          <Card
-            key={idx}
-            project={project}
-            idx={idx}
-            onOpenDetails={setActiveProject}
-            borderClasses={`border-r border-b border-[#e8e8e8] dark:border-white/15`}
-          />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {filteredProjects.map((project, idx) => (
+            <Card
+              key={project.name}
+              project={project}
+              idx={idx}
+              onOpenDetails={setActiveProject}
+              borderClasses={`border-r border-b border-[#e8e8e8] dark:border-white/15`}
+            />
+          ))}
+        </AnimatePresence>
+
+        {/* Empty State Result */}
+        {filteredProjects.length === 0 && (
+          <div className="col-span-full card p-12 text-center flex flex-col items-center justify-center gap-3 border-r border-b border-[#e8e8e8] dark:border-white/15">
+            <span className="text-3xl">🔍</span>
+            <h3 className="font-semibold text-lg text-[#0a0a0a] dark:text-[#f2f2f2]">No matching projects found</h3>
+            <p className="text-xs text-[#666] dark:text-[#999]">No project matches "{searchQuery}". Try searching for Electron, WASM, or AI.</p>
+            <button
+              onClick={() => { setSearchQuery(""); setActiveFilter("ALL"); }}
+              className="mt-2 px-4 py-1.5 text-xs font-mono border border-cyan text-cyan hover:bg-cyan hover:text-black transition-colors"
+            >
+              Reset Filters
+            </button>
+          </div>
+        )}
 
         {/* Placeholder Coming Soon Box */}
-        <div className="card flex flex-col items-center justify-center border-r border-b border-[#e8e8e8] dark:border-white/15 text-[#666] dark:text-[#999] hover:text-cyan min-h-[300px] text-center gap-4 select-none group">
-          <div className="w-12 h-12 border border-dashed border-[#999] dark:border-white/30 flex items-center justify-center text-lg transition-transform duration-500 group-hover:rotate-90">
-            <span>⚡</span>
+        {filteredProjects.length > 0 && (
+          <div className="card flex flex-col items-center justify-center border-r border-b border-[#e8e8e8] dark:border-white/15 text-[#666] dark:text-[#999] hover:text-cyan min-h-[300px] text-center gap-4 select-none group">
+            <div className="w-12 h-12 border border-dashed border-[#999] dark:border-white/30 flex items-center justify-center text-lg transition-transform duration-500 group-hover:rotate-90">
+              <span>⚡</span>
+            </div>
+            <div className="text-xs font-medium">
+              In Development<br />
+              <span className="font-mono text-[9px] text-[#999] dark:text-[#777]">NEXT_BUILD_QUEUED</span>
+            </div>
           </div>
-          <div className="text-xs font-medium">
-            In Development<br />
-            <span className="font-mono text-[9px] text-[#999] dark:text-[#777]">NEXT_BUILD_QUEUED</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Details Modal overlay */}
