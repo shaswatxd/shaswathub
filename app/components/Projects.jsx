@@ -303,15 +303,21 @@ const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) 
   const col = GLOW_COLORS[project.glow] || GLOW_COLORS.cyan;
   const cardRef = useRef(null);
 
-  // Mousemove handler for card spotlight
+  const rafRef = useRef(null);
+
+  // Mousemove handler for card spotlight - throttled with rAF
   const handleMouseMove = (e) => {
+    if (rafRef.current) return;
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    card.style.setProperty("--mouse-x", `${(x / rect.width) * 100}%`);
-    card.style.setProperty("--mouse-y", `${(y / rect.height) * 100}%`);
+    rafRef.current = requestAnimationFrame(() => {
+      card.style.setProperty("--mouse-x", `${(x / rect.width) * 100}%`);
+      card.style.setProperty("--mouse-y", `${(y / rect.height) * 100}%`);
+      rafRef.current = null;
+    });
   };
 
   return (

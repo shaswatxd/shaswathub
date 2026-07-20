@@ -190,16 +190,11 @@ const PageClient = React.memo(function PageClient() {
       // Synchronize Lenis scroll positions with GSAP ScrollTrigger
       lenis.on('scroll', ScrollTrigger.update);
 
-      const raf = (time) => {
-        lenis.raf(time);
-        rafId = requestAnimationFrame(raf);
-      };
-      rafId = requestAnimationFrame(raf);
-
-      // Tell GSAP to use Lenis requestAnimationFrame
-      gsap.ticker.add((time) => {
+      // Tell GSAP ticker to drive Lenis scroll loop cleanly (Single RAF driver)
+      const updateLenis = (time) => {
         lenis.raf(time * 1000);
-      });
+      };
+      gsap.ticker.add(updateLenis);
       gsap.ticker.lagSmoothing(0);
 
       // Route in-page anchor links (#projects, #contact, etc.) through Lenis so
@@ -225,10 +220,9 @@ const PageClient = React.memo(function PageClient() {
       if (handleAnchorClick) document.removeEventListener('click', handleAnchorClick);
       if (lenis) {
         lenis.destroy();
-        gsap.ticker.remove(lenis.raf);
+        gsap.ticker.remove(updateLenis);
         if (window.__lenis === lenis) window.__lenis = null;
       }
-      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 

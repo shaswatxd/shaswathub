@@ -45,7 +45,7 @@ export default function BackgroundGrid() {
       {/* Mouse Spotlight Glow (Translates on GPU compositor thread) */}
       <div
         ref={spotlightRef}
-        className="fixed top-0 left-0 w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,194,209,0.14)_0%,rgba(139,107,255,0.07)_40%,transparent_70%)] dark:bg-[radial-gradient(circle_at_center,rgba(0,194,209,0.15)_0%,rgba(139,107,255,0.08)_40%,transparent_70%)] pointer-events-none transition-transform duration-100 ease-out transform-gpu"
+        className="fixed top-0 left-0 w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,194,209,0.14)_0%,rgba(139,107,255,0.07)_40%,transparent_70%)] dark:bg-[radial-gradient(circle_at_center,rgba(0,194,209,0.15)_0%,rgba(139,107,255,0.08)_40%,transparent_70%)] pointer-events-none transform-gpu"
         style={{ transform: 'translate3d(-1000px, -1000px, 0)' }}
       />
 
