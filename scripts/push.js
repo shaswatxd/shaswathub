@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '..');
 
-// Load .env.local to get GITHUB_TOKEN
+// Load .env.local to get GITHUB_TOKEN if not set in system env
 function loadEnv() {
   try {
     const envPath = resolve(rootDir, '.env.local');
@@ -21,7 +21,9 @@ function loadEnv() {
       if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
         val = val.slice(1, -1);
       }
-      process.env[key] = val;
+      if (!process.env[key]) {
+        process.env[key] = val.trim();
+      }
     }
   } catch {
     // .env.local not found, continue without it
@@ -46,7 +48,7 @@ try {
 
   try {
     console.log('🚀 Pushing to Git...');
-    const token = process.env.GITHUB_TOKEN;
+    const token = (process.env.GITHUB_TOKEN || process.env.GH_TOKEN)?.trim();
     if (token) {
       // Get remote URL, strip any existing credentials, then inject token
       let remoteUrl = execSync('git remote get-url origin', { cwd: rootDir }).toString().trim();
@@ -55,7 +57,7 @@ try {
       const authedUrl = remoteUrl.replace('https://', `https://shaswatxd:${token}@`);
       execSync(`git push "${authedUrl}"`, { stdio: 'inherit', cwd: rootDir });
     } else {
-      console.log('⚠️ No GITHUB_TOKEN found in .env.local — trying default push...');
+      console.log('⚠️ No GITHUB_TOKEN found — trying default push...');
       execSync('git push', { stdio: 'inherit', cwd: rootDir });
     }
   } catch (pushError) {
