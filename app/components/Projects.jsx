@@ -338,7 +338,6 @@ const Card = memo(function Card({ project, idx, onOpenDetails, borderClasses }) 
 export default memo(function Projects() {
   const [activeProject, setActiveProject] = useState(null);
   const [activeFilter, setActiveFilter] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const filters = [
     { id: "ALL", label: "All Projects" },
@@ -347,24 +346,12 @@ export default memo(function Projects() {
   ];
 
   const filteredProjects = PROJECTS.filter((proj) => {
-    let matchesCategory = true;
     if (activeFilter === "APP") {
-      matchesCategory = proj.badge === "APP";
+      return proj.badge === "APP";
     } else if (activeFilter === "WEB") {
-      matchesCategory = proj.badge === "SITE" || proj.badge === "WEB/APP";
+      return proj.badge === "SITE" || proj.badge === "WEB/APP";
     }
-
-    const q = searchQuery.toLowerCase().trim();
-    if (!q) return matchesCategory;
-
-    const matchesSearch =
-      proj.name.toLowerCase().includes(q) ||
-      proj.desc.toLowerCase().includes(q) ||
-      proj.features.some((f) => f.toLowerCase().includes(q)) ||
-      proj.details.modules.some((m) => m.toLowerCase().includes(q)) ||
-      proj.details.architecture.toLowerCase().includes(q);
-
-    return matchesCategory && matchesSearch;
+    return true;
   });
 
   return (
@@ -380,8 +367,8 @@ export default memo(function Projects() {
         </div>
       </div>
 
-      {/* ── Filter Tabs & Search Control ── */}
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-16 pb-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      {/* ── Filter Tabs ── */}
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-16 pb-8 flex items-center justify-start">
         {/* Category Pill Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
           {filters.map((tab) => (
@@ -398,33 +385,6 @@ export default memo(function Projects() {
             </button>
           ))}
         </div>
-
-        {/* Live Search Input */}
-        <div className="relative w-full sm:w-72">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tech, name, stack..."
-            className="w-full bg-white dark:bg-[#111] border border-[#e8e8e8] dark:border-white/15 px-3.5 py-2 pl-9 text-xs text-[#0a0a0a] dark:text-[#f2f2f2] placeholder-[#999] focus:outline-none focus:border-cyan transition-colors duration-200"
-          />
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#999]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#999] hover:text-cyan"
-            >
-              ✕
-            </button>
-          )}
-        </div>
       </div>
 
       {/* ── Project Grid ── */}
@@ -440,21 +400,6 @@ export default memo(function Projects() {
             />
           ))}
         </AnimatePresence>
-
-        {/* Empty State Result */}
-        {filteredProjects.length === 0 && (
-          <div className="col-span-full card p-12 text-center flex flex-col items-center justify-center gap-3 border-r border-b border-[#e8e8e8] dark:border-white/15">
-            <span className="text-3xl">🔍</span>
-            <h3 className="font-semibold text-lg text-[#0a0a0a] dark:text-[#f2f2f2]">No matching projects found</h3>
-            <p className="text-xs text-[#666] dark:text-[#999]">No project matches "{searchQuery}". Try searching for Electron, WASM, or AI.</p>
-            <button
-              onClick={() => { setSearchQuery(""); setActiveFilter("ALL"); }}
-              className="mt-2 px-4 py-1.5 text-xs font-mono border border-cyan text-cyan hover:bg-cyan hover:text-black transition-colors"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
 
         {/* Placeholder Coming Soon Box */}
         {filteredProjects.length > 0 && (
