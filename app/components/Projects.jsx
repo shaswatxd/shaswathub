@@ -6,26 +6,6 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 // ─── Projects Data ──────────────────────────────────────────────────────────
 const PROJECTS = [
   {
-    name: "AIOforge",
-    desc: "A beautiful, premium PC setup and software deployment manager for Windows. Select, batch install, and auto-update dozens of applications simultaneously using Winget and Chocolatey engines.",
-    icon: "⚙️",
-    glow: "orange",
-    badge: "APP",
-    githubUrl: "https://github.com/shaswatxd/AIOforge",
-    liveUrl: "https://aioforge.vercel.app",
-    features: [
-      "⚡ High-Speed Asynchronous Parallel Installers",
-      "📦 Preset Stacks & Portable Setup Profiles",
-      "🎨 Interactive Dashboard with Speed & Progress Tracking",
-      "⚙️ Seamless Winget & Chocolatey Wrappers"
-    ],
-    details: {
-      architecture: "Native desktop utility built for Windows that bridges Winget and Chocolatey package managers into a unified, asynchronous parallel queue interface.",
-      modules: ["Winget queue worker", "Chocolatey agent wrapper", "Asynchronous parallel downloader", "Profile package builder"],
-      command: "git clone https://github.com/shaswatxd/AIOforge.git"
-    }
-  },
-  {
     name: "NovaDL",
     desc: "A modern, high-performance multi-threaded download manager for Windows built with Electron, React, and WASM. Features worker-thread chunk splitting, real HLS video stream downloading, crash-safe SQLite state persistence, and browser extension integration.",
     icon: "📥",
@@ -105,26 +85,6 @@ const PROJECTS = [
       architecture: "100% Client-side sandbox. Intercepts files and updates buffer maps in WASM, keeping data completely local.",
       modules: ["pdf-lib compiler", "PDF.js parser", "Local browser memory stream"],
       command: "git clone https://github.com/shaswatxd/justpdfcraft.git"
-    }
-  },
-  {
-    name: "SnapGrab",
-    desc: "Desktop media downloader app that lets you download videos and audio from 1,000+ platforms. Supports playlist downloads, built-in playback, and stays up to date automatically.",
-    icon: "⬇️",
-    glow: "magenta",
-    badge: "APP",
-    githubUrl: "https://github.com/shaswatxd/snapgrab-downloader",
-    liveUrl: "https://snapgrab-eight.vercel.app/",
-    features: [
-      "⬇️ Downloader for 1,000+ Platforms",
-      "📂 Playlist & Batch Downloads",
-      "⚡ Background Component Auto-Updates",
-      "📻 Built-in Media Playback Shell"
-    ],
-    details: {
-      architecture: "Concurrent download manager with a built-in task queue. Auto-updates itself in the background on startup.",
-      modules: ["Task queue dispatcher", "Concurrent download engine", "Auto-update scheduler", "Node playback stream"],
-      command: "git clone https://github.com/shaswatxd/snapgrab-downloader.git"
     }
   },
   {

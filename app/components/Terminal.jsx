@@ -20,13 +20,11 @@ focus     : Desktop Apps · Web Tools · High Performance Interfaces
 currently : Shipping software, writing code & breaking bugs`,
 
   projects: `⚡ SHASWATHUB LIVE REPOSITORY INDEX:
-  1. AIOforge     : Windows PC Setup & Batch Software Deployment Manager
-  2. NovaDL       : Multi-threaded Download Manager for Windows with HLS Support
-  3. VoiceWave    : Peer-to-peer real-time browser voice chat app
-  4. We Plays     : Glassmorphic music player with lyrics & visualizer
-  5. JustPDFCraft : 100% Client-Side PDF Utilities Toolkit
-  6. SnapGrab     : Media Downloader for 1,000+ Platforms
-  7. ResumeAI     : AI-Powered Resume Builder with 30 Templates`,
+  1. NovaDL       : Multi-threaded Download Manager for Windows with HLS Support
+  2. VoiceWave    : Peer-to-peer real-time browser voice chat app
+  3. We Plays     : Glassmorphic music player with lyrics & visualizer
+  4. JustPDFCraft : 100% Client-Side PDF Utilities Toolkit
+  5. ResumeAI     : AI-Powered Resume Builder with 30 Templates`,
 
   skills: `🛠️ CORE TECH STACK & ENGINE:
   • Languages  : JavaScript (ESNext), TypeScript, HTML5, CSS3, C++
@@ -37,7 +35,7 @@ currently : Shipping software, writing code & breaking bugs`,
 
   contact: `📬 REACH OUT:
   • GitHub   : https://github.com/shaswatxd
-  • Projects : https://aioforge.vercel.app | https://novadl.vercel.app`,
+  • Projects : https://novadl.vercel.app`,
 
   sudo: `[sudo] permission requested for user 'guest'...
 Access Granted: You already hold root privileges on ShaswatHub OS 👑`
