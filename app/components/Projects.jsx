@@ -106,6 +106,26 @@ const PROJECTS = [
       modules: ["AI prompt engine", "Template renderer", "PDF export module", "Draft autosave system"],
       command: "git clone https://github.com/shaswatxd/resumeai.git"
     }
+  },
+  {
+    name: "Bill Generator",
+    desc: "Instant free bill & receipt generator with 30+ professional templates. Create GST invoices, rent receipts, salary slips, fuel bills & more — export as high-res PDF or PNG in one click.",
+    icon: "🧾",
+    glow: "orange",
+    badge: "SITE",
+    githubUrl: "https://github.com/shaswatxd/bill-generator",
+    liveUrl: "https://billgenhai.vercel.app",
+    features: [
+      "🧾 30+ Professional Receipt Templates",
+      "🔍 Smart Category Filters & Search",
+      "📥 Instant High-Res PDF & PNG Export",
+      "🔒 100% Private Client-Side Generation"
+    ],
+    details: {
+      architecture: "Next.js app with fully client-side bill generation. All processing happens in the browser — no server uploads. Supports custom logos, digital signatures, and multiple template categories with live preview.",
+      modules: ["Template Engine & Category System", "PDF & PNG Export Pipeline", "Saved Drafts Manager", "Search & Filter Controller"],
+      command: "git clone https://github.com/shaswatxd/bill-generator.git"
+    }
   }
 ];
 
