@@ -24,8 +24,7 @@ const PROJECTS = [
     ],
     details: {
       architecture: "Built on Electron, React & TypeScript with worker-thread byte-range splitting, WASM SQLite chunk state persistence, FFmpeg stream assembly, and Manifest V3 extension bridge.",
-      modules: ["Worker-Thread Download Engine", "HLS Stream Parser & Assembler", "WASM SQLite Persistence Layer", "Manifest V3 Extension Bridge", "Task Scheduler & Speed Limiter"],
-      command: "git clone https://github.com/shaswatxd/novadl.git"
+      modules: ["Worker-Thread Download Engine", "HLS Stream Parser & Assembler", "WASM SQLite Persistence Layer", "Manifest V3 Extension Bridge", "Task Scheduler & Speed Limiter"]
     }
   },
   {
@@ -44,8 +43,7 @@ const PROJECTS = [
     ],
     details: {
       architecture: "Runs entirely in the browser — no installs needed. Audio is transmitted in real-time between users with low latency.",
-      modules: ["PeerJS connection engine", "Web Audio API nodes", "Secure signaling sockets", "Offline cache database"],
-      command: "git clone https://github.com/shaswatxd/voicewave.git"
+      modules: ["PeerJS connection engine", "Web Audio API nodes", "Secure signaling sockets", "Offline cache database"]
     }
   },
   {
@@ -64,8 +62,7 @@ const PROJECTS = [
     ],
     details: {
       architecture: "Desktop app built on Electron with a rich audio engine, real-time lyrics sync, and automatic metadata tagging.",
-      modules: ["Electron IPC broker", "Web Audio visualizer", "Lyric scraper engine", "ID3 metadata tagger"],
-      command: "git clone https://github.com/shaswatxd/we-plays.git"
+      modules: ["Electron IPC broker", "Web Audio visualizer", "Lyric scraper engine", "ID3 metadata tagger"]
     }
   },
   {
@@ -83,8 +80,7 @@ const PROJECTS = [
     ],
     details: {
       architecture: "100% Client-side sandbox. Intercepts files and updates buffer maps in WASM, keeping data completely local.",
-      modules: ["pdf-lib compiler", "PDF.js parser", "Local browser memory stream"],
-      command: "git clone https://github.com/shaswatxd/justpdfcraft.git"
+      modules: ["pdf-lib compiler", "PDF.js parser", "Local browser memory stream"]
     }
   },
   {
@@ -103,8 +99,7 @@ const PROJECTS = [
     ],
     details: {
       architecture: "Next.js app with client-side AI integration. API keys stored in localStorage, resumes generated entirely in the browser.",
-      modules: ["AI prompt engine", "Template renderer", "PDF export module", "Draft autosave system"],
-      command: "git clone https://github.com/shaswatxd/resumeai.git"
+      modules: ["AI prompt engine", "Template renderer", "PDF export module", "Draft autosave system"]
     }
   },
   {
@@ -123,8 +118,7 @@ const PROJECTS = [
     ],
     details: {
       architecture: "Next.js app with fully client-side bill generation. All processing happens in the browser — no server uploads. Supports custom logos, digital signatures, and multiple template categories with live preview.",
-      modules: ["Template Engine & Category System", "PDF & PNG Export Pipeline", "Saved Drafts Manager", "Search & Filter Controller"],
-      command: "git clone https://github.com/shaswatxd/bill-generator.git"
+      modules: ["Template Engine & Category System", "PDF & PNG Export Pipeline", "Saved Drafts Manager", "Search & Filter Controller"]
     }
   }
 ];
@@ -240,6 +234,7 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
           </div>
 
           {/* Command Terminal box */}
+          {project.details.command && (
           <div>
             <h4 className="font-mono text-[10px] uppercase text-[#0a0a0a] dark:text-[#f2f2f2] mb-2 tracking-wider flex items-center gap-1.5">
               <span style={{ color: color }}>◆</span> Local Installation
@@ -260,6 +255,7 @@ const ProjectModal = memo(function ProjectModal({ project, onClose }) {
               </button>
             </div>
           </div>
+          )}
         </div>
 
         {/* Links Footer */}
