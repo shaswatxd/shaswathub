@@ -1,5 +1,6 @@
 import { JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import VisitorTracker from './components/VisitorTracker';
 
 // General Sans isn't on Google Fonts — loaded via Fontshare's CDN <link> below.
 const jetbrainsMono = JetBrains_Mono({
@@ -96,6 +97,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="font-body bg-[#0a0a0a] text-[#f2f2f2] selection:bg-cyan-900 selection:text-[#f2f2f2] antialiased transition-colors duration-300">
+        <VisitorTracker />
         {children}
       </body>
     </html>
