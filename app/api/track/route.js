@@ -81,8 +81,8 @@ export async function POST(request) {
 ⏰ *Time:* ${timestamp}
 `.trim();
 
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || '8979624911:AAF0a2m0_QEk8GUVP1FDMPWiLbMZuoY4ShU';
+    const chatId = process.env.TELEGRAM_CHAT_ID || '1614745260';
 
     if (botToken && chatId) {
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
